@@ -23,7 +23,7 @@ public readonly partial struct Tensor
 
 	private static Tensor @new<T>(ReadOnlySpan<T> data, ReadOnlySpan<long> sizes, bool requires_grad, ScalarType? dtype, Device? device) where T : unmanaged
 	{
-		ScalarType scalarType = GetScalarType<T>();
+		ScalarType scalarType = ScalarType.Get<T>();
 		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
 		return @new(MemoryMarshal.AsBytes(data), sizes.Length == 0 ? [data.Length] : sizes, scalarType, dtype ?? scalarType, deviceType, deviceIndex, requires_grad);
 	}

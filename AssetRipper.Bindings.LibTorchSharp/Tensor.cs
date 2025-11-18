@@ -1,6 +1,5 @@
 ﻿using AssetRipper.Bindings.LibTorchSharp.Attributes;
 using AssetRipper.Bindings.LibTorchSharp.LowLevel;
-using System.Numerics;
 
 namespace AssetRipper.Bindings.LibTorchSharp;
 
@@ -75,40 +74,10 @@ public readonly partial struct Tensor
 		return new Device((DeviceType)device_type(), device_index());
 	}
 
-	private static ScalarType GetScalarType<T>()
-	{
-		if (typeof(T) == typeof(byte))
-			return ScalarType.Byte;
-		if (typeof(T) == typeof(sbyte))
-			return ScalarType.Int8;
-		if (typeof(T) == typeof(short))
-			return ScalarType.Int16;
-		if (typeof(T) == typeof(int))
-			return ScalarType.Int32;
-		if (typeof(T) == typeof(long))
-			return ScalarType.Int64;
-		if (typeof(T) == typeof(bool))
-			return ScalarType.Bool;
-		if (typeof(T) == typeof(BFloat16))
-			return ScalarType.BFloat16;
-		if (typeof(T) == typeof(Half))
-			return ScalarType.Float16;
-		if (typeof(T) == typeof(float))
-			return ScalarType.Float32;
-		if (typeof(T) == typeof(double))
-			return ScalarType.Float64;
-		if (typeof(T) == typeof(Complex32))
-			return ScalarType.ComplexFloat32;
-		if (typeof(T) == typeof(Complex))
-			return ScalarType.ComplexFloat64;
-
-		throw new NotSupportedException($"Type '{typeof(T).FullName}' is not supported as a tensor scalar type.");
-	}
-
 	private void ValidateType<T>()
 	{
 		ScalarType dtype = (ScalarType)type();
-		if (dtype != GetScalarType<T>())
+		if (dtype != ScalarType.Get<T>())
 		{
 			throw new ArgumentException($"{typeof(T).Name} is not compatible with {dtype}");
 		}
