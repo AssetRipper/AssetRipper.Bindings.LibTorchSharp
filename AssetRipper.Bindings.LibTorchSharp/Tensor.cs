@@ -39,9 +39,20 @@ public readonly partial struct Tensor
 
 		T[] result = new T[length];
 		T* ptr = (T*)data();
-		for (long i0 = 0, off0 = 0; i0 < length; i0++, off0 += stride)
+		if (stride == 1)
 		{
-			result[i0] = ptr[off0];
+			fixed (T* pResult = result)
+			{
+				long byteLength = length * sizeof(T);
+				Buffer.MemoryCopy(ptr, pResult, byteLength, byteLength);
+			}
+		}
+		else
+		{
+			for (long i0 = 0, off0 = 0; i0 < length; i0++, off0 += stride)
+			{
+				result[i0] = ptr[off0];
+			}
 		}
 		return result;
 	}
