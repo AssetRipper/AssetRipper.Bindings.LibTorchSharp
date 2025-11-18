@@ -57,32 +57,6 @@ public readonly partial struct Tensor
 		return result;
 	}
 
-	public unsafe long[] sizes()
-	{
-		try
-		{
-			sizes(&ScratchAllocator.AllocateInt64);
-			return ScratchAllocator.GetAllocatedSpan<long>().ToArray();
-		}
-		finally
-		{
-			ScratchAllocator.Free();
-		}
-	}
-
-	public unsafe long[] strides()
-	{
-		try
-		{
-			strides(&ScratchAllocator.AllocateInt64);
-			return ScratchAllocator.GetAllocatedSpan<long>().ToArray();
-		}
-		finally
-		{
-			ScratchAllocator.Free();
-		}
-	}
-
 	public static unsafe Tensor ones(ReadOnlySpan<long> sizes, ScalarType scalar_type, DeviceType device_type, int device_index, bool requires_grad)
 	{
 		fixed (long* psizes = sizes)

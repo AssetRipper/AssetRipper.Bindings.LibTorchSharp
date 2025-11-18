@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using AssetRipper.Bindings.LibTorchSharp.LowLevel;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace AssetRipper.Bindings.LibTorchSharp;
@@ -35,6 +36,12 @@ internal static unsafe class ScratchAllocator
 	public static double* AllocateDouble(nuint count)
 	{
 		return Allocate<double>(count);
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	public static OpaqueTensor** AllocateTensor(nuint count)
+	{
+		return (OpaqueTensor**)Allocate<Tensor>(count);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
