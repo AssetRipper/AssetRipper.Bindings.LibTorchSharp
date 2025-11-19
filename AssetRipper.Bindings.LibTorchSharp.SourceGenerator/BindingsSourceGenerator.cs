@@ -174,6 +174,82 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			context.AddSource("NativeMethods.cs", stringWriter.ToString());
 		}
 
+		// Generate allocator overloads
+		{
+			StringWriter stringWriter = new();
+			IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
+
+			writer.WriteFileScopedNamespace("AssetRipper.Bindings.LibTorchSharp.LowLevel");
+			writer.WriteLineNoTabs();
+			writer.WriteLine("public static unsafe partial class NativeMethods");
+			using (new CurlyBrackets(writer))
+			{
+				for (int j = 0; j < nativeMethods.Length; j++)
+				{
+					MethodData nativeMethod = nativeMethods[j];
+					if (!TryGetAllocatorParameter(nativeMethod, out int parameterIndex, out string? allocatedType))
+					{
+						continue;
+					}
+
+					List<ParameterData> modifiedParameters = nativeMethod.Parameters.ToList();
+					modifiedParameters.RemoveAt(parameterIndex);
+					MethodData modifiedMethod = nativeMethod with
+					{
+						ReturnType = new TypeData($"{allocatedType}[]", 0),
+						Parameters = new([.. modifiedParameters])
+					};
+
+					nativeMethods[j] = modifiedMethod;
+
+					writer.Write("public static ");
+					writer.WriteLine(modifiedMethod.ToString());
+					using (new CurlyBrackets(writer))
+					{
+						using (new Try(writer))
+						{
+							string allocateMethod = allocatedType switch
+							{
+								"long" => "AllocateInt64",
+								"string" => "AllocateString",
+								_ => $"Allocate{allocatedType}",
+							};
+							string resultMethod = allocatedType switch
+							{
+								"string" => "GetAllocatedStrings",
+								_ => $"GetAllocatedArray<{allocatedType}>",
+							};
+							writer.Write(nativeMethod.Name);
+							writer.Write('(');
+							for (int i = 0; i < nativeMethod.Parameters.Length; i++)
+							{
+								if (i > 0)
+								{
+									writer.Write(", ");
+								}
+								if (i == parameterIndex)
+								{
+									writer.Write($"&ScratchAllocator.{allocateMethod}");
+								}
+								else
+								{
+									writer.Write(nativeMethod.Parameters[i].Name);
+								}
+							}
+							writer.WriteLine(");");
+							writer.WriteLine($"return ScratchAllocator.{resultMethod}();");
+						}
+						using (new Finally(writer))
+						{
+							writer.WriteLine("ScratchAllocator.Free();");
+						}
+					}
+				}
+			}
+
+			context.AddSource("NativeMethods.AllocatorOverloads.cs", stringWriter.ToString());
+		}
+
 		Dictionary<StructData, GeneratedOpaqueStruct> structDictionary = structs.ToDictionary(s => s, s => new GeneratedOpaqueStruct(s));
 		Dictionary<string, GeneratedStaticClass> classDictionary = [];
 
@@ -252,6 +328,40 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 		structResult = default;
 		classResult = method.Name[..firstUnderscore];
+		return false;
+	}
+
+	private static bool TryGetAllocatorParameter(MethodData method, out int parameterIndex, [NotNullWhen(true)] out string? allocatedType)
+	{
+		if (!method.ReturnType.IsVoid)
+		{
+			parameterIndex = -1;
+			allocatedType = null;
+			return false;
+		}
+
+		for (int i = 0; i < method.Parameters.Length; i++)
+		{
+			ParameterData parameter = method.Parameters[i];
+			if (parameter.Name is not "allocator")
+			{
+				continue;
+			}
+
+			parameterIndex = i;
+			allocatedType = parameter.Type.Name switch
+			{
+				"delegate* unmanaged[Cdecl]<nuint, AssetRipper.Bindings.LibTorchSharp.Tensor*>" => "Tensor",
+				"delegate* unmanaged[Cdecl]<nuint, AssetRipper.Bindings.LibTorchSharp.JITModule*>" => "JITModule",
+				"delegate* unmanaged[Cdecl]<nuint, long*>" => "long",
+				"delegate* unmanaged[Cdecl]<nuint, sbyte**>" => "string",
+				_ => null,
+			};
+			return allocatedType is not null;
+		}
+
+		parameterIndex = -1;
+		allocatedType = null;
 		return false;
 	}
 }

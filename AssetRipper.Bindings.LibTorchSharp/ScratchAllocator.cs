@@ -1,5 +1,4 @@
-﻿using AssetRipper.Bindings.LibTorchSharp.LowLevel;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace AssetRipper.Bindings.LibTorchSharp;
@@ -48,7 +47,13 @@ internal static unsafe class ScratchAllocator
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	public static sbyte** AllocateInt8Pointer(nuint count)
+	public static JITModule* AllocateJITModule(nuint count)
+	{
+		return Allocate<JITModule>(count);
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	public static sbyte** AllocateString(nuint count)
 	{
 		return (sbyte**)Allocate<nint>(count);
 	}
