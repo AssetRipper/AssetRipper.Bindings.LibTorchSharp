@@ -12,6 +12,12 @@ internal readonly record struct StructData(string StructName, string OpaqueName,
 			result = new TypeData(StructName, type.PointerLevel - 1);
 			return true;
 		}
+		else if (type.IsFunctionPointer && type.Name.Contains($"{OpaqueName}*"))
+		{
+			string replacedName = type.Name.Replace($"LowLevel.{OpaqueName}*", StructName);
+			result = new TypeData(replacedName, type.PointerLevel);
+			return true;
+		}
 		else
 		{
 			result = type;

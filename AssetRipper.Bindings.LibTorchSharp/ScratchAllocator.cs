@@ -42,9 +42,9 @@ internal static unsafe class ScratchAllocator
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	public static OpaqueTensor** AllocateTensor(nuint count)
+	public static Tensor* AllocateTensor(nuint count)
 	{
-		return (OpaqueTensor**)Allocate<Tensor>(count);
+		return Allocate<Tensor>(count);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]

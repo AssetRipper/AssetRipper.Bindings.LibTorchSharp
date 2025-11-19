@@ -7,8 +7,8 @@ namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
 internal readonly record struct TypeData(string Name, int PointerLevel)
 {
 	public bool IsVoid => Name is "void" && PointerLevel is 0;
-
-	public bool IsPointer => PointerLevel > 0 || Name.StartsWith("delegate* ", StringComparison.Ordinal);
+	public bool IsPointer => PointerLevel > 0;
+	public bool IsFunctionPointer => PointerLevel is 0 && Name.StartsWith("delegate* ", StringComparison.Ordinal);
 
 	public override string ToString() => PointerLevel switch
 	{
