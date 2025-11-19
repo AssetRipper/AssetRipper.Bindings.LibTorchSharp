@@ -111,9 +111,10 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		context.AddSource("Tensor.Operators.cs", stringWriter.ToString());
 	}
 
-	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> methods)
+	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> pinvokeMethods)
 	{
-		MethodData[] nativeMethods = new MethodData[methods.Length];
+		// Generate NativeMethods
+		MethodData[] nativeMethods = new MethodData[pinvokeMethods.Length];
 		{
 			StringWriter stringWriter = new();
 			IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
@@ -123,9 +124,9 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			writer.WriteLine("public static unsafe partial class NativeMethods");
 			using (new CurlyBrackets(writer))
 			{
-				for (int j = 0; j < methods.Length; j++)
+				for (int j = 0; j < pinvokeMethods.Length; j++)
 				{
-					MethodData pinvokeMethod = methods[j];
+					MethodData pinvokeMethod = pinvokeMethods[j];
 					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs);
 					nativeMethods[j] = nativeMethod;
 
