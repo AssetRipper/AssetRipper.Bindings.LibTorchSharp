@@ -50,7 +50,6 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			return [.. type.GetMembers().OfType<IMethodSymbol>().Where(m => m.Name != "Torch_get_and_reset_last_err").Select(MethodData.From)];
 		});
 
-		context.RegisterSourceOutput(methods.Collect(), GenerateNativeMethods);
 		context.RegisterSourceOutput(structs.Collect(), methods.Collect(), Generate);
 		context.RegisterPostInitializationOutput(GenerateTensorScalarOperators);
 	}
@@ -112,65 +111,91 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		context.AddSource("Tensor.Operators.cs", stringWriter.ToString());
 	}
 
-	private static void GenerateNativeMethods(SgfSourceProductionContext context, ImmutableArray<MethodData> methods)
+	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> methods)
 	{
-		StringWriter stringWriter = new();
-		IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
-
-		writer.WriteFileScopedNamespace("AssetRipper.Bindings.LibTorchSharp.LowLevel");
-		writer.WriteLineNoTabs();
-		writer.WriteLine("public static unsafe partial class NativeMethods");
-		using (new CurlyBrackets(writer))
+		MethodData[] nativeMethods = new MethodData[methods.Length];
 		{
-			foreach (MethodData method in methods)
+			StringWriter stringWriter = new();
+			IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
+
+			writer.WriteFileScopedNamespace("AssetRipper.Bindings.LibTorchSharp.LowLevel");
+			writer.WriteLineNoTabs();
+			writer.WriteLine("public static unsafe partial class NativeMethods");
+			using (new CurlyBrackets(writer))
 			{
-				writer.Write("public static ");
-				writer.WriteLine(method.ToString());
-				using (new CurlyBrackets(writer))
+				for (int j = 0; j < methods.Length; j++)
 				{
-					if (!method.ReturnType.IsVoid)
+					MethodData pinvokeMethod = methods[j];
+					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs);
+					nativeMethods[j] = nativeMethod;
+
+					writer.Write("public static ");
+					writer.WriteLine(nativeMethod.ToString());
+					using (new CurlyBrackets(writer))
 					{
-						writer.Write($"{method.ReturnType} __result = ");
-					}
-					string parameters = string.Join(", ", method.Parameters.Select(p => p.Name));
-					writer.WriteLine($"PInvoke.{method.Name}({parameters});");
-					writer.WriteLine("CheckForErrors();");
-					if (!method.ReturnType.IsVoid)
-					{
-						writer.WriteLine("return __result;");
+						if (!nativeMethod.ReturnType.IsVoid)
+						{
+							writer.Write($"{nativeMethod.ReturnType} __result = ");
+
+							if (nativeMethod.ReturnType != pinvokeMethod.ReturnType)
+							{
+								writer.Write('(');
+								writer.Write(nativeMethod.ReturnType);
+								writer.Write(')');
+							}
+						}
+						writer.Write("PInvoke.");
+						writer.Write(pinvokeMethod.Name);
+						writer.Write('(');
+						for (int i = 0; i < nativeMethod.Parameters.Length; i++)
+						{
+							if (i > 0)
+							{
+								writer.Write(", ");
+							}
+							if (nativeMethod.Parameters[i].Type != pinvokeMethod.Parameters[i].Type)
+							{
+								writer.Write('(');
+								writer.Write(pinvokeMethod.Parameters[i].Type);
+								writer.Write(')');
+							}
+							writer.Write(nativeMethod.Parameters[i].Name);
+						}
+						writer.WriteLine(");");
+						writer.WriteLine("CheckForErrors();");
+						if (!nativeMethod.ReturnType.IsVoid)
+						{
+							writer.WriteLine("return __result;");
+						}
 					}
 				}
 			}
+
+			context.AddSource("NativeMethods.cs", stringWriter.ToString());
 		}
 
-		context.AddSource("NativeMethods.cs", stringWriter.ToString());
-	}
-
-	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> methods)
-	{
 		Dictionary<StructData, GeneratedOpaqueStruct> structDictionary = structs.ToDictionary(s => s, s => new GeneratedOpaqueStruct(s));
 		Dictionary<string, GeneratedStaticClass> classDictionary = [];
 
-		foreach (MethodData method in methods)
+		foreach (MethodData nativeMethod in nativeMethods)
 		{
-			MethodData replaced = method.ReplaceOpaqueTypes(structs);
-			if (TryGetStruct(method, structs, out StructData structResult, out string? classResult))
+			if (TryGetStruct(nativeMethod, structs, out StructData structResult, out string? classResult))
 			{
-				replaced = replaced with { Name = method.GetNameInStruct(structResult) };
+				MethodData modified = nativeMethod with { Name = nativeMethod.GetNameInStruct(structResult) };
 
 				GeneratedOpaqueStruct generatedType = structDictionary[structResult];
 
-				if (generatedType.IsInstance(replaced))
+				if (generatedType.IsInstance(modified))
 				{
-					replaced = replaced.ChangeFirstParameterNameToThis();
+					modified = modified.ChangeFirstParameterNameToThis();
 				}
 
-				generatedType.Methods.Add(new(replaced, method));
+				generatedType.Methods.Add(new(modified, nativeMethod));
 			}
 			else
 			{
-				replaced = replaced with { Name = method.GetNameInClass(classResult) };
-				classDictionary.GetOrCreate(classResult, GeneratedStaticClass.Create).Methods.Add(new(replaced, method));
+				MethodData modified = nativeMethod with { Name = nativeMethod.GetNameInClass(classResult) };
+				classDictionary.GetOrCreate(classResult, GeneratedStaticClass.Create).Methods.Add(new(modified, nativeMethod));
 			}
 		}
 
