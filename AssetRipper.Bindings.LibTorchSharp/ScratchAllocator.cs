@@ -12,6 +12,9 @@ internal static unsafe class ScratchAllocator
 	[field: ThreadStatic]
 	public static nuint MostRecentAllocatedCount { get; private set; }
 
+	[field: ThreadStatic]
+	public static int MostRecentAllocatedSizeOf { get; private set; }
+
 	private static void ThrowIfOpenAllocationExists()
 	{
 		if (MostRecentAllocatedPointer != null)
@@ -53,6 +56,7 @@ internal static unsafe class ScratchAllocator
 	public static T* Allocate<T>(nuint count) where T : unmanaged
 	{
 		ThrowIfOpenAllocationExists();
+		MostRecentAllocatedSizeOf = sizeof(T);
 		void* ptr = NativeMemory.Alloc(count, (nuint)sizeof(T));
 		MostRecentAllocatedPointer = ptr;
 		MostRecentAllocatedCount = count;
@@ -61,7 +65,31 @@ internal static unsafe class ScratchAllocator
 
 	public static Span<T> GetAllocatedSpan<T>() where T : unmanaged
 	{
+		if (MostRecentAllocatedSizeOf != sizeof(T))
+		{
+			throw new InvalidOperationException("The requested type does not match the type of the most recent allocation.");
+		}
 		return new Span<T>(MostRecentAllocatedPointer, (int)MostRecentAllocatedCount);
+	}
+
+	public static T[] GetAllocatedArray<T>() where T : unmanaged
+	{
+		return GetAllocatedSpan<T>().ToArray();
+	}
+
+	public static string[] GetAllocatedStrings()
+	{
+		Span<nint> span = GetAllocatedSpan<nint>();
+		if (span.Length == 0)
+		{
+			return [];
+		}
+		string[] result = new string[span.Length];
+		for (int i = 0; i < span.Length; i++)
+		{
+			result[i] = NativeString.FromNullTerminated((sbyte*)span[i]);
+		}
+		return result;
 	}
 
 	public static void Free()
@@ -71,6 +99,7 @@ internal static unsafe class ScratchAllocator
 			NativeMemory.Free(MostRecentAllocatedPointer);
 			MostRecentAllocatedPointer = null;
 			MostRecentAllocatedCount = 0;
+			MostRecentAllocatedSizeOf = 0;
 		}
 	}
 }

@@ -10,7 +10,7 @@ public readonly partial struct Tensor
 			{
 				broadcast_tensors(pTensors, tensors.Length, &ScratchAllocator.AllocateTensor);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -23,7 +23,7 @@ public readonly partial struct Tensor
 		try
 		{
 			chunk(&ScratchAllocator.AllocateTensor, chunks, dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -36,7 +36,7 @@ public readonly partial struct Tensor
 		try
 		{
 			cummax(&ScratchAllocator.AllocateTensor, dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -49,7 +49,7 @@ public readonly partial struct Tensor
 		try
 		{
 			cummin(&ScratchAllocator.AllocateTensor, dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -62,7 +62,7 @@ public readonly partial struct Tensor
 		try
 		{
 			dsplit_with_size(&ScratchAllocator.AllocateTensor, split_size);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -78,7 +78,7 @@ public readonly partial struct Tensor
 			{
 				dsplit_with_sizes(&ScratchAllocator.AllocateTensor, pSizes, sizes.Length);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -91,7 +91,7 @@ public readonly partial struct Tensor
 		try
 		{
 			hsplit_with_size(&ScratchAllocator.AllocateTensor, split_size);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -107,7 +107,7 @@ public readonly partial struct Tensor
 			{
 				hsplit_with_sizes(&ScratchAllocator.AllocateTensor, pSizes, sizes.Length);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -120,7 +120,7 @@ public readonly partial struct Tensor
 		try
 		{
 			max_along_dimension(&ScratchAllocator.AllocateTensor, dim, keep_dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -133,7 +133,7 @@ public readonly partial struct Tensor
 		try
 		{
 			min_along_dimension(&ScratchAllocator.AllocateTensor, dim, keep_dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -152,7 +152,7 @@ public readonly partial struct Tensor
 			{
 				max_pool1d_with_indices(&ScratchAllocator.AllocateTensor, pKernelSize, kernelSize.Length, pStride, stride.Length, pPadding, padding.Length, pDilation, dilation.Length, ceil_mode);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -171,7 +171,7 @@ public readonly partial struct Tensor
 			{
 				max_pool2d_with_indices(&ScratchAllocator.AllocateTensor, pKernelSize, kernelSize.Length, pStride, stride.Length, pPadding, padding.Length, pDilation, dilation.Length, ceil_mode);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -190,7 +190,7 @@ public readonly partial struct Tensor
 			{
 				max_pool3d_with_indices(&ScratchAllocator.AllocateTensor, pKernelSize, kernelSize.Length, pStride, stride.Length, pPadding, padding.Length, pDilation, dilation.Length, ceil_mode);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -207,7 +207,7 @@ public readonly partial struct Tensor
 			{
 				meshgrid(pTensors, tensors.Length, (sbyte*)pIndexing, &ScratchAllocator.AllocateTensor);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -220,7 +220,7 @@ public readonly partial struct Tensor
 		try
 		{
 			mode(&ScratchAllocator.AllocateTensor, dim, keep_dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -233,17 +233,7 @@ public readonly partial struct Tensor
 		try
 		{
 			names(&ScratchAllocator.AllocateInt8Pointer);
-			Span<nint> span = ScratchAllocator.GetAllocatedSpan<nint>();
-			if (span.Length == 0)
-			{
-				return [];
-			}
-			string[] result = new string[span.Length];
-			for (int i = 0; i < span.Length; i++)
-			{
-				result[i] = NativeString.FromNullTerminated((sbyte*)span[i]);
-			}
-			return result;
+			return ScratchAllocator.GetAllocatedStrings();
 		}
 		finally
 		{
@@ -256,7 +246,7 @@ public readonly partial struct Tensor
 		try
 		{
 			sizes(&ScratchAllocator.AllocateInt64);
-			return ScratchAllocator.GetAllocatedSpan<long>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<long>();
 		}
 		finally
 		{
@@ -269,7 +259,7 @@ public readonly partial struct Tensor
 		try
 		{
 			split_with_size(&ScratchAllocator.AllocateTensor, split_size, dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -285,7 +275,7 @@ public readonly partial struct Tensor
 			{
 				split_with_sizes(&ScratchAllocator.AllocateTensor, pSizes, sizes.Length, dim);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -298,7 +288,7 @@ public readonly partial struct Tensor
 		try
 		{
 			strides(&ScratchAllocator.AllocateInt64);
-			return ScratchAllocator.GetAllocatedSpan<long>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<long>();
 		}
 		finally
 		{
@@ -311,7 +301,7 @@ public readonly partial struct Tensor
 		try
 		{
 			tensor_split_with_size(&ScratchAllocator.AllocateTensor, split_size, dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -327,7 +317,7 @@ public readonly partial struct Tensor
 			{
 				tensor_split_with_sizes(&ScratchAllocator.AllocateTensor, pSizes, sizes.Length, dim);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -340,7 +330,7 @@ public readonly partial struct Tensor
 		try
 		{
 			tensor_split_with_tensor_sizes(&ScratchAllocator.AllocateTensor, sizes, dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -353,7 +343,7 @@ public readonly partial struct Tensor
 		try
 		{
 			topk(&ScratchAllocator.AllocateTensor, k, dim, largest, sorted);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -366,7 +356,7 @@ public readonly partial struct Tensor
 		try
 		{
 			unbind(&ScratchAllocator.AllocateTensor, dim);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -379,7 +369,7 @@ public readonly partial struct Tensor
 		try
 		{
 			vsplit_with_size(&ScratchAllocator.AllocateTensor, split_size);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -395,7 +385,7 @@ public readonly partial struct Tensor
 			{
 				vsplit_with_sizes(&ScratchAllocator.AllocateTensor, pSizes, sizes.Length);
 			}
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
@@ -408,7 +398,7 @@ public readonly partial struct Tensor
 		try
 		{
 			where_list(&ScratchAllocator.AllocateTensor);
-			return ScratchAllocator.GetAllocatedSpan<Tensor>().ToArray();
+			return ScratchAllocator.GetAllocatedArray<Tensor>();
 		}
 		finally
 		{
