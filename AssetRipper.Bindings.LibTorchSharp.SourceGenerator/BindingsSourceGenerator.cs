@@ -51,7 +51,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		});
 
 		context.RegisterSourceOutput(methods.Collect(), GenerateNativeMethods);
-		context.RegisterSourceOutput(structs.Collect().Combine(methods.Collect()), (context, pair) => GenerateTypeMethods(context, pair.Left, pair.Right));
+		context.RegisterSourceOutput(structs.Collect(), methods.Collect(), Generate);
 		context.RegisterPostInitializationOutput(GenerateTensorScalarOperators);
 	}
 
@@ -146,7 +146,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		context.AddSource("NativeMethods.cs", stringWriter.ToString());
 	}
 
-	private static void GenerateTypeMethods(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> methods)
+	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> methods)
 	{
 		Dictionary<StructData, GeneratedOpaqueStruct> structDictionary = structs.ToDictionary(s => s, s => new GeneratedOpaqueStruct(s));
 		Dictionary<string, GeneratedStaticClass> classDictionary = [];
