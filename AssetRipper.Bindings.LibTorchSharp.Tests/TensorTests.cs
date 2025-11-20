@@ -39,6 +39,15 @@ public class TensorTests
 	}
 
 	[Test]
+	public void TensorDivideScalar()
+	{
+		using Tensor tensor1 = new([1f, 4f]);
+		using Tensor tensor2 = tensor1 / 2;
+		float[] values = tensor2.ToArray<float>();
+		Assert.That(values, Is.EquivalentTo([0.5f, 2f]));
+	}
+
+	[Test]
 	public void IntegerLeftShift()
 	{
 		using Tensor tensor1 = new([1, 4]);

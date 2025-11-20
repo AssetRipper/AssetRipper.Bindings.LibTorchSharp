@@ -3,6 +3,7 @@ using SGF;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -192,12 +193,7 @@ internal abstract class GeneratedType
 			{
 				writer.Write("return ");
 			}
-			if (method.ReturnType != nativeMethod.ReturnType)
-			{
-				writer.Write('(');
-				writer.Write(method.ReturnType);
-				writer.Write(')');
-			}
+			Debug.Assert(method.ReturnType == nativeMethod.ReturnType);
 			writer.Write("NativeMethods.");
 			writer.Write(nativeMethod.Name);
 			writer.Write('(');
@@ -207,13 +203,8 @@ internal abstract class GeneratedType
 				{
 					writer.Write(", ");
 				}
-				if (method.Parameters[i].Type != nativeMethod.Parameters[i].Type)
-				{
-					writer.Write('(');
-					writer.Write(nativeMethod.Parameters[i].Type);
-					writer.Write(')');
-				}
-				writer.Write(method.Parameters[i].Name);
+				Debug.Assert(method.Parameters[i].Type == nativeMethod.Parameters[i].Type);
+				writer.Write(method.Parameters[i].NameWithOutPrefix);
 			}
 			writer.WriteLine(");");
 		}

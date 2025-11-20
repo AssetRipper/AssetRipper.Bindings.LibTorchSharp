@@ -20,6 +20,7 @@
 		<PackageReference Include="AssetRipper.Text.SourceGeneration" Version="1.2.2" PrivateAssets="all" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />
 		<PackageReference Include="System.Text.Json" Version="9.0.10" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Include="TorchSharp" Version="0.105.1" PrivateAssets="all" GeneratePathProperty="true" />
 	</ItemGroup>
 
 </Project>

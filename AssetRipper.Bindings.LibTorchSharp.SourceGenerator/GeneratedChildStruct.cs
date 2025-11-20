@@ -96,7 +96,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				using (new CurlyBrackets(writer))
 				{
 					writer.Write("this.handle = ctor(");
-					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.Name).Append("null")));
+					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("null")));
 					writer.WriteLine(");");
 				}
 			}
@@ -110,7 +110,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				using (new CurlyBrackets(writer))
 				{
 					writer.Write("this.handle = ctor(");
-					writer.Write(string.Join(", ", staticMethod.Parameters.Select(p => p.Name)));
+					writer.Write(string.Join(", ", staticMethod.Parameters.Select(p => p.NameWithOutPrefix)));
 					writer.WriteLine(");");
 				}
 			}

@@ -1,5 +1,6 @@
 ﻿using AssetRipper.Text.SourceGeneration;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SGF;
 using System;
 using System.CodeDom.Compiler;
@@ -9,6 +10,8 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
 
@@ -39,18 +42,21 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		});
 
 		// Get all methods in AssetRipper.Bindings.LibTorchSharp.LowLevel.PInvoke class
-		IncrementalValuesProvider<MethodData> methods = context.CompilationProvider.SelectMany(static (compilation, _) =>
+		IncrementalValuesProvider<(string, MethodData)> methods = context.SyntaxProvider.ForAttributeWithMetadataName("System.Runtime.InteropServices.DllImportAttribute", static (node, _) =>
 		{
-			INamedTypeSymbol? type = compilation.GetTypeByMetadataName("AssetRipper.Bindings.LibTorchSharp.LowLevel.PInvoke");
-			if (type is null)
-			{
-				return ImmutableArray<MethodData>.Empty;
-			}
+			return node is MethodDeclarationSyntax { Identifier.Text: not "Torch_get_and_reset_last_err", Parent : TypeDeclarationSyntax { Identifier.Text: "PInvoke" } };
+		}, static (context, _) =>
+		{
+			// Method name
+			string methodName = context.TargetSymbol.Name;
 
-			return [.. type.GetMembers().OfType<IMethodSymbol>().Where(m => m.Name != "Torch_get_and_reset_last_err").Select(MethodData.From)];
+			// EntryPoint named argument
+			string entryPoint = context.Attributes[0].NamedArguments.FirstOrDefault(kv => kv.Key == "EntryPoint").Value.Value?.ToString() ?? methodName;
+
+			return (entryPoint, MethodData.From((IMethodSymbol)context.TargetSymbol));
 		});
 
-		context.RegisterSourceOutput(structs.Collect(), methods.Collect(), Generate);
+		context.RegisterSourceOutput(structs.Collect(), methods.Select((t, _) => t.Item2).Collect(), methods.Select((t, _) => (t.Item1, t.Item2.Name)).Collect(), Generate);
 		context.RegisterPostInitializationOutput(GenerateTensorScalarOperators);
 	}
 
@@ -111,8 +117,12 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		context.AddSource("Tensor.Operators.cs", stringWriter.ToString());
 	}
 
-	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> pinvokeMethods)
+	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> pinvokeMethods, ImmutableArray<(string EntryPoint, string MethodName)> entryPointArray)
 	{
+		Dictionary<string, string> methodNameToEntryPoint = entryPointArray.ToDictionary(t => t.MethodName, t => t.EntryPoint);
+		Dictionary<string, MethodInfo> entryPointToMethodInfo = GetTorchSharpPInvokeMethods().ToDictionary(GetEntryPoint, m => m);
+		Dictionary<string, MethodInfo?> methodNameToMethodInfo = methodNameToEntryPoint.ToDictionary(kv => kv.Key, kv => entryPointToMethodInfo.GetValueOrDefault(kv.Value));
+
 		// Generate NativeMethods
 		MethodData[] nativeMethods = new MethodData[pinvokeMethods.Length];
 		{
@@ -128,8 +138,29 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 				{
 					MethodData pinvokeMethod = pinvokeMethods[j];
 					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs);
+
+					MethodInfo? methodInfo = methodNameToMethodInfo.GetValueOrDefault(pinvokeMethod.Name);
+					if (methodInfo is not null && methodInfo.GetParameters().Length != pinvokeMethod.Parameters.Length)
+					{
+						methodInfo = null;
+						methodNameToMethodInfo.Remove(pinvokeMethod.Name);
+					}
+
+					if (methodInfo is null)
+					{
+					}
+					else if (methodInfo.ReturnType == typeof(bool))
+					{
+						nativeMethod = nativeMethod with { ReturnType = new TypeData("bool", 0) };
+					}
+					else if (methodInfo.ReturnType == typeof(string))
+					{
+						nativeMethod = nativeMethod with { ReturnType = new TypeData("NativeString", 0) };
+					}
+
 					nativeMethods[j] = nativeMethod;
 
+					writer.WriteComment(methodNameToEntryPoint[pinvokeMethod.Name]);
 					writer.Write("public static ");
 					writer.WriteLine(nativeMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -138,7 +169,14 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 						{
 							writer.Write($"{nativeMethod.ReturnType} __result = ");
 
-							if (nativeMethod.ReturnType != pinvokeMethod.ReturnType)
+							if (nativeMethod.ReturnType == pinvokeMethod.ReturnType)
+							{
+							}
+							else if (nativeMethod.ReturnType.IsBoolean)
+							{
+								writer.Write("0 != ");
+							}
+							else
 							{
 								writer.Write('(');
 								writer.Write(nativeMethod.ReturnType);
@@ -173,6 +211,127 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			}
 
 			context.AddSource("NativeMethods.cs", stringWriter.ToString());
+		}
+
+		// bool, string, and out parameters
+		{
+			StringWriter stringWriter = new();
+			IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
+
+			writer.WriteFileScopedNamespace("AssetRipper.Bindings.LibTorchSharp.LowLevel");
+			writer.WriteLineNoTabs();
+			writer.WriteLine("public static unsafe partial class NativeMethods");
+			using (new CurlyBrackets(writer))
+			{
+				List<string> parameterDeclarationLines = [];
+				List<string> stringFixedLines = [];
+				List<string> outInitializationLines = [];
+				List<string> parameterNames = [];
+				for (int j = 0; j < nativeMethods.Length; j++)
+				{
+					MethodData nativeMethod = nativeMethods[j];
+
+					MethodInfo? methodInfo = methodNameToMethodInfo.GetValueOrDefault(nativeMethod.Name);
+					if (methodInfo is null)
+					{
+						continue;
+					}
+
+					parameterDeclarationLines.Clear();
+					stringFixedLines.Clear();
+					outInitializationLines.Clear();
+					parameterNames.Clear();
+
+					bool anyBooleanConversions = false;
+
+					ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+					ParameterData[] modifiedParameterDatas = new ParameterData[parameterInfos.Length];
+					for (int i = 0; i < parameterInfos.Length; i++)
+					{
+						ParameterInfo parameterInfo = parameterInfos[i];
+						ParameterData parameterData = nativeMethod.Parameters[i];
+
+						if (parameterInfo.IsOut && parameterData.Type.IsPointer)
+						{
+							TypeData modifiedParameterType = new(parameterData.Type.Name, parameterData.Type.PointerLevel - 1);
+
+							parameterDeclarationLines.Add($"{modifiedParameterType} __parameter{i} = default;");
+							outInitializationLines.Add($"{parameterData.Name} = __parameter{i};");
+							parameterNames.Add($"&__parameter{i}");
+
+							modifiedParameterDatas[i] = parameterData with { Type = modifiedParameterType, IsOut = true };
+						}
+						else if (parameterInfo.ParameterType == typeof(bool) && !parameterData.Type.IsBoolean)
+						{
+							anyBooleanConversions = true;
+							modifiedParameterDatas[i] = parameterData with { Type = new("bool", 0) };
+							parameterNames.Add($"{parameterData.Name} ? 1 : 0");
+						}
+						else if (parameterInfo.ParameterType == typeof(string) && parameterData.Type.IsSBytePointer)
+						{
+							stringFixedLines.Add($"fixed (sbyte* __parameter{i} = {parameterData.Name})");
+							parameterNames.Add($"{parameterData.Name}.IsNull ? null : __parameter{i}");
+							modifiedParameterDatas[i] = parameterData with { Type = new("NativeString", 0) };
+						}
+						else
+						{
+							parameterNames.Add(parameterData.Name);
+							modifiedParameterDatas[i] = parameterData;
+						}
+					}
+
+					if (parameterDeclarationLines.Count is 0 && stringFixedLines.Count is 0 && outInitializationLines.Count is 0 && !anyBooleanConversions)
+					{
+						continue;
+					}
+
+					MethodData modifiedMethod = nativeMethod with { Parameters = new([.. modifiedParameterDatas]) };
+					nativeMethods[j] = modifiedMethod;
+
+					writer.Write("public static ");
+					writer.WriteLine(modifiedMethod.ToString());
+					using (new CurlyBrackets(writer))
+					{
+						if (!modifiedMethod.ReturnType.IsVoid)
+						{
+							writer.WriteLine($"{modifiedMethod.ReturnType} __result;");
+						}
+						foreach (string line in parameterDeclarationLines)
+						{
+							writer.WriteLine(line);
+						}
+						foreach (string line in stringFixedLines)
+						{
+							writer.WriteLine(line);
+						}
+						if (!modifiedMethod.ReturnType.IsVoid)
+						{
+							writer.Write("__result = ");
+						}
+						writer.Write(nativeMethod.Name);
+						writer.Write('(');
+						for (int i = 0; i < modifiedMethod.Parameters.Length; i++)
+						{
+							if (i > 0)
+							{
+								writer.Write(", ");
+							}
+							writer.Write(parameterNames[i]);
+						}
+						writer.WriteLine(");");
+						foreach (string line in outInitializationLines)
+						{
+							writer.WriteLine(line);
+						}
+						if (!modifiedMethod.ReturnType.IsVoid)
+						{
+							writer.WriteLine("return __result;");
+						}
+					}
+				}
+			}
+
+			context.AddSource("NativeMethods.ParameterOverloads.cs", stringWriter.ToString());
 		}
 
 		// Generate allocator overloads
@@ -234,7 +393,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 								}
 								else
 								{
-									writer.Write(nativeMethod.Parameters[i].Name);
+									writer.Write(nativeMethod.Parameters[i].NameWithOutPrefix);
 								}
 							}
 							writer.WriteLine(");");
@@ -364,5 +523,32 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		parameterIndex = -1;
 		allocatedType = null;
 		return false;
+	}
+
+	private static IEnumerable<MethodInfo> GetTorchSharpPInvokeMethods()
+	{
+		Type pinvokeClass = typeof(TorchSharp.torch).Assembly.GetType("TorchSharp.PInvoke.NativeMethods") ?? throw new InvalidOperationException("Could not find TorchSharp.PInvoke.NativeMethods type.");
+		foreach (MethodInfo method in pinvokeClass.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
+		{
+			if (method.Name == "THSTorch_get_and_reset_last_err")
+			{
+				continue;
+			}
+			int parametersLength = method.GetParameters().Length;
+			if ((method.Name, parametersLength) is ("THSTensor_var_along_dimensions", 6) or ("THSTensor_to_type", 2) or ("THSTensor_randint", 7))
+			{
+				// Bug in TorchSharp
+				continue;
+			}
+			if (method.GetCustomAttribute<DllImportAttribute>() != null)
+			{
+				yield return method;
+			}
+		}
+	}
+
+	private static string GetEntryPoint(MethodInfo method)
+	{
+		return method.GetCustomAttribute<DllImportAttribute>()?.EntryPoint ?? method.Name;
 	}
 }

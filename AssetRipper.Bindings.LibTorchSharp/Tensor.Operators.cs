@@ -38,8 +38,8 @@ public readonly partial struct Tensor :
 	public static Tensor operator *(Tensor left, Scalar right) => left.mul_scalar(right);
 	public static Tensor operator *(Scalar left, Tensor right) => right.mul_scalar(left);
 
-	public static unsafe Tensor operator /(Tensor left, Tensor right) => left.div(right, null);
-	public static unsafe Tensor operator /(Tensor left, Scalar right) => left.div_scalar(right, null);
+	public static unsafe Tensor operator /(Tensor left, Tensor right) => left.div(right, default);
+	public static unsafe Tensor operator /(Tensor left, Scalar right) => left.div_scalar(right, default);
 	public static Tensor operator /(Scalar left, Tensor right)
 	{
 		using Tensor reciprocal = right.reciprocal();

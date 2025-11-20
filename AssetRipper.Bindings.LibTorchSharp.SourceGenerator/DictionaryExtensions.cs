@@ -27,4 +27,10 @@ internal static class DictionaryExtensions
 		}
 		return value;
 	}
+
+	public static TValue? GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
+		where TKey : notnull
+	{
+		return dictionary.TryGetValue(key, out TValue value) ? value : default;
+	}
 }

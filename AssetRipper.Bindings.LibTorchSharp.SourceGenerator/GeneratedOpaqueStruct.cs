@@ -72,7 +72,7 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 			using (new CurlyBrackets(writer))
 			{
 				writer.Write("this.handle = @new(");
-				writer.Write(string.Join(", ", staticMethod.Parameters.Select(p => p.Name)));
+				writer.Write(string.Join(", ", staticMethod.Parameters.Select(p => p.NameWithOutPrefix)));
 				writer.WriteLine(");");
 			}
 		}
