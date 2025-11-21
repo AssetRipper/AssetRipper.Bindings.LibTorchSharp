@@ -13,7 +13,15 @@ internal readonly struct ParameterDataArray(ImmutableArray<ParameterData> array)
 	public ImmutableArray<ParameterData> Array { get; } = array;
 	public int Length => Array.IsDefaultOrEmpty ? 0 : Array.Length;
 	public ParameterData this[int index] => Array[index];
-	public static ParameterDataArray Empty => new([]);
+	public static ParameterDataArray Empty => new(ImmutableArray<ParameterData>.Empty);
+
+	public ParameterDataArray(ParameterData[] array) : this(ImmutableArray.Create(array))
+	{
+	}
+
+	public ParameterDataArray(IEnumerable<ParameterData> array) : this(ImmutableArray.CreateRange(array))
+	{
+	}
 
 	public override bool Equals(object obj)
 	{
@@ -71,7 +79,7 @@ internal readonly struct ParameterDataArray(ImmutableArray<ParameterData> array)
 			array[i] = ParameterData.From(parameters[i]);
 		}
 
-		return new([.. array]);
+		return new(array);
 	}
 
 	public ParameterDataArray ReplaceOpaqueTypes(ImmutableArray<StructData> structs)
@@ -86,7 +94,7 @@ internal readonly struct ParameterDataArray(ImmutableArray<ParameterData> array)
 		{
 			array[i] = this[i].ReplaceIfUsingOpaqueType(structs);
 		}
-		return new([.. array]);
+		return new(array);
 	}
 
 	public ParameterDataArray ChangeFirstParameterNameToThis()
@@ -95,7 +103,7 @@ internal readonly struct ParameterDataArray(ImmutableArray<ParameterData> array)
 
 		ParameterData[] array = [.. Array];
 		array[0] = array[0] with { Name = "this" };
-		return new([.. array]);
+		return new(array);
 	}
 
 	public ParameterDataArray ChangeLastParameterNameToValue()
@@ -104,7 +112,7 @@ internal readonly struct ParameterDataArray(ImmutableArray<ParameterData> array)
 
 		ParameterData[] array = [.. Array];
 		array[^1] = array[^1] with { Name = "value" };
-		return new([.. array]);
+		return new(array);
 	}
 
 	int IReadOnlyCollection<ParameterData>.Count => Length;

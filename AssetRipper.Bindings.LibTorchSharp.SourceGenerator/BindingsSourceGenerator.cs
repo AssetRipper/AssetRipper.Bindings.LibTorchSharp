@@ -137,7 +137,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 				for (int j = 0; j < pinvokeMethods.Length; j++)
 				{
 					MethodData pinvokeMethod = pinvokeMethods[j];
-					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs);
+					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs).ApplyParameterNameChanges();
 
 					MethodInfo? methodInfo = methodNameToMethodInfo.GetValueOrDefault(pinvokeMethod.Name);
 					if (methodInfo is not null && methodInfo.GetParameters().Length != pinvokeMethod.Parameters.Length)
@@ -285,7 +285,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 						continue;
 					}
 
-					MethodData modifiedMethod = nativeMethod with { Parameters = new([.. modifiedParameterDatas]) };
+					MethodData modifiedMethod = nativeMethod with { Parameters = new(modifiedParameterDatas) };
 					nativeMethods[j] = modifiedMethod;
 
 					writer.Write("public static ");
@@ -357,7 +357,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					MethodData modifiedMethod = nativeMethod with
 					{
 						ReturnType = new TypeData($"{allocatedType}[]", 0),
-						Parameters = new([.. modifiedParameters])
+						Parameters = new(modifiedParameters)
 					};
 
 					nativeMethods[j] = modifiedMethod;
