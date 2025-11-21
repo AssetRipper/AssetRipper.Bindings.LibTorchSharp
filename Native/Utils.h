@@ -17,10 +17,6 @@ typedef OpaqueScalar* Scalar;
 struct OpaqueGenerator;
 typedef OpaqueGenerator* Generator;
 
-//typedef c10::Storage* Storage;
-struct OpaqueStorage;
-typedef OpaqueStorage* Storage;
-
 //typedef torch::nn::utils::rnn::PackedSequence* PackedSequence;
 struct OpaquePackedSequence;
 typedef OpaquePackedSequence* PackedSequence;
@@ -52,10 +48,6 @@ typedef OpaqueJITModule* JITModule;
 //typedef std::shared_ptr<torch::jit::Method>* JITMethod;
 struct OpaqueJITMethod;
 typedef OpaqueJITMethod* JITMethod;
-
-//typedef std::shared_ptr<torch::jit::Function> * JITFunction;
-struct OpaqueJITFunction;
-typedef OpaqueJITFunction* JITFunction;
 
 //typedef std::shared_ptr<c10::Type> * JITType;
 struct OpaqueJITType;
