@@ -88,7 +88,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 		writer.WriteLine($"public readonly unsafe partial struct {Name}");
 		using (new CurlyBrackets(writer))
 		{
-			if (staticMethod.Parameters.Length > 0 && staticMethod.Parameters[^1] is { IsOut: true, Name: "outAsAnyModule" })
+			if (staticMethod.Parameters.Length > 0 && staticMethod.Parameters[^1] is { IsOut: true, Type: { Name: "NNAnyModule", IsPointer: false }, Name: "outAsAnyModule" })
 			{
 				writer.Write("public ");
 				writer.Write(Name);
@@ -100,6 +100,17 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 					writer.Write("this.handle = ctor(");
 					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("out _")));
 					writer.WriteLine(");");
+				}
+
+				writer.Write("public static NNAnyModule CreateAsAnyModule(");
+				writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1)));
+				writer.WriteLine(')');
+				using (new CurlyBrackets(writer))
+				{
+					writer.Write("ctor(");
+					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("out NNAnyModule outAsAnyModule")));
+					writer.WriteLine(");");
+					writer.WriteLine("return outAsAnyModule;");
 				}
 			}
 			else
