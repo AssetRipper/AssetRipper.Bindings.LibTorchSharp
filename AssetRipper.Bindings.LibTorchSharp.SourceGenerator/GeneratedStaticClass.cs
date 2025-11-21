@@ -30,6 +30,10 @@ internal sealed class GeneratedStaticClass(string name) : GeneratedType
 					{
 						method = method.ChangeFirstParameterNameToThis();
 					}
+					if (method.ReturnType == baseType.Struct.StructType)
+					{
+						method = method with { ReturnType = new(newTypeName, 0) };
+					}
 					generatedType.Methods.Add(new(method, nativeMethod));
 				}
 			}

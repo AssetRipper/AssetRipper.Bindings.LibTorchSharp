@@ -193,7 +193,12 @@ internal abstract class GeneratedType
 			{
 				writer.Write("return ");
 			}
-			Debug.Assert(method.ReturnType == nativeMethod.ReturnType);
+			if (method.ReturnType != nativeMethod.ReturnType)
+			{
+				writer.Write('(');
+				writer.Write(method.ReturnType);
+				writer.Write(')');
+			}
 			writer.Write("NativeMethods.");
 			writer.Write(nativeMethod.Name);
 			writer.Write('(');

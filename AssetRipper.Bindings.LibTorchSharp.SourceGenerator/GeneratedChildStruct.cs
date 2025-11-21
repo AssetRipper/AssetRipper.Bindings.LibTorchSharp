@@ -9,10 +9,12 @@ namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
 internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string name) : GeneratedReadOnlyStruct
 {
 	public GeneratedOpaqueStruct Parent { get; } = parent;
+	public TypeData ParentType => Parent.Struct.StructType;
+	public TypeData Type => new(Name, 0);
 	public override string Name { get; } = name;
 	public override bool IsInstance(MethodData method)
 	{
-		return method.Parameters.Length > 0 && method.Parameters[0].Type == Parent.Struct.StructType && method.Name is not "ctor";
+		return method.Parameters.Length > 0 && method.Parameters[0].Type == ParentType && method.Name is not "ctor";
 	}
 
 	public override void GenerateMainFile(SgfSourceProductionContext context)
@@ -74,7 +76,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 		MethodData staticMethod = Methods
 			.Select(p => p.MidLevel)
 			.Where(IsStatic)
-			.First(m => m.Name is "ctor" && m.ReturnType == Parent.Struct.StructType);
+			.First(m => m.Name is "ctor" && m.ReturnType == Type);
 
 		StringWriter stringWriter = new();
 		IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
