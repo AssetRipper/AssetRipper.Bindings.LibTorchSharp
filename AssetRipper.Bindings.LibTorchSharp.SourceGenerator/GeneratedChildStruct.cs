@@ -18,38 +18,38 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 	public override void GenerateMainFile(SgfSourceProductionContext context)
 	{
 		context.AddSource($"{Name}.cs", $$"""
-            using AssetRipper.Bindings.LibTorchSharp.LowLevel;
+			using AssetRipper.Bindings.LibTorchSharp.LowLevel;
 
-            namespace AssetRipper.Bindings.LibTorchSharp;
+			namespace AssetRipper.Bindings.LibTorchSharp;
 
-            public readonly unsafe partial struct {{Name}}
-            {
-                private readonly {{Parent.Name}} handle;
+			public readonly unsafe partial struct {{Name}}
+			{
+				private readonly {{Parent.Name}} handle;
 
-                public static {{Name}} Null => default;
+				public static {{Name}} Null => default;
 
-                public bool IsNull => handle.IsNull;
+				public bool IsNull => handle.IsNull;
 
-                internal {{Name}}({{Parent.Name}} handle)
-                {
-                    this.handle = handle;
-                }
+				internal {{Name}}({{Parent.Name}} handle)
+				{
+					this.handle = handle;
+				}
 
-                public static implicit operator {{Parent.Struct.OpaqueName}}*({{Name}} value) => value.handle;
-                public static explicit operator {{Name}}({{Parent.Struct.OpaqueName}}* value) => new(value);
+				public static implicit operator {{Parent.Struct.OpaqueName}}*({{Name}} value) => value.handle;
+				public static explicit operator {{Name}}({{Parent.Struct.OpaqueName}}* value) => new(value);
 
-                public static implicit operator {{Parent.Name}}({{Name}} value) => value.handle;
-                public static explicit operator {{Name}}({{Parent.Name}} value) => new(value);
+				public static implicit operator {{Parent.Name}}({{Name}} value) => value.handle;
+				public static explicit operator {{Name}}({{Parent.Name}} value) => new(value);
 
-                public void ThrowIfNull()
-                {
-                    if (IsNull)
-                    {
-                        throw new System.NullReferenceException("{{Name}} handle is null.");
-                    }
-                }
-            }
-            """);
+				public void ThrowIfNull()
+				{
+					if (IsNull)
+					{
+						throw new System.NullReferenceException("{{Name}} handle is null.");
+					}
+				}
+			}
+			""");
 	}
 
 	public override void GenerateDisposableFile(SgfSourceProductionContext context)
@@ -60,13 +60,13 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 		}
 
 		context.AddSource($"{Name}.Disposable.cs", $$"""
-            namespace {{Namespace}};
+			namespace {{Namespace}};
 
-            public readonly unsafe partial struct {{Name}} : System.IDisposable
-            {
-                public void Dispose() => handle.Dispose();
-            }
-            """);
+			public readonly unsafe partial struct {{Name}} : System.IDisposable
+			{
+				public void Dispose() => handle.Dispose();
+			}
+			""");
 	}
 
 	public override void GenerateConstructorFile(SgfSourceProductionContext context)

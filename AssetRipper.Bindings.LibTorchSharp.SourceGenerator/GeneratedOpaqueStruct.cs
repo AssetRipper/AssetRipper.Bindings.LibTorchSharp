@@ -27,19 +27,19 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 		}
 
 		context.AddSource($"{Name}.Disposable.cs", $$"""
-            namespace {{Namespace}};
-                
-            public readonly unsafe partial struct {{Name}} : System.IDisposable
-            {
-                public void Dispose()
-                {
-                    if (!IsNull)
-                    {
-                        dispose();
-                    }
-                }
-            }
-            """);
+			namespace {{Namespace}};
+				
+			public readonly unsafe partial struct {{Name}} : System.IDisposable
+			{
+				public void Dispose()
+				{
+					if (!IsNull)
+					{
+						dispose();
+					}
+				}
+			}
+			""");
 	}
 
 	public override void GenerateConstructorFile(SgfSourceProductionContext context)
@@ -83,49 +83,49 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 	public override void GenerateMainFile(SgfSourceProductionContext context)
 	{
 		context.AddSource($"{Name}.cs", $$"""
-            using AssetRipper.Bindings.LibTorchSharp.LowLevel;
+			using AssetRipper.Bindings.LibTorchSharp.LowLevel;
 
-            namespace AssetRipper.Bindings.LibTorchSharp;
+			namespace AssetRipper.Bindings.LibTorchSharp;
 
-            public readonly unsafe partial struct {{Name}} : System.IEquatable<{{Name}}>
-            {
-                private readonly {{Struct.OpaqueName}}* handle;
+			public readonly unsafe partial struct {{Name}} : System.IEquatable<{{Name}}>
+			{
+				private readonly {{Struct.OpaqueName}}* handle;
 
-                public static {{Name}} Null => default;
+				public static {{Name}} Null => default;
 
-                public bool IsNull => handle == null;
+				public bool IsNull => handle == null;
 
-                public {{Name}}({{Struct.OpaqueName}}* handle)
-                {
-                    this.handle = handle;
-                }
+				public {{Name}}({{Struct.OpaqueName}}* handle)
+				{
+					this.handle = handle;
+				}
 
-                public static implicit operator {{Struct.OpaqueName}}*({{Name}} value) => value.handle;
-                public static implicit operator {{Name}}({{Struct.OpaqueName}}* value) => new(value);
+				public static implicit operator {{Struct.OpaqueName}}*({{Name}} value) => value.handle;
+				public static implicit operator {{Name}}({{Struct.OpaqueName}}* value) => new(value);
 
-                public void ThrowIfNull()
-                {
-                    if (IsNull)
-                    {
-                        throw new System.NullReferenceException("{{Name}} handle is null.");
-                    }
-                }
+				public void ThrowIfNull()
+				{
+					if (IsNull)
+					{
+						throw new System.NullReferenceException("{{Name}} handle is null.");
+					}
+				}
 
-                public override bool Equals(object? obj)
-                {
-                    return obj is {{Name}} other && Equals(other);
-                }
+				public override bool Equals(object? obj)
+				{
+					return obj is {{Name}} other && Equals(other);
+				}
 
-                public bool Equals({{Name}} other)
-                {
-                    return handle == other.handle;
-                }
+				public bool Equals({{Name}} other)
+				{
+					return handle == other.handle;
+				}
 
-                public override int GetHashCode()
-                {
-                    return new System.IntPtr(handle).GetHashCode();
-                }
-            }
-            """);
+				public override int GetHashCode()
+				{
+					return new System.IntPtr(handle).GetHashCode();
+				}
+			}
+			""");
 	}
 }
