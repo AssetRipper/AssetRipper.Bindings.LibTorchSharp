@@ -54,23 +54,6 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 			""");
 	}
 
-	public override void GenerateDisposableFile(SgfSourceProductionContext context)
-	{
-		if (!Parent.IsDisposable)
-		{
-			return;
-		}
-
-		context.AddSource($"{Name}.Disposable.cs", $$"""
-			namespace {{Namespace}};
-
-			public readonly unsafe partial struct {{Name}} : System.IDisposable
-			{
-				public void Dispose() => handle.Dispose();
-			}
-			""");
-	}
-
 	public override void GenerateConstructorFile(SgfSourceProductionContext context)
 	{
 		MethodData staticMethod = Methods

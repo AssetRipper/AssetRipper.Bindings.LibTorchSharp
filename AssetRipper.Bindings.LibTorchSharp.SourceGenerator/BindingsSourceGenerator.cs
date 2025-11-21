@@ -443,9 +443,9 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			childList.AddRange(@class.ExtractChildren(structList));
 		}
 
-		//foreach (GeneratedChildStruct child in childList)
+		foreach (GeneratedChildStruct child in childList)
 		{
-			//child.Methods.AddRange(child.Parent.Methods);
+			child.Methods.AddRange(child.Parent.InstanceMethods);
 		}
 
 		foreach (GeneratedType type in structList.Concat<GeneratedType>(classList).Concat(childList))

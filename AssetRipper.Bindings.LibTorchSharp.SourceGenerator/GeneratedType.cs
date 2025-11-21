@@ -16,6 +16,7 @@ internal abstract class GeneratedType
 	public virtual string Namespace => "AssetRipper.Bindings.LibTorchSharp";
 	public List<PropertyData> Properties { get; } = [];
 	public List<MethodPair> Methods { get; } = [];
+	public IEnumerable<MethodPair> InstanceMethods => Methods.Where(m => IsInstance(m.MidLevel));
 	public abstract bool IsInstance(MethodData method);
 	public bool IsStatic(MethodData method) => !IsInstance(method);
 

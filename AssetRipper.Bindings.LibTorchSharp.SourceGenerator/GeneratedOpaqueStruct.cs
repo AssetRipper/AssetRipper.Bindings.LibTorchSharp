@@ -11,36 +11,12 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 {
 	public StructData Struct { get; } = @struct;
 	public override string Name => Struct.StructName;
-	public bool IsDisposable => Methods.Select(p => p.MidLevel).Where(IsInstance).Any(m => m.Name is "dispose" && m.ReturnType.IsVoid && m.Parameters.Length is 1);
 
 	public override bool IsInstance(MethodData method)
 	{
 		return method.Parameters.Length > 0 && method.Parameters[0].Type == Struct.StructType;
 	}
 	public static GeneratedOpaqueStruct Create(StructData @struct) => new(@struct);
-
-	public override void GenerateDisposableFile(SgfSourceProductionContext context)
-	{
-		if (!IsDisposable)
-		{
-			return;
-		}
-
-		context.AddSource($"{Name}.Disposable.cs", $$"""
-			namespace {{Namespace}};
-				
-			public readonly unsafe partial struct {{Name}} : System.IDisposable
-			{
-				public void Dispose()
-				{
-					if (!IsNull)
-					{
-						dispose();
-					}
-				}
-			}
-			""");
-	}
 
 	public override void GenerateConstructorFile(SgfSourceProductionContext context)
 	{
