@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<IsAotCompatible>false</IsAotCompatible>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 

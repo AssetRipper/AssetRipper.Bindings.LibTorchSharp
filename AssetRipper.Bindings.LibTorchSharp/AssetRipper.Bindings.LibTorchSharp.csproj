@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<IsAotCompatible>true</IsAotCompatible>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<NoWarn>SYSLIB1054</NoWarn>
