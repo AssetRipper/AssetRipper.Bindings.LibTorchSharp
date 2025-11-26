@@ -557,6 +557,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			if ((method.Name, parametersLength) is ("THSTensor_var_along_dimensions", 6) or ("THSTensor_to_type", 2) or ("THSTensor_randint", 7))
 			{
 				// Bug in TorchSharp
+				// https://github.com/dotnet/TorchSharp/pull/1508
 				continue;
 			}
 			if (method.GetCustomAttribute<DllImportAttribute>() != null)
