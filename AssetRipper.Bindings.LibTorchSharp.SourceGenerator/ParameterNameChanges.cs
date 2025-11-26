@@ -2,14 +2,14 @@
 
 internal static class ParameterNameChanges
 {
-	public static string? GetParameterName(string methodName, int index) => (methodName, index) switch
+	private static string? GetParameterName(string methodName, string originalName) => (methodName, originalName) switch
 	{
-		("JIT_Module_named_attributes", 2) => "allocator1",
-		("JIT_Module_named_buffers", 1) => "allocator1",
-		("JIT_Module_named_children", 1) => "allocator1",
-		("JIT_Module_named_modules", 1) => "allocator1",
-		("JIT_Module_named_parameters", 1) => "allocator1",
-		("NN_Module_get_parameters", 1) => "allocator",
+		("JIT_Module_named_attributes", "allocator") => "allocator1",
+		("JIT_Module_named_buffers", "allocator") => "allocator1",
+		("JIT_Module_named_children", "allocator") => "allocator1",
+		("JIT_Module_named_modules", "allocator") => "allocator1",
+		("JIT_Module_named_parameters", "allocator") => "allocator1",
+		("NN_Module_get_parameters", "allocator1") => "allocator",
 		_ => null
 	};
 
@@ -28,7 +28,7 @@ internal static class ParameterNameChanges
 		bool anyChanges = false;
 		for (int i = 0; i < parameters.Length; i++)
 		{
-			string? newName = GetParameterName(methodName, i);
+			string? newName = GetParameterName(methodName, parameters[i].Name);
 			if (newName is null)
 			{
 				modifiedParameters[i] = parameters[i];
