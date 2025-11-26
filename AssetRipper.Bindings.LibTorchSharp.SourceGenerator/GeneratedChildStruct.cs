@@ -24,7 +24,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 
 			namespace AssetRipper.Bindings.LibTorchSharp;
 
-			public readonly unsafe partial struct {{Name}}
+			public readonly unsafe partial struct {{Name}} : System.IEquatable<{{Name}}>
 			{
 				private readonly {{Parent.Name}} handle;
 
@@ -49,6 +49,21 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 					{
 						throw new System.NullReferenceException("{{Name}} handle is null.");
 					}
+				}
+			
+				public override bool Equals(object? obj)
+				{
+					return obj is {{Name}} other && Equals(other);
+				}
+			
+				public bool Equals({{Name}} other)
+				{
+					return handle.Equals(other.handle);
+				}
+			
+				public override int GetHashCode()
+				{
+					return handle.GetHashCode();
 				}
 			}
 			""");
