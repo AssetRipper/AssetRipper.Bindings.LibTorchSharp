@@ -96,8 +96,9 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				using (new CurlyBrackets(writer))
 				{
 					writer.Write("this.handle = ctor(");
-					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("out _")));
+					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("out NNAnyModule outAsAnyModule")));
 					writer.WriteLine(");");
+					writer.WriteLine("outAsAnyModule.Dispose();");
 				}
 
 				writer.Write("public static NNAnyModule CreateAsAnyModule(");
@@ -107,7 +108,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				{
 					writer.Write("ctor(");
 					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("out NNAnyModule outAsAnyModule")));
-					writer.WriteLine(");");
+					writer.WriteLine(").Dispose();");
 					writer.WriteLine("return outAsAnyModule;");
 				}
 			}
