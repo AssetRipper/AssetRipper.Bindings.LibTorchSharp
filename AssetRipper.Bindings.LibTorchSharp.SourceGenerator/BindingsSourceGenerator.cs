@@ -410,6 +410,25 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			context.AddSource("NativeMethods.AllocatorOverloads.cs", stringWriter.ToString());
 		}
 
+		// Optimizer step method
+		{
+			int index = Array.FindIndex(nativeMethods, m => m.Name == "NN_Optimizer_step");
+			nativeMethods[index] = nativeMethods[index] with
+			{
+				Parameters = new(nativeMethods[index].Parameters.Take(nativeMethods[index].Parameters.Length - 1))
+			};
+			context.AddSource("NativeMethods.OptimizerStepFunction.cs", """
+				namespace AssetRipper.Bindings.LibTorchSharp.LowLevel;
+				public static unsafe partial class NativeMethods
+				{
+					public unsafe static Tensor NN_Optimizer_step(Optimizer optimizer)
+					{
+						return NN_Optimizer_step(optimizer, null);
+					}
+				}
+				""");
+		}
+
 		Dictionary<StructData, GeneratedOpaqueStruct> structDictionary = structs.ToDictionary(s => s, s => new GeneratedOpaqueStruct(s));
 		Dictionary<string, GeneratedStaticClass> classDictionary = [];
 
