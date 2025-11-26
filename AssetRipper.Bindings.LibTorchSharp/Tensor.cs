@@ -44,6 +44,13 @@ public readonly partial struct Tensor
 		return result;
 	}
 
+	public unsafe T ToValue<T>() where T : unmanaged
+	{
+		ValidateType<T>();
+		T* ptr = (T*)data();
+		return *ptr;
+	}
+
 	public Device GetDevice()
 	{
 		return new Device((DeviceType)device_type(), device_index());
