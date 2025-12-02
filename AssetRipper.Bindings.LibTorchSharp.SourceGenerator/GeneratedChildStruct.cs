@@ -12,6 +12,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 	public TypeData ParentType => Parent.Struct.StructType;
 	public TypeData Type => new(Name, 0);
 	public override string Name { get; } = name;
+	public override string Namespace => Parent.Namespace;
 	public override bool IsInstance(MethodData method)
 	{
 		return method.Parameters.Length > 0 && method.Parameters[0].Type == ParentType && method.Name is not "ctor";
@@ -22,7 +23,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 		context.AddSource($"{Name}.cs", $$"""
 			using AssetRipper.Bindings.LibTorchSharp.LowLevel;
 
-			namespace AssetRipper.Bindings.LibTorchSharp;
+			namespace {{Namespace}};
 
 			public readonly unsafe partial struct {{Name}} : System.IEquatable<{{Name}}>
 			{
@@ -81,7 +82,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 
 		writer.WriteUsing("AssetRipper.Bindings.LibTorchSharp.LowLevel");
 		writer.WriteLineNoTabs();
-		writer.WriteFileScopedNamespace("AssetRipper.Bindings.LibTorchSharp");
+		writer.WriteFileScopedNamespace(Namespace);
 		writer.WriteLineNoTabs();
 		writer.WriteLine($"public readonly unsafe partial struct {Name}");
 		using (new CurlyBrackets(writer))

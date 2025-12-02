@@ -11,6 +11,7 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 {
 	public StructData Struct { get; } = @struct;
 	public override string Name => Struct.StructName;
+	public override string Namespace => Struct.StructNamespace;
 
 	public override bool IsInstance(MethodData method)
 	{
@@ -35,7 +36,7 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 
 		writer.WriteUsing("AssetRipper.Bindings.LibTorchSharp.LowLevel");
 		writer.WriteLineNoTabs();
-		writer.WriteFileScopedNamespace("AssetRipper.Bindings.LibTorchSharp");
+		writer.WriteFileScopedNamespace(Namespace);
 		writer.WriteLineNoTabs();
 		writer.WriteLine($"public readonly unsafe partial struct {Name}");
 		using (new CurlyBrackets(writer))
@@ -61,7 +62,7 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 		context.AddSource($"{Name}.cs", $$"""
 			using AssetRipper.Bindings.LibTorchSharp.LowLevel;
 
-			namespace AssetRipper.Bindings.LibTorchSharp;
+			namespace {{Namespace}};
 
 			public readonly unsafe partial struct {{Name}} : System.IEquatable<{{Name}}>
 			{

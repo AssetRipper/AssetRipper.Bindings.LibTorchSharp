@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace AssetRipper.Bindings.LibTorchSharp;
+namespace AssetRipper.Bindings.LibTorchSharp.Modules;
 
 public readonly partial struct CustomModule
 {

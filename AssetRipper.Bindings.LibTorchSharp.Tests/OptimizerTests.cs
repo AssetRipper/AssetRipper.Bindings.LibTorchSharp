@@ -1,4 +1,6 @@
-﻿namespace AssetRipper.Bindings.LibTorchSharp.Tests;
+﻿using AssetRipper.Bindings.LibTorchSharp.Optimizers;
+
+namespace AssetRipper.Bindings.LibTorchSharp.Tests;
 
 public class OptimizerTests
 {

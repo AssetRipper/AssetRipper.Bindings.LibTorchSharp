@@ -1,4 +1,6 @@
-﻿namespace AssetRipper.Bindings.LibTorchSharp.Tests;
+﻿using AssetRipper.Bindings.LibTorchSharp.Modules;
+
+namespace AssetRipper.Bindings.LibTorchSharp.Tests;
 
 public class ModuleTests
 {

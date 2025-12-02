@@ -1,7 +1,8 @@
 ﻿namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
 
-internal readonly record struct StructData(string StructName, string OpaqueName, string PrefixName)
+internal readonly record struct StructData(string StructName, string StructNamespace, string OpaqueName, string PrefixName)
 {
+	public string StructFullName => string.IsNullOrEmpty(StructNamespace) ? StructName : $"{StructNamespace}.{StructName}";
 	public TypeData StructType => new TypeData(StructName, 0);
 	public TypeData OpaqueType => new TypeData(OpaqueName, 1);
 
@@ -14,7 +15,7 @@ internal readonly record struct StructData(string StructName, string OpaqueName,
 		}
 		else if (type.IsFunctionPointer && type.Name.Contains($"{OpaqueName}*"))
 		{
-			string replacedName = type.Name.Replace($"LowLevel.{OpaqueName}*", StructName);
+			string replacedName = type.Name.Replace($"AssetRipper.Bindings.LibTorchSharp.LowLevel.{OpaqueName}*", StructFullName);
 			result = new TypeData(replacedName, type.PointerLevel);
 			return true;
 		}

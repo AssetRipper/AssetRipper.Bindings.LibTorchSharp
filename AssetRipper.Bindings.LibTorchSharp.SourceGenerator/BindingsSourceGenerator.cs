@@ -32,13 +32,16 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			// Name of the type the attribute is applied to
 			string structName = context.TargetSymbol.Name;
 
+			// Namespace of the type the attribute is applied to
+			string structNamespace = context.TargetSymbol.ContainingNamespace.ToDisplayString();
+
 			if (prefixName is null)
 			{
 				Debug.Assert(opaqueName.StartsWith("Opaque", StringComparison.Ordinal));
 				prefixName = opaqueName["Opaque".Length..];
 			}
 
-			return new StructData(structName, opaqueName, prefixName + '_');
+			return new StructData(structName, structNamespace, opaqueName, prefixName + '_');
 		});
 
 		// Get all methods in AssetRipper.Bindings.LibTorchSharp.LowLevel.PInvoke class
