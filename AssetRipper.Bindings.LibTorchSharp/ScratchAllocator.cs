@@ -5,76 +5,90 @@ namespace AssetRipper.Bindings.LibTorchSharp;
 
 internal static unsafe class ScratchAllocator
 {
-	[field: ThreadStatic]
-	public static void* MostRecentAllocatedPointer { get; private set; }
-
-	[field: ThreadStatic]
-	public static nuint MostRecentAllocatedCount { get; private set; }
-
-	[field: ThreadStatic]
-	public static int MostRecentAllocatedSizeOf { get; private set; }
-
-	private static void ThrowIfOpenAllocationExists()
+	private readonly record struct Data(nint Pointer, nuint Count, int SizeOf)
 	{
-		if (MostRecentAllocatedPointer != null)
+		public void ThrowIfOpenAllocationExists()
 		{
-			throw new InvalidOperationException("There is an open native memory allocation that has not been freed. Free the previous allocation before allocating new memory.");
+			if (Pointer != 0)
+			{
+				throw new InvalidOperationException("There is an open native memory allocation that has not been freed. Free the previous allocation before allocating new memory.");
+			}
 		}
 	}
+
+	[field: ThreadStatic]
+	private static Data MostRecentAllocatedArray;
+
+	[field: ThreadStatic]
+	private static Data MostRecentAllocatedStrings;
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	public static long* AllocateInt64(nuint count)
 	{
-		return Allocate<long>(count);
+		return AllocateArray<long>(count);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	public static float* AllocateSingle(nuint count)
 	{
-		return Allocate<float>(count);
+		return AllocateArray<float>(count);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	public static double* AllocateDouble(nuint count)
 	{
-		return Allocate<double>(count);
+		return AllocateArray<double>(count);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	public static Tensor* AllocateTensor(nuint count)
 	{
-		return Allocate<Tensor>(count);
+		return AllocateArray<Tensor>(count);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	public static JITModule* AllocateJITModule(nuint count)
 	{
-		return Allocate<JITModule>(count);
+		return AllocateArray<JITModule>(count);
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	public static NNModule* AllocateNNModule(nuint count)
+	{
+		return AllocateArray<NNModule>(count);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	public static sbyte** AllocateString(nuint count)
 	{
-		return (sbyte**)Allocate<nint>(count);
+		return (sbyte**)Allocate<nint>(count, ref MostRecentAllocatedStrings);
 	}
 
-	public static T* Allocate<T>(nuint count) where T : unmanaged
+	private static T* AllocateArray<T>(nuint count) where T : unmanaged
 	{
-		ThrowIfOpenAllocationExists();
-		MostRecentAllocatedSizeOf = sizeof(T);
+		return Allocate<T>(count, ref MostRecentAllocatedArray);
+	}
+
+	private static T* Allocate<T>(nuint count, ref Data data) where T : unmanaged
+	{
+		data.ThrowIfOpenAllocationExists();
 		void* ptr = NativeMemory.Alloc(count, (nuint)sizeof(T));
-		MostRecentAllocatedPointer = ptr;
-		MostRecentAllocatedCount = count;
+		data = new Data((nint)ptr, count, sizeof(T));
 		return (T*)ptr;
 	}
 
 	public static Span<T> GetAllocatedSpan<T>() where T : unmanaged
 	{
-		if (MostRecentAllocatedSizeOf != sizeof(T))
+		return GetAllocatedSpan<T>(in MostRecentAllocatedArray);
+	}
+
+	private static Span<T> GetAllocatedSpan<T>(in Data data) where T : unmanaged
+	{
+		if (data.SizeOf != sizeof(T))
 		{
 			throw new InvalidOperationException("The requested type does not match the type of the most recent allocation.");
 		}
-		return new Span<T>(MostRecentAllocatedPointer, (int)MostRecentAllocatedCount);
+		return new Span<T>(data.Pointer.ToPointer(), (int)data.Count);
 	}
 
 	public static T[] GetAllocatedArray<T>() where T : unmanaged
@@ -84,7 +98,7 @@ internal static unsafe class ScratchAllocator
 
 	public static string[] GetAllocatedStrings()
 	{
-		Span<nint> span = GetAllocatedSpan<nint>();
+		Span<nint> span = GetAllocatedSpan<nint>(in MostRecentAllocatedStrings);
 		if (span.Length == 0)
 		{
 			return [];
@@ -99,12 +113,15 @@ internal static unsafe class ScratchAllocator
 
 	public static void Free()
 	{
-		if (MostRecentAllocatedPointer != null)
+		if (MostRecentAllocatedArray.Pointer != 0)
 		{
-			NativeMemory.Free(MostRecentAllocatedPointer);
-			MostRecentAllocatedPointer = null;
-			MostRecentAllocatedCount = 0;
-			MostRecentAllocatedSizeOf = 0;
+			NativeMemory.Free(MostRecentAllocatedArray.Pointer.ToPointer());
+			MostRecentAllocatedArray = default;
+		}
+		if (MostRecentAllocatedStrings.Pointer != 0)
+		{
+			NativeMemory.Free(MostRecentAllocatedStrings.Pointer.ToPointer());
+			MostRecentAllocatedStrings = default;
 		}
 	}
 }
