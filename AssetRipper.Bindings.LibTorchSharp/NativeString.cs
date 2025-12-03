@@ -18,11 +18,13 @@ public readonly ref struct NativeString
 
 	public NativeString(ReadOnlySpan<byte> data)
 	{
+		// Assume data is null-terminated, which is true for u8 strings.
+		// We can't guarantee that a u8 string was passed in, but we have no way to check.
 		this.data = data;
 		hasValue = true;
 	}
 
-	public NativeString(byte[] data)
+	public NativeString(Span<byte> data)
 	{
 		if (data.Length == 0)
 		{
@@ -32,7 +34,7 @@ public readonly ref struct NativeString
 		{
 			// Ensure null-termination
 			byte[] nullTerminatedData = new byte[data.Length + 1];
-			Buffer.BlockCopy(data, 0, nullTerminatedData, 0, data.Length);
+			data.CopyTo(nullTerminatedData);
 			nullTerminatedData[^1] = 0;
 			this.data = nullTerminatedData.AsSpan(0, data.Length);
 		}
@@ -41,6 +43,10 @@ public readonly ref struct NativeString
 			this.data = data;
 		}
 		hasValue = true;
+	}
+
+	public NativeString(byte[] data) : this(data.AsSpan())
+	{
 	}
 
 	public unsafe NativeString(sbyte* ptr)
@@ -75,6 +81,7 @@ public readonly ref struct NativeString
 	}
 
 	public static implicit operator NativeString(ReadOnlySpan<byte> data) => new(data);
+	public static implicit operator NativeString(Span<byte> data) => new(data);
 	public static implicit operator NativeString(byte[] data) => new(data);
 	public static unsafe implicit operator NativeString(sbyte* ptr) => new(ptr);
 	public static explicit operator NativeString(string? str) => new(str);
