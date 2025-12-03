@@ -12,10 +12,7 @@ public readonly partial struct Tensor
 		void* pdata = NativeMemory.Alloc((nuint)data.Length);
 		data.CopyTo(new Span<byte>(pdata, data.Length));
 
-		fixed (long* psizes = sizes)
-		{
-			return @new(pdata, &FreeNativeMemory, psizes, sizes.Length, (sbyte)scalar_type, (sbyte)dtype, (int)device_type, device_index, requires_grad);
-		}
+		return @new(pdata, &FreeNativeMemory, sizes, (sbyte)scalar_type, (sbyte)dtype, (int)device_type, device_index, requires_grad);
 
 		[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 		static void FreeNativeMemory(void* ptr) => NativeMemory.Free(ptr);

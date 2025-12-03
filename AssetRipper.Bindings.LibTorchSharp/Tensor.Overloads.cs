@@ -16,10 +16,7 @@ public readonly partial struct Tensor
 
 	public static unsafe Tensor ones(ReadOnlySpan<long> sizes, ScalarType scalar_type, DeviceType device_type, int device_index, bool requires_grad)
 	{
-		fixed (long* psizes = sizes)
-		{
-			return ones(psizes, sizes.Length, (sbyte)scalar_type, (int)device_type, device_index, requires_grad);
-		}
+		return ones(sizes, (sbyte)scalar_type, (int)device_type, device_index, requires_grad);
 	}
 
 	public Tensor ones_like(bool requires_grad)
