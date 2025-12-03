@@ -11,7 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
 
@@ -123,8 +122,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> pinvokeMethods, ImmutableArray<(string EntryPoint, string MethodName)> entryPointArray)
 	{
 		Dictionary<string, string> methodNameToEntryPoint = entryPointArray.ToDictionary(t => t.MethodName, t => t.EntryPoint);
-		Dictionary<string, MethodInfo> entryPointToMethodInfo = GetTorchSharpPInvokeMethods().ToDictionary(GetEntryPoint, m => m);
-		Dictionary<string, MethodInfo?> methodNameToMethodInfo = methodNameToEntryPoint.ToDictionary(kv => kv.Key, kv => entryPointToMethodInfo.GetValueOrDefault(kv.Value));
+		ReflectionContext reflectionContext = new(methodNameToEntryPoint, pinvokeMethods);
 
 		// Generate NativeMethods
 		MethodData[] nativeMethods = new MethodData[pinvokeMethods.Length];
@@ -142,23 +140,10 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					MethodData pinvokeMethod = pinvokeMethods[j];
 					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs).ApplyParameterNameChanges();
 
-					MethodInfo? methodInfo = methodNameToMethodInfo.GetValueOrDefault(pinvokeMethod.Name);
-					if (methodInfo is not null && methodInfo.GetParameters().Length != pinvokeMethod.Parameters.Length)
+					string? returnTypeOverride = reflectionContext.GetReturnType(pinvokeMethod.Name);
+					if (returnTypeOverride is not null)
 					{
-						methodInfo = null;
-						methodNameToMethodInfo.Remove(pinvokeMethod.Name);
-					}
-
-					if (methodInfo is null)
-					{
-					}
-					else if (methodInfo.ReturnType == typeof(bool))
-					{
-						nativeMethod = nativeMethod with { ReturnType = new TypeData("bool", 0) };
-					}
-					else if (methodInfo.ReturnType == typeof(string))
-					{
-						nativeMethod = nativeMethod with { ReturnType = new TypeData("NativeString", 0) };
+						nativeMethod = nativeMethod with { ReturnType = new TypeData(returnTypeOverride, 0) };
 					}
 
 					nativeMethods[j] = nativeMethod;
@@ -234,12 +219,6 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 				{
 					MethodData nativeMethod = nativeMethods[j];
 
-					MethodInfo? methodInfo = methodNameToMethodInfo.GetValueOrDefault(nativeMethod.Name);
-					if (methodInfo is null)
-					{
-						continue;
-					}
-
 					parameterDeclarationLines.Clear();
 					stringFixedLines.Clear();
 					outInitializationLines.Clear();
@@ -247,14 +226,12 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 					bool anyBooleanConversions = false;
 
-					ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-					ParameterData[] modifiedParameterDatas = new ParameterData[parameterInfos.Length];
-					for (int i = 0; i < parameterInfos.Length; i++)
+					ParameterData[] modifiedParameterDatas = new ParameterData[nativeMethod.Parameters.Length];
+					for (int i = 0; i < nativeMethod.Parameters.Length; i++)
 					{
-						ParameterInfo parameterInfo = parameterInfos[i];
 						ParameterData parameterData = nativeMethod.Parameters[i];
 
-						if (parameterInfo.IsOut && parameterData.Type.IsPointer)
+						if (parameterData.Type.IsPointer && reflectionContext.IsOutParameter(nativeMethod.Name, i, parameterData.Name))
 						{
 							TypeData modifiedParameterType = new(parameterData.Type.Name, parameterData.Type.PointerLevel - 1);
 
@@ -264,13 +241,13 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 							modifiedParameterDatas[i] = parameterData with { Type = modifiedParameterType, IsOut = true };
 						}
-						else if (parameterInfo.ParameterType == typeof(bool) && !parameterData.Type.IsBoolean)
+						else if (!parameterData.Type.IsBoolean && reflectionContext.IsBooleanParameter(nativeMethod.Name, i, parameterData.Name))
 						{
 							anyBooleanConversions = true;
 							modifiedParameterDatas[i] = parameterData with { Type = new("bool", 0) };
 							parameterNames.Add($"{parameterData.Name} ? 1 : 0");
 						}
-						else if (parameterInfo.ParameterType == typeof(string) && parameterData.Type.IsSBytePointer)
+						else if (parameterData.Type.IsSBytePointer && reflectionContext.IsStringParameter(nativeMethod.Name, i, parameterData.Name))
 						{
 							stringFixedLines.Add($"fixed (sbyte* __parameter{i} = {parameterData.Name})");
 							parameterNames.Add($"{parameterData.Name}.IsNull ? null : __parameter{i}");
@@ -644,33 +621,5 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		}
 
 		return parameter1Index != -1 && allocatedType1 is not null && parameter2Index != -1;
-	}
-
-	private static IEnumerable<MethodInfo> GetTorchSharpPInvokeMethods()
-	{
-		Type pinvokeClass = typeof(TorchSharp.torch).Assembly.GetType("TorchSharp.PInvoke.NativeMethods") ?? throw new InvalidOperationException("Could not find TorchSharp.PInvoke.NativeMethods type.");
-		foreach (MethodInfo method in pinvokeClass.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
-		{
-			if (method.Name == "THSTorch_get_and_reset_last_err")
-			{
-				continue;
-			}
-			int parametersLength = method.GetParameters().Length;
-			if ((method.Name, parametersLength) is ("THSTensor_var_along_dimensions", 6) or ("THSTensor_to_type", 2) or ("THSTensor_randint", 7))
-			{
-				// Bug in TorchSharp
-				// https://github.com/dotnet/TorchSharp/pull/1508
-				continue;
-			}
-			if (method.GetCustomAttribute<DllImportAttribute>() != null)
-			{
-				yield return method;
-			}
-		}
-	}
-
-	private static string GetEntryPoint(MethodInfo method)
-	{
-		return method.GetCustomAttribute<DllImportAttribute>()?.EntryPoint ?? method.Name;
 	}
 }
