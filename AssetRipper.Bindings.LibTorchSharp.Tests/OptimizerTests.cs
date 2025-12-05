@@ -17,8 +17,8 @@ public class OptimizerTests
 		Assert.That(value, Is.LessThan(1f));
 	}
 
-	private static unsafe SGD CreateSGD(Tensor parameter)
+	private static SGD CreateSGD(Tensor parameter)
 	{
-		return new SGD(&parameter, 1, 0.1f, default, default, default, default);
+		return new SGD([parameter], 0.1f, default, default, default, default);
 	}
 }

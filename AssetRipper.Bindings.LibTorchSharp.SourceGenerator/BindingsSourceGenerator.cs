@@ -504,7 +504,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 						}
 
 						ParameterData nextParameter = nativeMethod.Parameters[i + 1];
-						if (parameter is { IsOut: false, Type.PointerLevel: 1 } && nextParameter is { IsOut: false, Type: { Name: "int", IsPointer: false } } && nextParameter.Name.Contains("len", StringComparison.OrdinalIgnoreCase))
+						if (parameter is { IsOut: false, Type.PointerLevel: 1 } && nextParameter is { IsOut: false, Type: { Name: "int" or "long", IsPointer: false } } && nextParameter.Name.Contains("len", StringComparison.OrdinalIgnoreCase))
 						{
 							spanParameterIndices.Add(i);
 							i++; // Skip length parameter
