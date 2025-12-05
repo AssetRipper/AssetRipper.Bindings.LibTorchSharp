@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 
 namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
 
-internal readonly record struct TypeData(string Name, int PointerLevel)
+internal readonly record struct TypeData(string Name, int PointerLevel = 0)
 {
 	public bool IsVoid => Name is "void" && PointerLevel is 0;
 	public bool IsBoolean => Name is "bool" && PointerLevel is 0;

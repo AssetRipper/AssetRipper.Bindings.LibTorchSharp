@@ -6,13 +6,13 @@ namespace AssetRipper.Bindings.LibTorchSharp;
 
 public readonly partial struct Tensor
 {
-	public static unsafe Tensor @new(ReadOnlySpan<byte> data, ReadOnlySpan<long> sizes, ScalarType scalar_type, ScalarType dtype, DeviceType device_type, int device_index, bool requires_grad)
+	public static unsafe Tensor @new(ReadOnlySpan<byte> data, ReadOnlySpan<long> sizes, ScalarType scalar_type, ScalarType dtype, bool requires_grad, Device? device = null)
 	{
 		// Allocate native memory and copy data
 		void* pdata = NativeMemory.Alloc((nuint)data.Length);
 		data.CopyTo(new Span<byte>(pdata, data.Length));
 
-		return @new(pdata, &FreeNativeMemory, sizes, scalar_type, dtype, device_type, device_index, requires_grad);
+		return @new(pdata, &FreeNativeMemory, sizes, scalar_type, dtype, requires_grad, device);
 
 		[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 		static void FreeNativeMemory(void* ptr) => NativeMemory.Free(ptr);
@@ -21,49 +21,48 @@ public readonly partial struct Tensor
 	private static Tensor @new<T>(ReadOnlySpan<T> data, ReadOnlySpan<long> sizes, bool requires_grad, ScalarType? dtype, Device? device) where T : unmanaged
 	{
 		ScalarType scalarType = ScalarType.Get<T>();
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		return @new(MemoryMarshal.AsBytes(data), sizes.Length == 0 ? [data.Length] : sizes, scalarType, dtype ?? scalarType, deviceType, deviceIndex, requires_grad);
+		return @new(MemoryMarshal.AsBytes(data), sizes.Length == 0 ? [data.Length] : sizes, scalarType, dtype ?? scalarType, requires_grad, device);
 	}
 
-	public static Tensor newByteScalar(byte value, DeviceType device_type, int device_index, bool requires_grad)
+	public static Tensor newByteScalar(byte value, bool requires_grad, Device? device = null)
 	{
-		return newByteScalar(unchecked((sbyte)value), device_type, device_index, requires_grad);
+		return newByteScalar(unchecked((sbyte)value), requires_grad, device);
 	}
 
-	public static Tensor newBFloat16Scalar(BFloat16 value, DeviceType device_type, int device_index, bool requires_grad)
+	public static Tensor newBFloat16Scalar(BFloat16 value, bool requires_grad, Device? device = null)
 	{
-		return newBFloat16Scalar((float)value, device_type, device_index, requires_grad);
+		return newBFloat16Scalar((float)value, requires_grad, device);
 	}
 
-	public static Tensor newFloat16Scalar(Half value, DeviceType device_type, int device_index, bool requires_grad)
+	public static Tensor newFloat16Scalar(Half value, bool requires_grad, Device? device = null)
 	{
-		return newFloat16Scalar((float)value, device_type, device_index, requires_grad);
+		return newFloat16Scalar((float)value, requires_grad, device);
 	}
 
-	public static Tensor newComplexFloat32Scalar(Complex32 value, DeviceType device_type, int device_index, bool requires_grad)
+	public static Tensor newComplexFloat32Scalar(Complex32 value, bool requires_grad, Device? device = null)
 	{
-		return newComplexFloat32Scalar(value.Real, value.Imaginary, device_type, device_index, requires_grad);
+		return newComplexFloat32Scalar(value.Real, value.Imaginary, requires_grad, device);
 	}
 
-	public static Tensor newComplexFloat64Scalar(Complex value, DeviceType device_type, int device_index, bool requires_grad)
+	public static Tensor newComplexFloat64Scalar(Complex value, bool requires_grad, Device? device = null)
 	{
-		return newComplexFloat64Scalar(value.Real, value.Imaginary, device_type, device_index, requires_grad);
+		return newComplexFloat64Scalar(value.Real, value.Imaginary, requires_grad, device);
 	}
 
-	public static Tensor newScalar(Scalar scalar, DeviceType device_type, int device_index, bool requires_grad) => scalar.Type switch
+	public static Tensor newScalar(Scalar scalar, bool requires_grad, Device? device = null) => scalar.Type switch
 	{
-		ScalarType.Byte => newByteScalar(scalar.ToUInt8(), device_type, device_index, requires_grad),
-		ScalarType.Int8 => newInt8Scalar(scalar.ToInt8(), device_type, device_index, requires_grad),
-		ScalarType.Int16 => newInt16Scalar(scalar.ToInt16(), device_type, device_index, requires_grad),
-		ScalarType.Int32 => newInt32Scalar(scalar.ToInt32(), device_type, device_index, requires_grad),
-		ScalarType.Int64 => newInt64Scalar(scalar.ToInt64(), device_type, device_index, requires_grad),
-		ScalarType.Bool => newBoolScalar(scalar.ToBoolean(), device_type, device_index, requires_grad),
-		ScalarType.BFloat16 => newBFloat16Scalar(scalar.ToBFloat16(), device_type, device_index, requires_grad),
-		ScalarType.Float16 => newFloat16Scalar(scalar.ToHalf(), device_type, device_index, requires_grad),
-		ScalarType.Float32 => newFloat32Scalar(scalar.ToSingle(), device_type, device_index, requires_grad),
-		ScalarType.Float64 => newFloat64Scalar(scalar.ToDouble(), device_type, device_index, requires_grad),
-		ScalarType.ComplexFloat32 => newComplexFloat32Scalar(scalar.ToComplex32(), device_type, device_index, requires_grad),
-		ScalarType.ComplexFloat64 => newComplexFloat64Scalar(scalar.ToComplex64(), device_type, device_index, requires_grad),
+		ScalarType.Byte => newByteScalar(scalar.ToUInt8(), requires_grad, device),
+		ScalarType.Int8 => newInt8Scalar(scalar.ToInt8(), requires_grad, device),
+		ScalarType.Int16 => newInt16Scalar(scalar.ToInt16(), requires_grad, device),
+		ScalarType.Int32 => newInt32Scalar(scalar.ToInt32(), requires_grad, device),
+		ScalarType.Int64 => newInt64Scalar(scalar.ToInt64(), requires_grad, device),
+		ScalarType.Bool => newBoolScalar(scalar.ToBoolean(), requires_grad, device),
+		ScalarType.BFloat16 => newBFloat16Scalar(scalar.ToBFloat16(), requires_grad, device),
+		ScalarType.Float16 => newFloat16Scalar(scalar.ToHalf(), requires_grad, device),
+		ScalarType.Float32 => newFloat32Scalar(scalar.ToSingle(), requires_grad, device),
+		ScalarType.Float64 => newFloat64Scalar(scalar.ToDouble(), requires_grad, device),
+		ScalarType.ComplexFloat32 => newComplexFloat32Scalar(scalar.ToComplex32(), requires_grad, device),
+		ScalarType.ComplexFloat64 => newComplexFloat64Scalar(scalar.ToComplex64(), requires_grad, device),
 		_ => throw new NotSupportedException($"Scalar type '{scalar.Type}' is not supported."),
 	};
 
@@ -129,79 +128,66 @@ public readonly partial struct Tensor
 
 	public unsafe Tensor(byte value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newByteScalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newByteScalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(sbyte value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newInt8Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newInt8Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(short value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newInt16Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newInt16Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(int value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newInt32Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newInt32Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(long value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newInt64Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newInt64Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(bool value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newBoolScalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newBoolScalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(BFloat16 value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newBFloat16Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newBFloat16Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(Half value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newFloat16Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newFloat16Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(float value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newFloat32Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newFloat32Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(double value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newFloat64Scalar(value, deviceType, deviceIndex, requires_grad);
+		handle = newFloat64Scalar(value, requires_grad, device);
 	}
 
 	public unsafe Tensor(Complex32 value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newComplexFloat32Scalar(value.Real, value.Imaginary, deviceType, deviceIndex, requires_grad);
+		handle = newComplexFloat32Scalar(value.Real, value.Imaginary, requires_grad, device);
 	}
 
 	public unsafe Tensor(Complex value, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newComplexFloat64Scalar(value.Real, value.Imaginary, deviceType, deviceIndex, requires_grad);
+		handle = newComplexFloat64Scalar(value.Real, value.Imaginary, requires_grad, device);
 	}
 
 	public unsafe Tensor(Scalar scalar, bool requires_grad = false, Device? device = null)
 	{
-		(DeviceType deviceType, int deviceIndex) = device ?? Device.Default;
-		handle = newScalar(scalar, deviceType, deviceIndex, requires_grad);
+		handle = newScalar(scalar, requires_grad, device);
 	}
 }

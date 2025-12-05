@@ -16,6 +16,6 @@ public readonly partial struct Tensor
 
 	public Tensor ones_like(bool requires_grad)
 	{
-		return ones_like(Type, device_type(), device_index(), requires_grad);
+		return ones_like(Type, requires_grad, GetDevice());
 	}
 }
