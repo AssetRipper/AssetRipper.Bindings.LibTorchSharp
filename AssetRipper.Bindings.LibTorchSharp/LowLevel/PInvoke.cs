@@ -221,10 +221,10 @@ public static unsafe partial class PInvoke
 	public static extern void NN_Module_get_parameters([NativeTypeName("const NNModule")] OpaqueNNModule* module, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator1, bool recurse);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_is_training", ExactSpelling = true)]
-	public static extern int NN_Module_is_training([NativeTypeName("NNModule")] OpaqueNNModule* module);
+	public static extern int NN_Module_get_IsTraining([NativeTypeName("NNModule")] OpaqueNNModule* module);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_train", ExactSpelling = true)]
-	public static extern void NN_Module_train([NativeTypeName("NNModule")] OpaqueNNModule* module, bool on);
+	public static extern void NN_Module_set_IsTraining([NativeTypeName("NNModule")] OpaqueNNModule* module, bool on);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_children_size", ExactSpelling = true)]
 	[return: NativeTypeName("long")]

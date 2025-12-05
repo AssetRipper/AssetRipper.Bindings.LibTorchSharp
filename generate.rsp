@@ -65,6 +65,8 @@ THSTorchCuda_synchronize=THSCuda_Synchronize
 THSNN_custom_module=THSNN_CustomModule_ctor
 THSNN_functional_bilinear=THSNN_bilinear
 THSNN_functional_linear=THSNN_linear
+THSNN_Module_is_training=THSNN_Module_get_IsTraining
+THSNN_Module_train=THSNN_Module_set_IsTraining
 --config
 exclude-enum-operators
 exclude-funcs-with-body
