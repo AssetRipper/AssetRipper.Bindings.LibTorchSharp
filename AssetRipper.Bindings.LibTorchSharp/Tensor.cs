@@ -53,15 +53,14 @@ public readonly partial struct Tensor
 
 	public Device GetDevice()
 	{
-		return new Device((DeviceType)device_type(), device_index());
+		return new Device(device_type(), device_index());
 	}
 
 	private void ValidateType<T>()
 	{
-		ScalarType dtype = (ScalarType)type();
-		if (dtype != ScalarType.Get<T>())
+		if (Type != ScalarType.Get<T>())
 		{
-			throw new ArgumentException($"{typeof(T).Name} is not compatible with {dtype}");
+			throw new ArgumentException($"{typeof(T).Name} is not compatible with {Type}");
 		}
 	}
 }

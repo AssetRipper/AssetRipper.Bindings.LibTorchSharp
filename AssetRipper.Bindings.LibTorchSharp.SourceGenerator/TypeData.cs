@@ -10,7 +10,9 @@ internal readonly record struct TypeData(string Name, int PointerLevel)
 	public bool IsBoolean => Name is "bool" && PointerLevel is 0;
 	public bool IsPointer => PointerLevel > 0;
 	public bool IsFunctionPointer => PointerLevel is 0 && Name.StartsWith("delegate* ", StringComparison.Ordinal);
+	public bool IsSByte=> Name is "sbyte" && PointerLevel is 0;
 	public bool IsSBytePointer => Name is "sbyte" && PointerLevel is 1;
+	public bool IsInt32 => Name is "int" && PointerLevel is 0;
 
 	public override string ToString() => PointerLevel switch
 	{

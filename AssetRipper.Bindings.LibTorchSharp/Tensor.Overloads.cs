@@ -14,13 +14,8 @@ public readonly partial struct Tensor
 		return add_scalar(scalar, alpha);
 	}
 
-	public static unsafe Tensor ones(ReadOnlySpan<long> sizes, ScalarType scalar_type, DeviceType device_type, int device_index, bool requires_grad)
-	{
-		return ones(sizes, (sbyte)scalar_type, (int)device_type, device_index, requires_grad);
-	}
-
 	public Tensor ones_like(bool requires_grad)
 	{
-		return ones_like(type(), device_type(), device_index(), requires_grad);
+		return ones_like(Type, device_type(), device_index(), requires_grad);
 	}
 }

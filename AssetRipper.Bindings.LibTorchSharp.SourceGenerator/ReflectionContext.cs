@@ -40,6 +40,9 @@ internal readonly struct ReflectionContext
 	public string? GetReturnType(string methodName) => methodName switch
 	{
 		"NN_Module_has_parameter" => "bool",
+		"Scalar_get_Type" => "ScalarType",
+		"Tensor_get_Type" => "ScalarType",
+		"Tensor_device_type" => "DeviceType",
 		_ => GetReturnTypeFromMethodInfo(dictionary.GetValueOrDefault(methodName)?.Method),
 	};
 

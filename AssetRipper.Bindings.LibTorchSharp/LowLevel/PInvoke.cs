@@ -3078,7 +3078,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_type", ExactSpelling = true)]
 	[return: NativeTypeName("int8_t")]
-	public static extern sbyte Tensor_type([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+	public static extern sbyte Tensor_get_Type([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_unbind", ExactSpelling = true)]
 	public static extern void Tensor_unbind([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t")] long dim);

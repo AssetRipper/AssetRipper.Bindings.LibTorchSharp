@@ -146,6 +146,31 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 						nativeMethod = nativeMethod with { ReturnType = new TypeData(returnTypeOverride, 0) };
 					}
 
+					bool modifiedParameters = false;
+					ParameterData[] modifiedParameterDatas = new ParameterData[nativeMethod.Parameters.Length];
+					for (int i = 0; i < nativeMethod.Parameters.Length; i++)
+					{
+						ParameterData parameterData = nativeMethod.Parameters[i];
+						if (parameterData is { Name: "scalar_type" or "dtype", Type.IsSByte: true })
+						{
+							modifiedParameters = true;
+							modifiedParameterDatas[i] = parameterData with { Type = new TypeData("ScalarType", 0) };
+						}
+						else if (parameterData is { Name: "device_type", Type.IsInt32: true })
+						{
+							modifiedParameters = true;
+							modifiedParameterDatas[i] = parameterData with { Type = new TypeData("DeviceType", 0) };
+						}
+						else
+						{
+							modifiedParameterDatas[i] = parameterData;
+						}
+					}
+					if (modifiedParameters)
+					{
+						nativeMethod = nativeMethod with { Parameters = new(modifiedParameterDatas) };
+					}
+
 					nativeMethods[j] = nativeMethod;
 
 					writer.WriteComment(methodNameToEntryPoint[pinvokeMethod.Name]);

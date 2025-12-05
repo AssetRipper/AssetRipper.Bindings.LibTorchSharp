@@ -89,7 +89,7 @@ public readonly partial struct Tensor :
 	public static Tensor operator >>(Tensor left, Tensor right) => left.bitwise_right_shift(right);
 	public static Tensor operator >>>(Tensor left, Tensor right)
 	{
-		int bitWidth = (ScalarType)left.type() switch
+		int bitWidth = left.Type switch
 		{
 			ScalarType.Int8 or ScalarType.Byte => 8,
 			ScalarType.Int16 => 16,
