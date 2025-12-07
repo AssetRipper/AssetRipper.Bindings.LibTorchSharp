@@ -5,7 +5,7 @@ namespace AssetRipper.Bindings.LibTorchSharp.Tests;
 public class ModuleTests
 {
 	[Test]
-	public void EmbeddingForward()
+	public void Embedding_Forward()
 	{
 		Assert.DoesNotThrow(() =>
 		{
@@ -16,7 +16,7 @@ public class ModuleTests
 	}
 
 	[Test]
-	public void EmbeddingForwardInSequential()
+	public void Embedding_ForwardInSequential()
 	{
 		Assert.DoesNotThrow(() =>
 		{
@@ -35,7 +35,7 @@ public class ModuleTests
 	}
 
 	[Test]
-	public void LinearSaveAndLoad()
+	public void Linear_SaveAndLoad()
 	{
 		using MemoryStream stream = new();
 		using Linear linear1 = new(Tensor.Ones([2], ScalarType.Float32, true), Tensor.Zeros([2], ScalarType.Float32, true));
@@ -53,7 +53,7 @@ public class ModuleTests
 	}
 
 	[Test]
-	public void LinearSaveAndLoadWithNullTensor()
+	public void Linear_SaveAndLoadWithNullTensor()
 	{
 		using MemoryStream stream = new();
 		using Linear linear1 = new(Tensor.Ones([2], ScalarType.Float32, true), Tensor.Null);
@@ -67,6 +67,32 @@ public class ModuleTests
 		{
 			Assert.That(linear2.Weights.ToArray<float>(), Is.EquivalentTo(linear1.Weights.ToArray<float>()));
 			Assert.That(linear2.Bias.IsNull);
+		}
+	}
+
+	[Theory]
+	public void BooleanEmbedding_ForwardCreatesHigherDimensionalTensor([Range(0, 6)] int dimensions)
+	{
+		using BooleanEmbedding embedding = new(3, ScalarType.Float32, default);
+		long[] shape = new long[dimensions];
+		Array.Fill(shape, 1);
+		using Tensor input = Tensor.Zeros(shape, ScalarType.Bool, false);
+		using Tensor output = embedding.Forward(input);
+		Assert.That(output.Ndimension(), Is.EqualTo(dimensions + 1));
+	}
+
+	[Test]
+	public void BooleanEmbedding_ForwardGivesCorrectValues()
+	{
+		using BooleanEmbedding embedding = new(Tensor.Ones([1], ScalarType.Float32, true), Tensor.Zeros([1], ScalarType.Float32, true));
+		using Tensor trueBoolean = new(true);
+		using Tensor falseBoolean = new(false);
+		using Tensor trueOutput = embedding.Forward(trueBoolean);
+		using Tensor falseOutput = embedding.Forward(falseBoolean);
+		using (Assert.EnterMultipleScope())
+		{
+			Assert.That(trueOutput.ToValue<float>(), Is.EqualTo(1.0f));
+			Assert.That(falseOutput.ToValue<float>(), Is.Zero);
 		}
 	}
 }
