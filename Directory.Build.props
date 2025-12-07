@@ -8,5 +8,11 @@
 		<VersionPrefix>1.0.0</VersionPrefix>
 		<Copyright>Copyright © ds5678</Copyright>
 		<Authors>ds5678</Authors>
+		<Company>AssetRipper</Company>
+		<PackageTags>C# Texture</PackageTags>
+		<RepositoryUrl>https://github.com/AssetRipper/AssetRipper.Bindings.LibTorchSharp</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
 	</PropertyGroup>
 </Project>

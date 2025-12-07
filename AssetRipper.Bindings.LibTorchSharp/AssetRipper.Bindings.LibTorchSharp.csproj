@@ -5,7 +5,12 @@
 		<IsAotCompatible>true</IsAotCompatible>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<NoWarn>SYSLIB1054</NoWarn>
+		<NoWarn>SYSLIB1054;1591</NoWarn>
+
+		<PackageId>AssetRipper.Bindings.LibTorchSharp</PackageId>
+		<PackageTags>C# Torch</PackageTags>
+		<Description>High performance bindings for LibTorchSharp.</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
