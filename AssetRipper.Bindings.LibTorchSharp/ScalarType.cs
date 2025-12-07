@@ -26,7 +26,7 @@ public enum ScalarType : sbyte
 }
 internal static class ScalarTypeExtensions
 {
-	extension(ScalarType)
+	extension(ScalarType scalarType)
 	{
 		public static ScalarType Get<T>()
 		{
@@ -57,5 +57,22 @@ internal static class ScalarTypeExtensions
 
 			throw new NotSupportedException($"Type '{typeof(T).FullName}' is not supported as a scalar type.");
 		}
+
+		public int ByteSize => scalarType switch
+		{
+			ScalarType.Byte => sizeof(byte),
+			ScalarType.Int8 => sizeof(sbyte),
+			ScalarType.Int16 => sizeof(short),
+			ScalarType.Int32 => sizeof(int),
+			ScalarType.Int64 => sizeof(long),
+			ScalarType.Float16 => sizeof(float) / 2,
+			ScalarType.Float32 => sizeof(float),
+			ScalarType.Float64 => sizeof(double),
+			ScalarType.ComplexFloat32 => sizeof(float) * 2,
+			ScalarType.ComplexFloat64 => sizeof(double) * 2,
+			ScalarType.Bool => sizeof(bool),
+			ScalarType.BFloat16 => sizeof(float) / 2,
+			_ => throw new NotSupportedException($"Scalar type '{scalarType}' is not supported."),
+		};
 	}
 }

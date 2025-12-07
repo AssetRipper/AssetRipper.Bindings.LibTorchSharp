@@ -5,6 +5,13 @@ namespace AssetRipper.Bindings.LibTorchSharp;
 
 public readonly partial struct Tensor
 {
+	public unsafe T ToValue<T>() where T : unmanaged
+	{
+		ValidateType<T>();
+		T* ptr = (T*)data();
+		return *ptr;
+	}
+
 	public T[] ToArray<T>() where T : unmanaged
 	{
 		if (device_type() != DeviceType.CPU)
@@ -317,11 +324,66 @@ public readonly partial struct Tensor
 		}
 	}
 
-	public unsafe T ToValue<T>() where T : unmanaged
+	public unsafe void WriteValues(Stream stream)
 	{
-		ValidateType<T>();
-		T* ptr = (T*)data();
-		return *ptr;
+		if (device_type() != DeviceType.CPU)
+		{
+			using Tensor cpuTensor = cpu();
+			cpuTensor.WriteValues(stream);
+			return;
+		}
+
+		int typeSize = (int)element_size();
+		long totalBytes = numel() * typeSize;
+
+		byte* ptr = (byte*)data();
+
+		if (is_contiguous())
+		{
+			// Contiguous tensor - can write in one go
+			long bytesWritten = 0;
+			while (bytesWritten < totalBytes)
+			{
+				long chunkSize = long.Min(totalBytes - bytesWritten, int.MaxValue);
+				stream.Write(new ReadOnlySpan<byte>(ptr + bytesWritten, (int)chunkSize));
+				bytesWritten += chunkSize;
+			}
+			return;
+		}
+
+		long[] lengths = sizes();
+		long[] strides = this.strides();
+		Debug.Assert(lengths.Length == strides.Length);
+
+		int rank = lengths.Length;
+
+		long[] indices = new long[rank];
+		while (true)
+		{
+			long offset = 0;
+			for (int d = 0; d < rank; d++)
+			{
+				offset += indices[d] * strides[d];
+			}
+
+			stream.Write(new ReadOnlySpan<byte>(ptr + offset * typeSize, typeSize));
+
+			// Increment indices odometer-style
+			for (int dim = rank - 1; dim >= 0; dim--)
+			{
+				indices[dim]++;
+				if (indices[dim] < lengths[dim])
+				{
+					break;
+				}
+				indices[dim] = 0;
+				if (dim == 0)
+				{
+					// Completed all iterations
+					return;
+				}
+			}
+		}
 	}
 
 	private void ValidateType<T>()

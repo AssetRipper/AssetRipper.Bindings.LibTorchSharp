@@ -33,4 +33,40 @@ public class ModuleTests
 			using Tensor output = sequential.forward(input);
 		});
 	}
+
+	[Test]
+	public void LinearSaveAndLoad()
+	{
+		using MemoryStream stream = new();
+		using Linear linear1 = new(Tensor.ones([2], ScalarType.Float32, true), Tensor.zeros([2], ScalarType.Float32, true));
+		linear1.Save(stream);
+		stream.Position = 0;
+
+		using StateDictionary state = StateDictionary.Load(stream);
+		using Linear linear2 = new(state);
+
+		using (Assert.EnterMultipleScope())
+		{
+			Assert.That(linear2.weights.ToArray<float>(), Is.EquivalentTo(linear1.weights.ToArray<float>()));
+			Assert.That(linear2.bias.ToArray<float>(), Is.EquivalentTo(linear1.bias.ToArray<float>()));
+		}
+	}
+
+	[Test]
+	public void LinearSaveAndLoadWithNullTensor()
+	{
+		using MemoryStream stream = new();
+		using Linear linear1 = new(Tensor.ones([2], ScalarType.Float32, true), Tensor.Null);
+		linear1.Save(stream);
+		stream.Position = 0;
+
+		using StateDictionary state = StateDictionary.Load(stream);
+		using Linear linear2 = new(state);
+
+		using (Assert.EnterMultipleScope())
+		{
+			Assert.That(linear2.weights.ToArray<float>(), Is.EquivalentTo(linear1.weights.ToArray<float>()));
+			Assert.That(linear2.bias.IsNull);
+		}
+	}
 }

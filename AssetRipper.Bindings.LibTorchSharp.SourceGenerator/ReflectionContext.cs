@@ -43,6 +43,7 @@ internal readonly struct ReflectionContext
 		"Scalar_get_Type" => "ScalarType",
 		"Tensor_get_Type" => "ScalarType",
 		"Tensor_device_type" => "DeviceType",
+		"Tensor_is_contiguous" => "bool",
 		_ => GetReturnTypeFromMethodInfo(dictionary.GetValueOrDefault(methodName)?.Method),
 	};
 
