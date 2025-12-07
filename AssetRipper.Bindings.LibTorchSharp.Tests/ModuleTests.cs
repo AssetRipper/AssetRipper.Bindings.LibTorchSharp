@@ -35,6 +35,19 @@ public class ModuleTests
 	}
 
 	[Test]
+	public void TransformerEncoderLayer_Save()
+	{
+		using MemoryStream stream = new();
+		using TransformerEncoderLayer layer = new(8, 2, 16, 0.1, 0);
+		{
+			using StateDictionary state1 = new();
+			state1.CopyFrom(layer);
+			state1.Save(stream);
+		}
+		Assert.That(stream.Length, Is.GreaterThan(0));
+	}
+
+	[Test]
 	public void Linear_SaveAndLoad()
 	{
 		using MemoryStream stream = new();

@@ -58,6 +58,7 @@ public readonly struct StateDictionary : IDisposable
 
 	public void CopyTo(NNModule module)
 	{
+		// Note: these properties recursively enumerate all parameters/buffers in child modules.
 		foreach ((string name, Tensor p) in module.NamedParameters)
 		{
 			p.CopyInline(GetTensor(name), false);
@@ -65,16 +66,12 @@ public readonly struct StateDictionary : IDisposable
 		foreach ((string name, Tensor p) in module.NamedBuffers)
 		{
 			p.CopyInline(GetTensor(name), false);
-		}
-		foreach ((string name, NNModule child) in module.NamedChildren)
-		{
-			GetChild(name).CopyTo(child);
-			child.Dispose();
 		}
 	}
 
 	public void CopyFrom(NNModule module)
 	{
+		// Note: these properties recursively enumerate all parameters/buffers in child modules.
 		foreach ((string name, Tensor p) in module.NamedParameters)
 		{
 			AddTensorInternal(name, p);
@@ -82,11 +79,6 @@ public readonly struct StateDictionary : IDisposable
 		foreach ((string name, Tensor p) in module.NamedBuffers)
 		{
 			AddTensorInternal(name, p);
-		}
-		foreach ((string name, NNModule child) in module.NamedChildren)
-		{
-			AddChild(name).CopyFrom(child);
-			child.Dispose();
 		}
 	}
 
