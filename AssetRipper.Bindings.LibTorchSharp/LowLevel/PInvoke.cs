@@ -8,7 +8,7 @@ public static unsafe partial class PInvoke
 	public static extern bool Autograd_isGradEnabled();
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSAutograd_setGrad", ExactSpelling = true)]
-	public static extern void Autograd_setGrad(bool enabled);
+	public static extern void Autograd_set_IsGradEnabled(bool enabled);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSAutograd_isInferenceModeEnabled", ExactSpelling = true)]
 	public static extern bool Autograd_isInferenceModeEnabled();

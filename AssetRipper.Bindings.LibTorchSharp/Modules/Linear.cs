@@ -8,14 +8,14 @@ public partial struct Linear
 
 	public Linear(long inFeatures, long outFeatures, bool hasBias = true, ScalarType? dtype = null, Device? device = null)
 	{
-		weights = Tensor.empty([outFeatures, inFeatures], (dtype ?? ScalarType.Float32), true, device);
-		Init.kaiming_uniform_(weights, _sqrt5, 0, 10); // tensor, sqrt(5), fan_in, leaky relu
+		weights = Tensor.Empty([outFeatures, inFeatures], (dtype ?? ScalarType.Float32), true, device);
+		Init.KaimingUniformInline(weights, _sqrt5, 0, 10); // tensor, sqrt(5), fan_in, leaky relu
 		if (hasBias)
 		{
-			bias = Tensor.empty([outFeatures], (dtype ?? ScalarType.Float32), true, device);
+			bias = Tensor.Empty([outFeatures], (dtype ?? ScalarType.Float32), true, device);
 			(long fanIn, long _) = Init.CalculateFanInAndFanOut(weights);
 			double bound = fanIn > 0 ? 1 / double.Sqrt(fanIn) : 0;
-			Init.uniform_(bias, -bound, bound);
+			Init.UniformInline(bias, -bound, bound);
 		}
 		else
 		{
@@ -25,7 +25,7 @@ public partial struct Linear
 
 	public readonly Tensor Forward(Tensor tensor)
 	{
-		return NN.linear(tensor, weights, bias);
+		return NN.Linear(tensor, weights, bias);
 	}
 }
 public partial struct Linear : IDisposable, IModule

@@ -15,7 +15,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 	public override string Namespace => Parent.Namespace;
 	public override bool IsInstance(MethodData method)
 	{
-		return method.Parameters.Length > 0 && method.Parameters[0].Type == ParentType && method.Name is not "ctor";
+		return method.Parameters.Length > 0 && method.Parameters[0].Type == ParentType && method.Name is not "Create";
 	}
 
 	public override void GenerateMainFile(SgfSourceProductionContext context)
@@ -75,7 +75,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 		MethodData staticMethod = Methods
 			.Select(p => p.MidLevel)
 			.Where(IsStatic)
-			.First(m => m.Name is "ctor" && m.ReturnType == Type);
+			.First(m => m.Name is "Create" && m.ReturnType == Type);
 
 		StringWriter stringWriter = new();
 		IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
@@ -96,7 +96,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				writer.WriteLine(')');
 				using (new CurlyBrackets(writer))
 				{
-					writer.Write("this.handle = ctor(");
+					writer.Write("this.handle = Create(");
 					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("out NNAnyModule outAsAnyModule")));
 					writer.WriteLine(");");
 					writer.WriteLine("outAsAnyModule.Dispose();");
@@ -107,7 +107,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				writer.WriteLine(')');
 				using (new CurlyBrackets(writer))
 				{
-					writer.Write("ctor(");
+					writer.Write("Create(");
 					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("out NNAnyModule outAsAnyModule")));
 					writer.WriteLine(").Dispose();");
 					writer.WriteLine("return outAsAnyModule;");
@@ -122,7 +122,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				writer.WriteLine(')');
 				using (new CurlyBrackets(writer))
 				{
-					writer.Write("this.handle = ctor(");
+					writer.Write("this.handle = Create(");
 					writer.Write(string.Join(", ", staticMethod.Parameters.Select(p => p.NameWithOutPrefix)));
 					writer.WriteLine(");");
 				}

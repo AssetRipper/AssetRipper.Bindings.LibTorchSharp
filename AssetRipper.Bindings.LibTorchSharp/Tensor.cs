@@ -8,6 +8,6 @@ public readonly partial struct Tensor
 {
 	public Device GetDevice()
 	{
-		return new Device(device_type(), device_index());
+		return new Device(DeviceType(), DeviceIndex());
 	}
 }

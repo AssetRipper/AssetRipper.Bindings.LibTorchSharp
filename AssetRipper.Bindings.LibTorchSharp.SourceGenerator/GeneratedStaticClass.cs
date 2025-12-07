@@ -25,7 +25,7 @@ internal sealed class GeneratedStaticClass(string name) : GeneratedType
 				if (method.Name.StartsWith(prefix, StringComparison.Ordinal))
 				{
 					Methods.RemoveAt(i);
-					method = method with { Name = method.Name[prefix.Length..] };
+					method = method with { Name = method.GetNameInType(prefix) };
 					if (generatedType.IsInstance(method))
 					{
 						method = method.ChangeFirstParameterNameToThis();

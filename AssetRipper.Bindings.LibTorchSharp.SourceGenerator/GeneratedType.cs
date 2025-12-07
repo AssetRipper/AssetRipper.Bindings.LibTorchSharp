@@ -39,7 +39,7 @@ internal abstract class GeneratedType
 			{
 				case PropertyMethodKind.GetWithPrefix:
 					{
-						string propertyName = method.Name[4..];
+						string propertyName = method.Name[3..];
 						getters.Add(propertyName, new(method, nativeMethod));
 						Methods.RemoveAt(i);
 					}
@@ -53,7 +53,7 @@ internal abstract class GeneratedType
 					break;
 				case PropertyMethodKind.Set:
 					{
-						string propertyName = method.Name[4..];
+						string propertyName = method.Name[3..];
 						setters.Add(propertyName, new(method.ChangeLastParameterNameToValue(), nativeMethod));
 						Methods.RemoveAt(i);
 					}
@@ -80,17 +80,17 @@ internal abstract class GeneratedType
 
 		PropertyMethodKind GetAccessorType(MethodData method, HashSet<string> methodNames)
 		{
-			if (method.Name.StartsWith("get_", StringComparison.Ordinal) && !method.ReturnType.IsVoid && method.Name.Length > 4)
+			if (method.Name.StartsWith("Get", StringComparison.Ordinal) && !method.ReturnType.IsVoid && method.Name.Length > 3 && char.IsUpper(method.Name[3]))
 			{
 				int expectedParameterCount = IsInstance(method) ? 1 : 0;
 				return method.Parameters.Length == expectedParameterCount ? PropertyMethodKind.GetWithPrefix : PropertyMethodKind.None;
 			}
-			else if (method.Name.StartsWith("set_", StringComparison.Ordinal) && method.ReturnType.IsVoid && method.Name.Length > 4)
+			else if (method.Name.StartsWith("Set", StringComparison.Ordinal) && method.ReturnType.IsVoid && method.Name.Length > 3 && char.IsUpper(method.Name[3]))
 			{
 				int expectedParameterCount = IsInstance(method) ? 2 : 1;
 				return method.Parameters.Length == expectedParameterCount ? PropertyMethodKind.Set : PropertyMethodKind.None;
 			}
-			else if (methodNames.Contains("set_" + method.Name) && !method.ReturnType.IsVoid && method.Name.Length > 0)
+			else if (methodNames.Contains("Set" + method.Name) && !method.ReturnType.IsVoid && method.Name.Length > 0)
 			{
 				int expectedParameterCount = IsInstance(method) ? 1 : 0;
 				return method.Parameters.Length == expectedParameterCount ? PropertyMethodKind.GetWithoutPrefix : PropertyMethodKind.None;

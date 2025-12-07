@@ -120,8 +120,13 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> pinvokeMethods, ImmutableArray<(string EntryPoint, string MethodName)> entryPointArray)
 	{
-		Dictionary<string, string> methodNameToEntryPoint = entryPointArray.ToDictionary(t => t.MethodName, t => t.EntryPoint);
-		ReflectionContext reflectionContext = new(methodNameToEntryPoint, pinvokeMethods);
+		Dictionary<string, string> pinvokeMethodNameToNativeMethodName = pinvokeMethods.ToDictionary(m => m.Name, m =>
+		{
+			string methodName = m.Name;
+			return methodName[^1] == '_' ? methodName + "inline" : methodName;
+		});
+		Dictionary<string, string> pinvokeMethodNameToEntryPoint = entryPointArray.ToDictionary(t => t.MethodName, t => t.EntryPoint);
+		ReflectionContext reflectionContext = new(pinvokeMethodNameToEntryPoint, pinvokeMethodNameToNativeMethodName, pinvokeMethods);
 
 		// Generate NativeMethods
 		MethodData[] nativeMethods = new MethodData[pinvokeMethods.Length];
@@ -137,9 +142,12 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 				for (int j = 0; j < pinvokeMethods.Length; j++)
 				{
 					MethodData pinvokeMethod = pinvokeMethods[j];
-					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs).ApplyParameterNameChanges();
+					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs).ApplyParameterNameChanges() with
+					{
+						Name = pinvokeMethodNameToNativeMethodName[pinvokeMethod.Name]
+					};
 
-					string? returnTypeOverride = reflectionContext.GetReturnType(pinvokeMethod.Name);
+					string? returnTypeOverride = reflectionContext.GetReturnType(nativeMethod.Name);
 					if (returnTypeOverride is not null)
 					{
 						nativeMethod = nativeMethod with { ReturnType = new TypeData(returnTypeOverride, 0) };
@@ -172,7 +180,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 					nativeMethods[j] = nativeMethod;
 
-					writer.WriteComment(methodNameToEntryPoint[pinvokeMethod.Name]);
+					writer.WriteComment(pinvokeMethodNameToEntryPoint[pinvokeMethod.Name]);
 					writer.Write("public static ");
 					writer.WriteLine(nativeMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -650,7 +658,8 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		{
 			if (TryGetStruct(nativeMethod, structs, out StructData structResult, out string? classResult))
 			{
-				MethodData modified = nativeMethod with { Name = nativeMethod.GetNameInStruct(structResult) };
+				string instanceName = nativeMethod.GetNameInType(structResult.PrefixName);
+				MethodData modified = nativeMethod with { Name = instanceName };
 
 				GeneratedOpaqueStruct generatedType = structDictionary[structResult];
 
@@ -663,7 +672,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 			}
 			else
 			{
-				MethodData modified = nativeMethod with { Name = nativeMethod.GetNameInClass(classResult) };
+				MethodData modified = nativeMethod with { Name = nativeMethod.GetNameInType(classResult + "_", false) };
 				classDictionary.GetOrCreate(classResult, GeneratedStaticClass.Create).Methods.Add(new(modified, nativeMethod));
 			}
 		}
@@ -674,6 +683,15 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 		foreach (GeneratedStaticClass @class in classList)
 		{
 			childList.AddRange(@class.ExtractChildren(structList));
+		}
+
+		foreach (GeneratedStaticClass @class in classList)
+		{
+			for (int i = 0; i < @class.Methods.Count; i++)
+			{
+				(MethodData m1, MethodData m2) = @class.Methods[i];
+				@class.Methods[i] = new(m1.CleanName(), m2);
+			}
 		}
 
 		foreach (GeneratedChildStruct child in childList)

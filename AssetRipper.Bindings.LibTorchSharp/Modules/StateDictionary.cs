@@ -32,7 +32,7 @@ public readonly struct StateDictionary : IDisposable
 
 	public void AddTensor(string name, Tensor tensor)
 	{
-		AddTensorInternal(name, tensor.IsNull ? Tensor.Null : tensor.alias());
+		AddTensorInternal(name, tensor.IsNull ? Tensor.Null : tensor.Alias());
 	}
 
 	private void AddTensorInternal(string name, Tensor tensor)
@@ -43,7 +43,7 @@ public readonly struct StateDictionary : IDisposable
 	public Tensor GetTensor(string name)
 	{
 		Tensor tensor = tensors[GetFullName(name)];
-		return tensor.IsNull ? Tensor.Null : tensor.alias();
+		return tensor.IsNull ? Tensor.Null : tensor.Alias();
 	}
 
 	public StateDictionary AddChild(string name)
@@ -58,15 +58,15 @@ public readonly struct StateDictionary : IDisposable
 
 	public void CopyTo(NNModule module)
 	{
-		foreach ((string name, Tensor p) in module.named_parameters)
+		foreach ((string name, Tensor p) in module.NamedParameters)
 		{
-			p.copy_(GetTensor(name), false);
+			p.CopyInline(GetTensor(name), false);
 		}
-		foreach ((string name, Tensor p) in module.named_buffers)
+		foreach ((string name, Tensor p) in module.NamedBuffers)
 		{
-			p.copy_(GetTensor(name), false);
+			p.CopyInline(GetTensor(name), false);
 		}
-		foreach ((string name, NNModule child) in module.named_children)
+		foreach ((string name, NNModule child) in module.NamedChildren)
 		{
 			GetChild(name).CopyTo(child);
 			child.Dispose();
@@ -75,15 +75,15 @@ public readonly struct StateDictionary : IDisposable
 
 	public void CopyFrom(NNModule module)
 	{
-		foreach ((string name, Tensor p) in module.named_parameters)
+		foreach ((string name, Tensor p) in module.NamedParameters)
 		{
 			AddTensorInternal(name, p);
 		}
-		foreach ((string name, Tensor p) in module.named_buffers)
+		foreach ((string name, Tensor p) in module.NamedBuffers)
 		{
 			AddTensorInternal(name, p);
 		}
-		foreach ((string name, NNModule child) in module.named_children)
+		foreach ((string name, NNModule child) in module.NamedChildren)
 		{
 			AddChild(name).CopyFrom(child);
 			child.Dispose();
@@ -131,7 +131,7 @@ public readonly struct StateDictionary : IDisposable
 				byte[] buffer = new byte[total_bytes];
 				reader.ReadExactly(buffer);
 
-				Tensor tensor = Tensor.@new(buffer, lengths, scalarType, scalarType, requires_grad, device);
+				Tensor tensor = Tensor.Create(buffer, lengths, scalarType, scalarType, requires_grad, device);
 
 				dictionary.tensors.Add(key, tensor);
 			}
@@ -164,16 +164,16 @@ public readonly struct StateDictionary : IDisposable
 			else
 			{
 				writer.Write((sbyte)tensor.Type);
-				writer.Write(tensor.requires_grad);
-				writer.Write((byte)tensor.element_size());
+				writer.Write(tensor.RequiresGrad);
+				writer.Write((byte)tensor.ElementSize());
 
-				long[] lengths = tensor.sizes();
+				long[] lengths = tensor.Sizes();
 				writer.Write(lengths.Length);
 				foreach (long length in lengths)
 				{
 					writer.Write(length);
 				}
-				writer.Write(tensor.numel());
+				writer.Write(tensor.Numel());
 
 				tensor.WriteValues(stream);
 			}

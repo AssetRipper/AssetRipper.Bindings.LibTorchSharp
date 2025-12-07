@@ -24,7 +24,7 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 		MethodData staticMethod = Methods
 			.Select(p => p.MidLevel)
 			.Where(IsStatic)
-			.FirstOrDefault(m => m.Name is "@new" && m.ReturnType == Struct.StructType);
+			.FirstOrDefault(m => m.Name is "Create" && m.ReturnType == Struct.StructType);
 
 		if (staticMethod == default)
 		{
@@ -48,7 +48,7 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 			writer.WriteLine(')');
 			using (new CurlyBrackets(writer))
 			{
-				writer.Write("this.handle = @new(");
+				writer.Write("this.handle = Create(");
 				writer.Write(string.Join(", ", staticMethod.Parameters.Select(p => p.NameWithOutPrefix)));
 				writer.WriteLine(");");
 			}

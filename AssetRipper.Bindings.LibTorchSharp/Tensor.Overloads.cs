@@ -2,20 +2,20 @@
 
 public readonly partial struct Tensor
 {
-	public Tensor add(Tensor other)
+	public Tensor Add(Tensor other)
 	{
 		using Scalar alpha = Scalar.FromInt32(1);
-		return add(other, alpha);
+		return Add(other, alpha);
 	}
 
-	public Tensor add_scalar(Scalar scalar)
+	public Tensor AddScalar(Scalar scalar)
 	{
 		using Scalar alpha = Scalar.FromInt32(1);
-		return add_scalar(scalar, alpha);
+		return AddScalar(scalar, alpha);
 	}
 
-	public Tensor ones_like(bool requires_grad)
+	public Tensor OnesLike(bool requires_grad)
 	{
-		return ones_like(Type, requires_grad, GetDevice());
+		return OnesLike(Type, requires_grad, GetDevice());
 	}
 }

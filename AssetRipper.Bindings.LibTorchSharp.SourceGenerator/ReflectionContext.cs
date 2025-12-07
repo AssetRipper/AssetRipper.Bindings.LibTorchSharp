@@ -13,12 +13,12 @@ internal readonly struct ReflectionContext
 
 	private readonly Dictionary<string, ReflectionInfo?> dictionary;
 
-	public ReflectionContext(Dictionary<string, string> methodNameToEntryPoint, ImmutableArray<MethodData> pinvokeMethods)
+	public ReflectionContext(Dictionary<string, string> pinvokeMethodNameToEntryPoint, Dictionary<string, string> pinvokeMethodNameToNativeMethodName, ImmutableArray<MethodData> pinvokeMethods)
 	{
 		Dictionary<string, MethodInfo> entryPointToMethodInfo = GetTorchSharpPInvokeMethods().ToDictionary(GetEntryPoint, m => m);
-		dictionary = pinvokeMethods.ToDictionary(m => m.Name, m =>
+		dictionary = pinvokeMethods.ToDictionary(m => pinvokeMethodNameToNativeMethodName[m.Name], m =>
 		{
-			string? entryPoint = methodNameToEntryPoint.GetValueOrDefault(m.Name);
+			string? entryPoint = pinvokeMethodNameToEntryPoint.GetValueOrDefault(m.Name);
 			if (entryPoint is null)
 			{
 				return null;

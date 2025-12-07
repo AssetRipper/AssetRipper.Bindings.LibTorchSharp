@@ -8,15 +8,15 @@ public readonly partial struct Tensor
 	public unsafe T ToValue<T>() where T : unmanaged
 	{
 		ValidateType<T>();
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 		return *ptr;
 	}
 
 	public T[] ToArray<T>() where T : unmanaged
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			return cpuTensor.ToArray<T>();
 		}
 		ValidateType<T>();
@@ -26,11 +26,11 @@ public readonly partial struct Tensor
 
 	private unsafe T[] ToArray1D_Internal<T>() where T : unmanaged
 	{
-		long length = size(0);
-		long stride = this.stride(0);
+		long length = Size(0);
+		long stride = this.Stride(0);
 
 		T[] result = new T[length];
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 		if (stride == 1)
 		{
 			fixed (T* pResult = result)
@@ -51,9 +51,9 @@ public readonly partial struct Tensor
 
 	public T[,] ToArray2D<T>() where T : unmanaged
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			return cpuTensor.ToArray2D<T>();
 		}
 		ValidateType<T>();
@@ -63,13 +63,13 @@ public readonly partial struct Tensor
 
 	private unsafe T[,] ToArray2D_Internal<T>() where T : unmanaged
 	{
-		long length0 = size(0);
-		long length1 = size(1);
-		long stride0 = stride(0);
-		long stride1 = stride(1);
+		long length0 = Size(0);
+		long length1 = Size(1);
+		long stride0 = Stride(0);
+		long stride1 = Stride(1);
 
 		T[,] result = new T[length0, length1];
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 		for (long i0 = 0, off0 = 0; i0 < length0; i0++, off0 += stride0)
 		{
 			for (long i1 = 0, off1 = 0; i1 < length1; i1++, off1 += stride1)
@@ -82,9 +82,9 @@ public readonly partial struct Tensor
 
 	public T[,,] ToArray3D<T>() where T : unmanaged
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			return cpuTensor.ToArray3D<T>();
 		}
 		ValidateType<T>();
@@ -94,14 +94,14 @@ public readonly partial struct Tensor
 
 	private unsafe T[,,] ToArray3D_Internal<T>() where T : unmanaged
 	{
-		long length0 = size(0);
-		long length1 = size(1);
-		long length2 = size(2);
-		long stride0 = stride(0);
-		long stride1 = stride(1);
-		long stride2 = stride(2);
+		long length0 = Size(0);
+		long length1 = Size(1);
+		long length2 = Size(2);
+		long stride0 = Stride(0);
+		long stride1 = Stride(1);
+		long stride2 = Stride(2);
 		T[,,] result = new T[length0, length1, length2];
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 		for (long i0 = 0, off0 = 0; i0 < length0; i0++, off0 += stride0)
 		{
 			for (long i1 = 0, off1 = 0; i1 < length1; i1++, off1 += stride1)
@@ -117,9 +117,9 @@ public readonly partial struct Tensor
 
 	public T[,,,] ToArray4D<T>() where T : unmanaged
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			return cpuTensor.ToArray4D<T>();
 		}
 		ValidateType<T>();
@@ -129,16 +129,16 @@ public readonly partial struct Tensor
 
 	private unsafe T[,,,] ToArray4D_Internal<T>() where T : unmanaged
 	{
-		long length0 = size(0);
-		long length1 = size(1);
-		long length2 = size(2);
-		long length3 = size(3);
-		long stride0 = stride(0);
-		long stride1 = stride(1);
-		long stride2 = stride(2);
-		long stride3 = stride(3);
+		long length0 = Size(0);
+		long length1 = Size(1);
+		long length2 = Size(2);
+		long length3 = Size(3);
+		long stride0 = Stride(0);
+		long stride1 = Stride(1);
+		long stride2 = Stride(2);
+		long stride3 = Stride(3);
 		T[,,,] result = new T[length0, length1, length2, length3];
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 		for (long i0 = 0, off0 = 0; i0 < length0; i0++, off0 += stride0)
 		{
 			for (long i1 = 0, off1 = 0; i1 < length1; i1++, off1 += stride1)
@@ -157,9 +157,9 @@ public readonly partial struct Tensor
 
 	public T[,,,,] ToArray5D<T>() where T : unmanaged
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			return cpuTensor.ToArray5D<T>();
 		}
 		ValidateType<T>();
@@ -169,18 +169,18 @@ public readonly partial struct Tensor
 
 	private unsafe T[,,,,] ToArray5D_Internal<T>() where T : unmanaged
 	{
-		long length0 = size(0);
-		long length1 = size(1);
-		long length2 = size(2);
-		long length3 = size(3);
-		long length4 = size(4);
-		long stride0 = stride(0);
-		long stride1 = stride(1);
-		long stride2 = stride(2);
-		long stride3 = stride(3);
-		long stride4 = stride(4);
+		long length0 = Size(0);
+		long length1 = Size(1);
+		long length2 = Size(2);
+		long length3 = Size(3);
+		long length4 = Size(4);
+		long stride0 = Stride(0);
+		long stride1 = Stride(1);
+		long stride2 = Stride(2);
+		long stride3 = Stride(3);
+		long stride4 = Stride(4);
 		T[,,,,] result = new T[length0, length1, length2, length3, length4];
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 		for (long i0 = 0, off0 = 0; i0 < length0; i0++, off0 += stride0)
 		{
 			for (long i1 = 0, off1 = 0; i1 < length1; i1++, off1 += stride1)
@@ -202,9 +202,9 @@ public readonly partial struct Tensor
 
 	public T[,,,,,] ToArray6D<T>() where T : unmanaged
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			return cpuTensor.ToArray6D<T>();
 		}
 		ValidateType<T>();
@@ -214,20 +214,20 @@ public readonly partial struct Tensor
 
 	private unsafe T[,,,,,] ToArray6D_Internal<T>() where T : unmanaged
 	{
-		long length0 = size(0);
-		long length1 = size(1);
-		long length2 = size(2);
-		long length3 = size(3);
-		long length4 = size(4);
-		long length5 = size(5);
-		long stride0 = stride(0);
-		long stride1 = stride(1);
-		long stride2 = stride(2);
-		long stride3 = stride(3);
-		long stride4 = stride(4);
-		long stride5 = stride(5);
+		long length0 = Size(0);
+		long length1 = Size(1);
+		long length2 = Size(2);
+		long length3 = Size(3);
+		long length4 = Size(4);
+		long length5 = Size(5);
+		long stride0 = Stride(0);
+		long stride1 = Stride(1);
+		long stride2 = Stride(2);
+		long stride3 = Stride(3);
+		long stride4 = Stride(4);
+		long stride5 = Stride(5);
 		T[,,,,,] result = new T[length0, length1, length2, length3, length4, length5];
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 		for (long i0 = 0, off0 = 0; i0 < length0; i0++, off0 += stride0)
 		{
 			for (long i1 = 0, off1 = 0; i1 < length1; i1++, off1 += stride1)
@@ -252,13 +252,13 @@ public readonly partial struct Tensor
 
 	public Array ToArrayND<T>() where T : unmanaged
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			return cpuTensor.ToArrayND<T>();
 		}
 		ValidateType<T>();
-		return ndimension() switch
+		return Ndimension() switch
 		{
 			0 => (T[])[ToValue<T>()],
 			1 => ToArray1D_Internal<T>(),
@@ -284,12 +284,12 @@ public readonly partial struct Tensor
 
 		// Note: Boxing of T will occur when setting values into the Array.
 
-		long[] lengths = sizes();
-		long[] strides = this.strides();
+		long[] lengths = Sizes();
+		long[] strides = this.Strides();
 		Debug.Assert(lengths.Length == strides.Length);
 		Array result = Array.CreateInstance(typeof(T), lengths);
 
-		T* ptr = (T*)data();
+		T* ptr = (T*)Data();
 
 		int rank = lengths.Length;
 		Debug.Assert(rank >= 1);
@@ -326,19 +326,19 @@ public readonly partial struct Tensor
 
 	public unsafe void WriteValues(Stream stream)
 	{
-		if (device_type() != DeviceType.CPU)
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
 		{
-			using Tensor cpuTensor = cpu();
+			using Tensor cpuTensor = Cpu();
 			cpuTensor.WriteValues(stream);
 			return;
 		}
 
-		int typeSize = (int)element_size();
-		long totalBytes = numel() * typeSize;
+		int typeSize = (int)ElementSize();
+		long totalBytes = Numel() * typeSize;
 
-		byte* ptr = (byte*)data();
+		byte* ptr = (byte*)Data();
 
-		if (is_contiguous())
+		if (IsContiguous())
 		{
 			// Contiguous tensor - can write in one go
 			long bytesWritten = 0;
@@ -351,8 +351,8 @@ public readonly partial struct Tensor
 			return;
 		}
 
-		long[] lengths = sizes();
-		long[] strides = this.strides();
+		long[] lengths = Sizes();
+		long[] strides = this.Strides();
 		Debug.Assert(lengths.Length == strides.Length);
 
 		int rank = lengths.Length;
@@ -396,9 +396,9 @@ public readonly partial struct Tensor
 
 	private void ValidateDimension(int expectedDimension)
 	{
-		if (ndimension() != expectedDimension)
+		if (Ndimension() != expectedDimension)
 		{
-			throw new InvalidOperationException($"{ndimension()}-dimensional tensors cannot be converted to {expectedDimension}-dimensional arrays.");
+			throw new InvalidOperationException($"{Ndimension()}-dimensional tensors cannot be converted to {expectedDimension}-dimensional arrays.");
 		}
 	}
 }

@@ -22,71 +22,71 @@ public readonly partial struct Tensor :
 	IShiftOperators<Tensor, int, Tensor>,
 	IBitwiseOperators<Tensor, Tensor, Tensor>
 {
-	public static Tensor operator +(Tensor left, Tensor right) => left.add(right);
-	public static Tensor operator +(Tensor left, Scalar right) => left.add_scalar(right);
-	public static Tensor operator +(Scalar left, Tensor right) => right.add_scalar(left);
+	public static Tensor operator +(Tensor left, Tensor right) => left.Add(right);
+	public static Tensor operator +(Tensor left, Scalar right) => left.AddScalar(right);
+	public static Tensor operator +(Scalar left, Tensor right) => right.AddScalar(left);
 
-	public static Tensor operator -(Tensor left, Tensor right) => left.sub(right);
-	public static Tensor operator -(Tensor left, Scalar right) => left.sub_scalar(right);
+	public static Tensor operator -(Tensor left, Tensor right) => left.Sub(right);
+	public static Tensor operator -(Tensor left, Scalar right) => left.SubScalar(right);
 	public static Tensor operator -(Scalar left, Tensor right)
 	{
 		using Tensor negation = -right;
 		return left + negation;
 	}
 
-	public static Tensor operator *(Tensor left, Tensor right) => left.mul(right);
-	public static Tensor operator *(Tensor left, Scalar right) => left.mul_scalar(right);
-	public static Tensor operator *(Scalar left, Tensor right) => right.mul_scalar(left);
+	public static Tensor operator *(Tensor left, Tensor right) => left.Mul(right);
+	public static Tensor operator *(Tensor left, Scalar right) => left.MulScalar(right);
+	public static Tensor operator *(Scalar left, Tensor right) => right.MulScalar(left);
 
-	public static unsafe Tensor operator /(Tensor left, Tensor right) => left.div(right, default);
-	public static unsafe Tensor operator /(Tensor left, Scalar right) => left.div_scalar(right, default);
+	public static unsafe Tensor operator /(Tensor left, Tensor right) => left.Div(right, default);
+	public static unsafe Tensor operator /(Tensor left, Scalar right) => left.DivScalar(right, default);
 	public static Tensor operator /(Scalar left, Tensor right)
 	{
-		using Tensor reciprocal = right.reciprocal();
+		using Tensor reciprocal = right.Reciprocal();
 		return left * reciprocal;
 	}
 
-	public static Tensor operator %(Tensor left, Tensor right) => left.remainder(right);
-	public static Tensor operator %(Tensor left, Scalar right) => left.remainder_scalar(right);
+	public static Tensor operator %(Tensor left, Tensor right) => left.Remainder(right);
+	public static Tensor operator %(Tensor left, Scalar right) => left.RemainderScalar(right);
 	public static Tensor operator %(Scalar left, Tensor right)
 	{
 		using Tensor leftTensor = new(left, false, right.GetDevice());
 		return leftTensor % right;
 	}
 
-	public static Tensor operator -(Tensor tensor) => tensor.neg();
+	public static Tensor operator -(Tensor tensor) => tensor.Neg();
 
-	public static Tensor operator <(Tensor left, Tensor right) => left.lt(right);
-	public static Tensor operator <(Tensor left, Scalar right) => left.lt_scalar(right);
+	public static Tensor operator <(Tensor left, Tensor right) => left.Lt(right);
+	public static Tensor operator <(Tensor left, Scalar right) => left.LtScalar(right);
 	public static Tensor operator <(Scalar left, Tensor right) => right >= left;
 
-	public static Tensor operator <=(Tensor left, Tensor right) => left.le(right);
-	public static Tensor operator <=(Tensor left, Scalar right) => left.le_scalar(right);
+	public static Tensor operator <=(Tensor left, Tensor right) => left.Le(right);
+	public static Tensor operator <=(Tensor left, Scalar right) => left.LeScalar(right);
 	public static Tensor operator <=(Scalar left, Tensor right) => right > left;
 
-	public static Tensor operator >(Tensor left, Tensor right) => left.gt(right);
-	public static Tensor operator >(Tensor left, Scalar right) => left.gt_scalar(right);
+	public static Tensor operator >(Tensor left, Tensor right) => left.Gt(right);
+	public static Tensor operator >(Tensor left, Scalar right) => left.GtScalar(right);
 	public static Tensor operator >(Scalar left, Tensor right) => right <= left;
 
-	public static Tensor operator >=(Tensor left, Tensor right) => left.ge(right);
-	public static Tensor operator >=(Tensor left, Scalar right) => left.ge_scalar(right);
+	public static Tensor operator >=(Tensor left, Tensor right) => left.Ge(right);
+	public static Tensor operator >=(Tensor left, Scalar right) => left.GeScalar(right);
 	public static Tensor operator >=(Scalar left, Tensor right) => right < left;
 
-	public static Tensor operator ==(Tensor left, Tensor right) => left.eq(right);
-	public static Tensor operator ==(Tensor left, Scalar right) => left.eq_scalar(right);
-	public static Tensor operator ==(Scalar left, Tensor right) => right.eq_scalar(left);
+	public static Tensor operator ==(Tensor left, Tensor right) => left.Eq(right);
+	public static Tensor operator ==(Tensor left, Scalar right) => left.EqScalar(right);
+	public static Tensor operator ==(Scalar left, Tensor right) => right.EqScalar(left);
 
-	public static Tensor operator !=(Tensor left, Tensor right) => left.ne(right);
-	public static Tensor operator !=(Tensor left, Scalar right) => left.ne_scalar(right);
-	public static Tensor operator !=(Scalar left, Tensor right) => right.ne_scalar(left);
+	public static Tensor operator !=(Tensor left, Tensor right) => left.Ne(right);
+	public static Tensor operator !=(Tensor left, Scalar right) => left.NeScalar(right);
+	public static Tensor operator !=(Scalar left, Tensor right) => right.NeScalar(left);
 
-	public static Tensor operator &(Tensor left, Tensor right) => left.bitwise_and(right);
-	public static Tensor operator |(Tensor left, Tensor right) => left.bitwise_or(right);
-	public static Tensor operator ^(Tensor left, Tensor right) => left.bitwise_xor(right);
-	public static Tensor operator ~(Tensor left) => left.bitwise_not();
+	public static Tensor operator &(Tensor left, Tensor right) => left.BitwiseAnd(right);
+	public static Tensor operator |(Tensor left, Tensor right) => left.BitwiseOr(right);
+	public static Tensor operator ^(Tensor left, Tensor right) => left.BitwiseXor(right);
+	public static Tensor operator ~(Tensor left) => left.BitwiseNot();
 
-	public static Tensor operator <<(Tensor left, Tensor right) => left.bitwise_left_shift(right);
-	public static Tensor operator >>(Tensor left, Tensor right) => left.bitwise_right_shift(right);
+	public static Tensor operator <<(Tensor left, Tensor right) => left.BitwiseLeftShift(right);
+	public static Tensor operator >>(Tensor left, Tensor right) => left.BitwiseRightShift(right);
 	public static Tensor operator >>>(Tensor left, Tensor right)
 	{
 		int bitWidth = left.Type switch
@@ -98,7 +98,7 @@ public readonly partial struct Tensor :
 			_ => throw new NotSupportedException("Unsigned right shift is only supported for integer tensor types."),
 		};
 		using Tensor inverseShiftAmount = bitWidth - right;
-		using Tensor ones = right.ones_like(false);
+		using Tensor ones = right.OnesLike(false);
 		using Tensor ones_left_shifted = ones << inverseShiftAmount;
 		using Tensor mask = ones_left_shifted - ones;
 		using Tensor shifted = left >> right;
