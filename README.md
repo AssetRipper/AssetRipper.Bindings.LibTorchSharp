@@ -1,10 +1,8 @@
 # AssetRipper.Bindings.LibTorchSharp
 
+[![](https://img.shields.io/nuget/v/AssetRipper.Bindings.LibTorchSharp)](https://www.nuget.org/packages/AssetRipper.Bindings.LibTorchSharp)
+
 This is an alternate binding library for [LibTorchSharp](https://github.com/dotnet/TorchSharp/tree/main/src/Native), the native library portion of [TorchSharp](https://github.com/dotnet/TorchSharp).
-
-## Current Status
-
-The library is fully functional right now, but there are a few issues that need resolved before an inital release.
 
 ## Differences from TorchSharp
 
