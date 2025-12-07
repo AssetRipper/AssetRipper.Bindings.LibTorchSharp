@@ -3,8 +3,8 @@
 public partial struct Linear
 {
 	private static readonly double _sqrt5 = double.Sqrt(5);
-	public Tensor weights { readonly get; private set; }
-	public Tensor bias { readonly get; private set; }
+	private Tensor weights;
+	private Tensor bias;
 
 	public Linear(long inFeatures, long outFeatures, bool hasBias = true, ScalarType? dtype = null, Device? device = null)
 	{
@@ -31,6 +31,16 @@ public partial struct Linear
 public partial struct Linear : IDisposable, IModule
 {
 	// Source generated
+	public readonly bool IsTraining
+	{
+		set
+		{
+		}
+	}
+
+	public readonly Tensor Weights => weights;
+	public readonly Tensor Bias => bias;
+
 	public Linear(Tensor weights, Tensor bias)
 	{
 		this.weights = weights;
@@ -48,10 +58,9 @@ public partial struct Linear : IDisposable, IModule
 	public void CopyFrom(StateDictionary dictionary)
 	{
 		Tensor temp_weight = dictionary.GetTensor(nameof(weights));
+		Tensor temp_bias = dictionary.GetTensor(nameof(bias));
 		weights.Dispose();
 		weights = temp_weight;
-
-		Tensor temp_bias = dictionary.GetTensor(nameof(bias));
 		bias.Dispose();
 		bias = temp_bias;
 	}
