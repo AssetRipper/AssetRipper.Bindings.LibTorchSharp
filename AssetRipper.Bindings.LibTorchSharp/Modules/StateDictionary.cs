@@ -62,10 +62,12 @@ public readonly struct StateDictionary : IDisposable
 		foreach ((string name, Tensor p) in module.NamedParameters)
 		{
 			p.CopyInline(GetTensor(name), false);
+			p.Dispose();
 		}
 		foreach ((string name, Tensor p) in module.NamedBuffers)
 		{
 			p.CopyInline(GetTensor(name), false);
+			p.Dispose();
 		}
 	}
 
