@@ -53,7 +53,7 @@ public readonly struct StateDictionary : IDisposable
 
 	public StateDictionary GetChild(string name)
 	{
-		return new StateDictionary(string.IsNullOrEmpty(prefix) ? name : $"{prefix}{name}{Separator}", tensors, device);
+		return new StateDictionary($"{prefix}{name}{Separator}", tensors, device);
 	}
 
 	public void CopyTo(NNModule module)
