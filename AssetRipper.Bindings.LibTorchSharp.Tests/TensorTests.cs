@@ -5,7 +5,7 @@ public class TensorTests
 	[Test]
 	public void Ones()
 	{
-		using Tensor tensor = Tensor.ones([3], ScalarType.Float32, false);
+		using Tensor tensor = Tensor.Ones([3], ScalarType.Float32, false);
 		float[] values = tensor.ToArray<float>();
 		Assert.That(values, Is.EquivalentTo([1f, 1f, 1f]));
 	}

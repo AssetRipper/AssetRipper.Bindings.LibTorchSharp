@@ -9,10 +9,10 @@ public class OptimizerTests
 	{
 		using Tensor parameter = new([1f], requires_grad: true);
 		using SGD optimizer = CreateSGD(parameter);
-		using Tensor loss = parameter.abs();
-		loss.backward();
-		optimizer.step();
-		optimizer.zero_grad();
+		using Tensor loss = parameter.Abs();
+		loss.Backward();
+		optimizer.Step();
+		optimizer.ZeroGrad();
 		float value = parameter.ToValue<float>();
 		Assert.That(value, Is.LessThan(1f));
 	}

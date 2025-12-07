@@ -11,7 +11,7 @@ public class ModuleTests
 		{
 			using Embedding embedding = new(1, 1, -1, false, default, false, 2.0, false, false);
 			using Tensor input = new([0]);
-			using Tensor output = embedding.forward(input);
+			using Tensor output = embedding.Forward(input);
 		});
 	}
 
@@ -26,11 +26,11 @@ public class ModuleTests
 			{
 				fixed (byte* namePtr = "Embedding"u8)
 				{
-					sequential.push_back((sbyte*)namePtr, embedding);
+					sequential.PushBack((sbyte*)namePtr, embedding);
 				}
 			}
 			using Tensor input = new([0]);
-			using Tensor output = sequential.forward(input);
+			using Tensor output = sequential.Forward(input);
 		});
 	}
 
@@ -38,7 +38,7 @@ public class ModuleTests
 	public void LinearSaveAndLoad()
 	{
 		using MemoryStream stream = new();
-		using Linear linear1 = new(Tensor.ones([2], ScalarType.Float32, true), Tensor.zeros([2], ScalarType.Float32, true));
+		using Linear linear1 = new(Tensor.Ones([2], ScalarType.Float32, true), Tensor.Zeros([2], ScalarType.Float32, true));
 		linear1.Save(stream);
 		stream.Position = 0;
 
@@ -56,7 +56,7 @@ public class ModuleTests
 	public void LinearSaveAndLoadWithNullTensor()
 	{
 		using MemoryStream stream = new();
-		using Linear linear1 = new(Tensor.ones([2], ScalarType.Float32, true), Tensor.Null);
+		using Linear linear1 = new(Tensor.Ones([2], ScalarType.Float32, true), Tensor.Null);
 		linear1.Save(stream);
 		stream.Position = 0;
 
