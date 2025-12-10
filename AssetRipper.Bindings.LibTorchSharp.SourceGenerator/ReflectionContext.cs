@@ -69,7 +69,7 @@ internal readonly struct ReflectionContext
 
 	public bool IsOutParameter(string methodName, int parameterIndex, string parameterName)
 	{
-		return dictionary.GetValueOrDefault(methodName)?.Parameters[parameterIndex].IsOut ?? false;
+		return parameterName is not "outAsAnyModule" && (dictionary.GetValueOrDefault(methodName)?.Parameters[parameterIndex].IsOut ?? false);
 	}
 
 	public bool IsBooleanParameter(string methodName, int parameterIndex, string parameterName)
