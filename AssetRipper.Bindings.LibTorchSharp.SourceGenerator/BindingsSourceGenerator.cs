@@ -163,7 +163,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 							modifiedParameters = true;
 							modifiedParameterDatas[i] = parameterData with { Type = new TypeData("ScalarType", 0) };
 						}
-						else if (parameterData is { Name: "device_type", Type.IsInt32: true })
+						else if (parameterData is { Name: "device_type", Type: { IsInt32: true } or { IsInt64: true } })
 						{
 							modifiedParameters = true;
 							modifiedParameterDatas[i] = parameterData with { Type = new TypeData("DeviceType", 0) };
@@ -614,7 +614,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 						{
 							device_type_Index = i;
 						}
-						else if (parameter is { Name: "device_index", Type.IsInt32: true, IsOut: false })
+						else if (parameter is { Name: "device_index", Type: { IsInt32: true } or { IsInt64: true }, IsOut: false })
 						{
 							device_index_Index = i;
 						}

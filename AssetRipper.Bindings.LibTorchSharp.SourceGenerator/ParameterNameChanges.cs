@@ -10,6 +10,10 @@ internal static class ParameterNameChanges
 		("JIT_Module_named_modules", "allocator") => "allocator1",
 		("JIT_Module_named_parameters", "allocator") => "allocator1",
 		("NN_Module_get_parameters", "allocator1") => "allocator",
+		("NN_Module_to_device", "device") => "device_type",
+		("NN_Module_to_device", "index") => "device_index",
+		("NN_Module_to_device_dtype", "device") => "device_type",
+		("NN_Module_to_device_dtype", "index") => "device_index",
 		_ => null
 	};
 

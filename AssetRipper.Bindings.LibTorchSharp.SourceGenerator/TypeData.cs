@@ -13,6 +13,7 @@ internal readonly record struct TypeData(string Name, int PointerLevel = 0)
 	public bool IsSByte=> Name is "sbyte" && PointerLevel is 0;
 	public bool IsSBytePointer => Name is "sbyte" && PointerLevel is 1;
 	public bool IsInt32 => Name is "int" && PointerLevel is 0;
+	public bool IsInt64 => Name is "long" && PointerLevel is 0;
 
 	public override string ToString() => PointerLevel switch
 	{
