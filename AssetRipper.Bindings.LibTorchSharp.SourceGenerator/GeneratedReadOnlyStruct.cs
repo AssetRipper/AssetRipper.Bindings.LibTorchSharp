@@ -20,6 +20,10 @@ internal abstract class GeneratedReadOnlyStruct : GeneratedType
 				
 			public readonly unsafe partial struct {{Name}} : System.IDisposable
 			{
+				[global::System.Diagnostics.DebuggerHidden]
+				[global::System.Diagnostics.DebuggerNonUserCode]
+				[global::System.Diagnostics.DebuggerStepThrough]
+				[global::System.Diagnostics.StackTraceHidden]
 				public void Dispose()
 				{
 					if (!IsNull)

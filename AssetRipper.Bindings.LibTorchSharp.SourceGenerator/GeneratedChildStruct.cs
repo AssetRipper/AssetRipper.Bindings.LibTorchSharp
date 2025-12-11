@@ -43,7 +43,11 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 
 				public static implicit operator {{Parent.Name}}({{Name}} value) => value.handle;
 				public static explicit operator {{Name}}({{Parent.Name}} value) => new(value);
-
+			
+				[global::System.Diagnostics.DebuggerHidden]
+				[global::System.Diagnostics.DebuggerNonUserCode]
+				[global::System.Diagnostics.DebuggerStepThrough]
+				[global::System.Diagnostics.StackTraceHidden]
 				public void ThrowIfNull()
 				{
 					if (IsNull)
@@ -90,6 +94,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 			if (staticMethod.Parameters.Length > 0 && staticMethod.Parameters[^1] is { IsOut: false, Type: { Name: "NNAnyModule", IsPointer: true }, Name: "outAsAnyModule" })
 			{
 				ParameterData deviceParameter = new(new("Device?"), "device", DefaultValue: "null");
+				writer.WriteDebuggerIgnoreAttributes();
 				writer.Write("public ");
 				writer.Write(Name);
 				writer.Write('(');
@@ -103,6 +108,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 					writer.WriteLine("this.handle.ToDevice(false, device);");
 				}
 
+				writer.WriteDebuggerIgnoreAttributes();
 				writer.Write("public static NNAnyModule CreateAsAnyModule(");
 				writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Concat([deviceParameter])));
 				writer.WriteLine(')');
@@ -118,6 +124,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 			}
 			else
 			{
+				writer.WriteDebuggerIgnoreAttributes();
 				writer.Write("public ");
 				writer.Write(Name);
 				writer.Write('(');

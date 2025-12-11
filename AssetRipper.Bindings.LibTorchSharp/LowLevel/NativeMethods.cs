@@ -1,9 +1,14 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace AssetRipper.Bindings.LibTorchSharp.LowLevel;
 
 public static unsafe partial class NativeMethods
 {
+	[DebuggerHidden]
+	[DebuggerNonUserCode]
+	[DebuggerStepThrough]
+	[StackTraceHidden]
 	private static void CheckForErrors()
 	{
 		sbyte* error = PInvoke.Torch_get_and_reset_last_err();

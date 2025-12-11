@@ -125,6 +125,7 @@ internal abstract class GeneratedType
 			{
 				bool isInstance = IsInstance(method);
 
+				writer.WriteDebuggerIgnoreAttributes();
 				writer.Write("public ");
 				if (!isInstance)
 				{
@@ -164,6 +165,7 @@ internal abstract class GeneratedType
 				{
 					if (property.GetMethod is { } getMethod)
 					{
+						writer.WriteDebuggerIgnoreAttributes();
 						writer.WriteLine("get");
 						using (new CurlyBrackets(writer))
 						{
@@ -172,6 +174,7 @@ internal abstract class GeneratedType
 					}
 					if (property.SetMethod is { } setMethod)
 					{
+						writer.WriteDebuggerIgnoreAttributes();
 						writer.WriteLine("set");
 						using (new CurlyBrackets(writer))
 						{

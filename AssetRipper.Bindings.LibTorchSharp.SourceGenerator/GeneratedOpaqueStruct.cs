@@ -41,6 +41,7 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 		writer.WriteLine($"public readonly unsafe partial struct {Name}");
 		using (new CurlyBrackets(writer))
 		{
+			writer.WriteDebuggerIgnoreAttributes();
 			writer.Write("public ");
 			writer.Write(Name);
 			writer.Write('(');
@@ -80,6 +81,10 @@ internal sealed class GeneratedOpaqueStruct(StructData @struct) : GeneratedReadO
 				public static implicit operator {{Struct.OpaqueName}}*({{Name}} value) => value.handle;
 				public static implicit operator {{Name}}({{Struct.OpaqueName}}* value) => new(value);
 
+				[global::System.Diagnostics.DebuggerHidden]
+				[global::System.Diagnostics.DebuggerNonUserCode]
+				[global::System.Diagnostics.DebuggerStepThrough]
+				[global::System.Diagnostics.StackTraceHidden]
 				public void ThrowIfNull()
 				{
 					if (IsNull)

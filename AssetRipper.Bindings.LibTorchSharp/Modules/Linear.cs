@@ -23,6 +23,10 @@ public partial struct Linear
 		}
 	}
 
+	[global::System.Diagnostics.DebuggerHidden]
+	[global::System.Diagnostics.DebuggerNonUserCode]
+	[global::System.Diagnostics.DebuggerStepThrough]
+	[global::System.Diagnostics.StackTraceHidden]
 	public readonly Tensor Forward(Tensor tensor)
 	{
 		return NN.Linear(tensor, weights, bias);

@@ -180,7 +180,8 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 					nativeMethods[j] = nativeMethod;
 
-					writer.WriteComment(pinvokeMethodNameToEntryPoint[pinvokeMethod.Name]);
+					writer.WriteSummaryDocumentation(pinvokeMethodNameToEntryPoint[pinvokeMethod.Name]);
+					writer.WriteDebuggerIgnoreAttributes();
 					writer.Write("public static ");
 					writer.WriteLine(nativeMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -300,6 +301,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					MethodData modifiedMethod = nativeMethod with { Parameters = new(modifiedParameterDatas) };
 					nativeMethods[j] = modifiedMethod;
 
+					writer.WriteDebuggerIgnoreAttributes();
 					writer.Write("public static ");
 					writer.WriteLine(modifiedMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -371,6 +373,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 						nativeMethods[j] = modifiedMethod;
 
+						writer.WriteDebuggerIgnoreAttributes();
 						writer.Write("public static ");
 						writer.WriteLine(modifiedMethod.ToString());
 						using (new CurlyBrackets(writer))
@@ -427,6 +430,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 						nativeMethods[j] = modifiedMethod;
 
+						writer.WriteDebuggerIgnoreAttributes();
 						writer.Write("public static ");
 						writer.WriteLine(modifiedMethod.ToString());
 						using (new CurlyBrackets(writer))
@@ -496,6 +500,10 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 				namespace AssetRipper.Bindings.LibTorchSharp.LowLevel;
 				public static unsafe partial class NativeMethods
 				{
+					[global::System.Diagnostics.DebuggerHidden]
+					[global::System.Diagnostics.DebuggerNonUserCode]
+					[global::System.Diagnostics.DebuggerStepThrough]
+					[global::System.Diagnostics.StackTraceHidden]
 					public unsafe static Tensor NN_Optimizer_step(Optimizer optimizer)
 					{
 						return NN_Optimizer_step(optimizer, null);
@@ -566,6 +574,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					MethodData modifiedMethod = nativeMethod with { Parameters = new(modifiedParameters) };
 					nativeMethods[j] = modifiedMethod;
 
+					writer.WriteDebuggerIgnoreAttributes();
 					writer.Write("public static ");
 					writer.WriteLine(modifiedMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -632,6 +641,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					MethodData modifiedMethod = nativeMethod with { Parameters = new(modifiedParameters) };
 					nativeMethods[j] = modifiedMethod;
 
+					writer.WriteDebuggerIgnoreAttributes();
 					writer.Write("public static ");
 					writer.WriteLine(modifiedMethod.ToString());
 					using (new CurlyBrackets(writer))
