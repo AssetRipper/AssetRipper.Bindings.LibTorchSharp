@@ -7,6 +7,11 @@ public readonly partial struct Tensor
 {
 	public unsafe T ToValue<T>() where T : unmanaged
 	{
+		if (DeviceType() != LibTorchSharp.DeviceType.CPU)
+		{
+			using Tensor cpuTensor = Cpu();
+			return cpuTensor.ToValue<T>();
+		}
 		ValidateType<T>();
 		T* ptr = (T*)Data();
 		return *ptr;
