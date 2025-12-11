@@ -1,6 +1,6 @@
 # AssetRipper.Bindings.LibTorchSharp
 
-[![](https://img.shields.io/nuget/v/AssetRipper.Bindings.LibTorchSharp)](https://www.nuget.org/packages/AssetRipper.Bindings.LibTorchSharp)
+[![](https://img.shields.io/nuget/vpre/AssetRipper.Bindings.LibTorchSharp)](https://www.nuget.org/packages/AssetRipper.Bindings.LibTorchSharp)
 
 This is an alternate binding library for [LibTorchSharp](https://github.com/dotnet/TorchSharp/tree/main/src/Native), the native library portion of [TorchSharp](https://github.com/dotnet/TorchSharp).
 
@@ -30,6 +30,8 @@ Most of this library is procedurally generated.
 
 * [ClangSharp](https://github.com/dotnet/clangsharp/) is used to generate the low-level interop code.
 * A custom Roslyn source generator is used to create a mid-level layer on top of the interop code.
+
+TorchSharp includes some hand-written C# code. Nearly all of that functionality is omitted from this library.
 
 ### Documentation
 
