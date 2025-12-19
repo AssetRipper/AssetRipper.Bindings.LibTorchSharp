@@ -1,4 +1,5 @@
-﻿using AssetRipper.Text.SourceGeneration;
+﻿using AssetRipper.Bindings.LibTorchSharp.SourceGenerator.Extensions;
+using AssetRipper.Text.SourceGeneration;
 using SGF;
 using System;
 using System.CodeDom.Compiler;

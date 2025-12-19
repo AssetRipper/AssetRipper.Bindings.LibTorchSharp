@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 
-namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
+namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator.Extensions;
 
 internal static class StringExtensions
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
+namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator.Extensions;
 
 internal static class KeyValuePairExtensions
 {

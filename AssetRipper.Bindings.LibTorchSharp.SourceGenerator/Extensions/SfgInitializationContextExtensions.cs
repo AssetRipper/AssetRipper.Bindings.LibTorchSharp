@@ -2,7 +2,7 @@
 using SGF;
 using System;
 
-namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
+namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator.Extensions;
 
 internal static class SfgInitializationContextExtensions
 {

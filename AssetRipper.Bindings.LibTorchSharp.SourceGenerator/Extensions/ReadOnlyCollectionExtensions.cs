@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
+namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator.Extensions;
 
 internal static class ReadOnlyCollectionExtensions
 {

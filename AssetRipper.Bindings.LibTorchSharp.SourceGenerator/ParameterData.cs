@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using AssetRipper.Bindings.LibTorchSharp.SourceGenerator.Extensions;
+using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 
 namespace AssetRipper.Bindings.LibTorchSharp.SourceGenerator;
