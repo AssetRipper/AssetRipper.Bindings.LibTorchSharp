@@ -120,16 +120,61 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 	private static void Generate(SgfSourceProductionContext context, ImmutableArray<StructData> structs, ImmutableArray<MethodData> pinvokeMethods, ImmutableArray<(string EntryPoint, string MethodName)> entryPointArray)
 	{
-		Dictionary<string, string> pinvokeMethodNameToNativeMethodName = pinvokeMethods.ToDictionary(m => m.Name, m =>
+		ReflectionContext reflectionContext;
+		MethodData[] nativeMethods = new MethodData[pinvokeMethods.Length];
 		{
-			string methodName = m.Name;
-			return methodName[^1] == '_' ? methodName + "inline" : methodName;
-		});
-		Dictionary<string, string> pinvokeMethodNameToEntryPoint = entryPointArray.ToDictionary(t => t.MethodName, t => t.EntryPoint);
-		ReflectionContext reflectionContext = new(pinvokeMethodNameToEntryPoint, pinvokeMethodNameToNativeMethodName, pinvokeMethods);
+			Dictionary<string, string> pinvokeMethodNameToNativeMethodName = pinvokeMethods.ToDictionary(m => m.Name, m =>
+			{
+				string methodName = m.Name;
+				return methodName[^1] == '_' ? methodName + "inline" : methodName;
+			});
+			Dictionary<string, string> pinvokeMethodNameToEntryPoint = entryPointArray.ToDictionary(t => t.MethodName, t => t.EntryPoint);
+			reflectionContext = new(pinvokeMethodNameToEntryPoint, pinvokeMethodNameToNativeMethodName, pinvokeMethods);
+
+			for (int j = 0; j < pinvokeMethods.Length; j++)
+			{
+				MethodData pinvokeMethod = pinvokeMethods[j];
+				MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs).ApplyParameterNameChanges() with
+				{
+					Name = pinvokeMethodNameToNativeMethodName[pinvokeMethod.Name]
+				};
+
+				string? returnTypeOverride = reflectionContext.GetReturnType(nativeMethod.Name);
+				if (returnTypeOverride is not null)
+				{
+					nativeMethod = nativeMethod with { ReturnType = new TypeData(returnTypeOverride, 0) };
+				}
+
+				bool modifiedParameters = false;
+				ParameterData[] modifiedParameterDatas = new ParameterData[nativeMethod.Parameters.Length];
+				for (int i = 0; i < nativeMethod.Parameters.Length; i++)
+				{
+					ParameterData parameterData = nativeMethod.Parameters[i];
+					if (parameterData is { Name: "scalar_type" or "dtype", Type.IsSByte: true })
+					{
+						modifiedParameters = true;
+						modifiedParameterDatas[i] = parameterData with { Type = new TypeData("ScalarType", 0) };
+					}
+					else if (parameterData is { Name: "device_type", Type: { IsInt32: true } or { IsInt64: true } })
+					{
+						modifiedParameters = true;
+						modifiedParameterDatas[i] = parameterData with { Type = new TypeData("DeviceType", 0) };
+					}
+					else
+					{
+						modifiedParameterDatas[i] = parameterData;
+					}
+				}
+				if (modifiedParameters)
+				{
+					nativeMethod = nativeMethod with { Parameters = new(modifiedParameterDatas) };
+				}
+
+				nativeMethods[j] = nativeMethod;
+			}
+		}
 
 		// Generate NativeMethods
-		MethodData[] nativeMethods = new MethodData[pinvokeMethods.Length];
 		{
 			StringWriter stringWriter = new();
 			IndentedTextWriter writer = IndentedTextWriterFactory.Create(stringWriter);
@@ -142,45 +187,9 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 				for (int j = 0; j < pinvokeMethods.Length; j++)
 				{
 					MethodData pinvokeMethod = pinvokeMethods[j];
-					MethodData nativeMethod = pinvokeMethod.ReplaceOpaqueTypes(structs).ApplyParameterNameChanges() with
-					{
-						Name = pinvokeMethodNameToNativeMethodName[pinvokeMethod.Name]
-					};
+					MethodData nativeMethod = nativeMethods[j];
 
-					string? returnTypeOverride = reflectionContext.GetReturnType(nativeMethod.Name);
-					if (returnTypeOverride is not null)
-					{
-						nativeMethod = nativeMethod with { ReturnType = new TypeData(returnTypeOverride, 0) };
-					}
-
-					bool modifiedParameters = false;
-					ParameterData[] modifiedParameterDatas = new ParameterData[nativeMethod.Parameters.Length];
-					for (int i = 0; i < nativeMethod.Parameters.Length; i++)
-					{
-						ParameterData parameterData = nativeMethod.Parameters[i];
-						if (parameterData is { Name: "scalar_type" or "dtype", Type.IsSByte: true })
-						{
-							modifiedParameters = true;
-							modifiedParameterDatas[i] = parameterData with { Type = new TypeData("ScalarType", 0) };
-						}
-						else if (parameterData is { Name: "device_type", Type: { IsInt32: true } or { IsInt64: true } })
-						{
-							modifiedParameters = true;
-							modifiedParameterDatas[i] = parameterData with { Type = new TypeData("DeviceType", 0) };
-						}
-						else
-						{
-							modifiedParameterDatas[i] = parameterData;
-						}
-					}
-					if (modifiedParameters)
-					{
-						nativeMethod = nativeMethod with { Parameters = new(modifiedParameterDatas) };
-					}
-
-					nativeMethods[j] = nativeMethod;
-
-					writer.WriteSummaryDocumentation(pinvokeMethodNameToEntryPoint[pinvokeMethod.Name]);
+					writer.WriteSummaryDocumentation(reflectionContext.GetEntryPoint(nativeMethod.Name));
 					writer.WriteDebuggerIgnoreAttributes();
 					writer.WriteGeneratedCodeAttribute();
 					writer.Write("public static ");

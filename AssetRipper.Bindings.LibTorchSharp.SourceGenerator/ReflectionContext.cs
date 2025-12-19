@@ -12,6 +12,7 @@ internal readonly struct ReflectionContext
 	private sealed record class ReflectionInfo(MethodInfo Method, ParameterInfo[] Parameters);
 
 	private readonly Dictionary<string, ReflectionInfo?> dictionary;
+	private readonly Dictionary<string, string> nativeMethodNameToEntryPoint;
 
 	public ReflectionContext(Dictionary<string, string> pinvokeMethodNameToEntryPoint, Dictionary<string, string> pinvokeMethodNameToNativeMethodName, ImmutableArray<MethodData> pinvokeMethods)
 	{
@@ -35,6 +36,12 @@ internal readonly struct ReflectionContext
 			}
 			return new ReflectionInfo(methodInfo, parameters);
 		});
+		nativeMethodNameToEntryPoint = pinvokeMethodNameToEntryPoint.ToDictionary(kvp => pinvokeMethodNameToNativeMethodName[kvp.Key], kvp => kvp.Value);
+	}
+
+	public string GetEntryPoint(string methodName)
+	{
+		return nativeMethodNameToEntryPoint[methodName];
 	}
 
 	public string? GetReturnType(string methodName) => methodName switch
