@@ -182,6 +182,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 
 					writer.WriteSummaryDocumentation(pinvokeMethodNameToEntryPoint[pinvokeMethod.Name]);
 					writer.WriteDebuggerIgnoreAttributes();
+					writer.WriteGeneratedCodeAttribute();
 					writer.Write("public static ");
 					writer.WriteLine(nativeMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -302,6 +303,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					nativeMethods[j] = modifiedMethod;
 
 					writer.WriteDebuggerIgnoreAttributes();
+					writer.WriteGeneratedCodeAttribute("Parameter Overloads");
 					writer.Write("public static ");
 					writer.WriteLine(modifiedMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -374,6 +376,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 						nativeMethods[j] = modifiedMethod;
 
 						writer.WriteDebuggerIgnoreAttributes();
+						writer.WriteGeneratedCodeAttribute("Allocator Overloads");
 						writer.Write("public static ");
 						writer.WriteLine(modifiedMethod.ToString());
 						using (new CurlyBrackets(writer))
@@ -431,6 +434,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 						nativeMethods[j] = modifiedMethod;
 
 						writer.WriteDebuggerIgnoreAttributes();
+						writer.WriteGeneratedCodeAttribute("Allocator Overloads");
 						writer.Write("public static ");
 						writer.WriteLine(modifiedMethod.ToString());
 						using (new CurlyBrackets(writer))
@@ -575,6 +579,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					nativeMethods[j] = modifiedMethod;
 
 					writer.WriteDebuggerIgnoreAttributes();
+					writer.WriteGeneratedCodeAttribute("Span Overloads");
 					writer.Write("public static ");
 					writer.WriteLine(modifiedMethod.ToString());
 					using (new CurlyBrackets(writer))
@@ -642,6 +647,7 @@ public class BindingsSourceGenerator() : IncrementalGenerator(nameof(BindingsSou
 					nativeMethods[j] = modifiedMethod;
 
 					writer.WriteDebuggerIgnoreAttributes();
+					writer.WriteGeneratedCodeAttribute("Device Overloads");
 					writer.Write("public static ");
 					writer.WriteLine(modifiedMethod.ToString());
 					using (new CurlyBrackets(writer))

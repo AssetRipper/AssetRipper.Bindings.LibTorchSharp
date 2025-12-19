@@ -11,4 +11,29 @@ internal static class IndentedTextWriterExtensions
 		writer.WriteLine("[global::System.Diagnostics.DebuggerStepThrough]");
 		writer.WriteLine("[global::System.Diagnostics.StackTraceHidden]");
 	}
+
+	public static void WriteGeneratedCodeAttribute(this IndentedTextWriter writer, string? toolName = null, string? version = null)
+	{
+		writer.Write("[global::System.CodeDom.Compiler.GeneratedCode(");
+		if (toolName is null)
+		{
+			writer.Write("null, ");
+		}
+		else
+		{
+			writer.Write('"');
+			writer.Write(toolName);
+			writer.Write("\", ");
+		}
+		if (version is null)
+		{
+			writer.WriteLine("null)]");
+		}
+		else
+		{
+			writer.Write('"');
+			writer.Write(version);
+			writer.WriteLine("\")]");
+		}
+	}
 }
