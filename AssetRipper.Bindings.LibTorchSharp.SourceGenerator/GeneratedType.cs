@@ -15,6 +15,8 @@ internal abstract class GeneratedType
 	public abstract string Kind { get; }
 	public abstract string Name { get; }
 	public virtual string Namespace => "AssetRipper.Bindings.LibTorchSharp";
+	public string FullName => $"{Namespace}.{Name}";
+	public string GloballyQualifiedFullName => $"global::{Namespace}.{Name}";
 	public List<PropertyData> Properties { get; } = [];
 	public List<MethodPair> Methods { get; } = [];
 	public IEnumerable<MethodPair> InstanceMethods => Methods.Where(m => IsInstance(m.MidLevel));

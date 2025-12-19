@@ -115,6 +115,23 @@ internal readonly struct ParameterDataArray(ImmutableArray<ParameterData> array)
 		return new(array);
 	}
 
+	public int IndexOf(ParameterData item)
+	{
+		return Array.IndexOf(item);
+	}
+
+	public int IndexOf(Predicate<ParameterData> match)
+	{
+		for (int i = 0; i < Length; i++)
+		{
+			if (match(this[i]))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	int IReadOnlyCollection<ParameterData>.Count => Length;
 	IEnumerator<ParameterData> IEnumerable<ParameterData>.GetEnumerator()
 	{
