@@ -15,6 +15,16 @@ public partial struct BooleanEmbedding
 		Init.UniformInline(falseEmbedding, -bound, bound);
 	}
 
+	public BooleanEmbedding(ReadOnlySpan<long> embeddingDims, ScalarType? dtype = null, Device? device = null)
+	{
+		ArgumentOutOfRangeException.ThrowIfZero(embeddingDims.Length);
+		trueEmbedding = Tensor.Empty(embeddingDims, dtype ?? ScalarType.Float32, true, device);
+		falseEmbedding = Tensor.Empty(embeddingDims, dtype ?? ScalarType.Float32, true, device);
+		double bound = 1.0 / double.Sqrt(embeddingDims[^1]);
+		Init.UniformInline(trueEmbedding, -bound, bound);
+		Init.UniformInline(falseEmbedding, -bound, bound);
+	}
+
 	public readonly Tensor Forward(Tensor input)
 	{
 		using Tensor unsqueezed = input.Unsqueeze(-1);
