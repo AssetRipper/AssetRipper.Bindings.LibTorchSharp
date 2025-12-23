@@ -14,7 +14,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
-		<PackageReference Include="TorchSharp-cpu" Version="0.105.2" />
+		<PackageReference Include="TorchSharp-cpu" Version="0.105.1" />
 	</ItemGroup>
 
 	<ItemGroup>
