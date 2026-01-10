@@ -56,4 +56,6 @@ public partial struct BooleanEmbedding : IModule
 		trueEmbedding.DisposeAndSetDefault();
 		falseEmbedding.DisposeAndSetDefault();
 	}
+
+	public readonly IEnumerable<Tensor> GetParameters() => [TrueEmbedding, FalseEmbedding];
 }

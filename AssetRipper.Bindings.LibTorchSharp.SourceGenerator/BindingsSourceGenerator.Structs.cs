@@ -282,6 +282,17 @@ public partial class BindingsSourceGenerator
 				}
 			}
 
+			// GetParameters method
+			writer.Write("public readonly IEnumerable<Tensor> GetParameters() => [");
+			foreach (int weightParameter in weightParameters)
+			{
+				ParameterData parameter = forwardMethod.Parameters[weightParameter];
+				string propertyName = $"{char.ToUpperInvariant(parameter.Name[0])}{parameter.Name[1..]}";
+				writer.Write(propertyName);
+				writer.Write(", ");
+			}
+			writer.WriteLine("];");
+
 			// Dispose method
 			writer.WriteLine("public void Dispose()");
 			using (new CurlyBrackets(writer))
