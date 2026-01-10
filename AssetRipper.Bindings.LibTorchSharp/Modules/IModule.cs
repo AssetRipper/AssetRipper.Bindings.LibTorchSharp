@@ -3,6 +3,6 @@
 public interface IModule : IDisposable
 {
 	bool IsTraining { set; }
-	void CopyFrom(StateDictionary dictionary);
-	void CopyTo(StateDictionary dictionary);
+	void CopyFromRoot(StateDictionary dictionary);
+	void CopyToRoot(StateDictionary dictionary);
 }

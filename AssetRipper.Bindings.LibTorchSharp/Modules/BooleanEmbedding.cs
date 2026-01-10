@@ -39,33 +39,21 @@ public partial struct BooleanEmbedding : IModule
 		this.falseEmbedding = falseEmbedding;
 	}
 
-	public BooleanEmbedding(StateDictionary dictionary)
+	void IModule.CopyFromRoot(StateDictionary dictionary)
 	{
-		trueEmbedding = dictionary.GetTensor(nameof(trueEmbedding));
-		falseEmbedding = dictionary.GetTensor(nameof(falseEmbedding));
+		trueEmbedding.CopyFrom(dictionary);
+		falseEmbedding.CopyFrom(dictionary);
 	}
 
-	public void CopyFrom(StateDictionary dictionary)
+	readonly void IModule.CopyToRoot(StateDictionary dictionary)
 	{
-		Tensor temp_true = dictionary.GetTensor(nameof(trueEmbedding));
-		Tensor temp_false = dictionary.GetTensor(nameof(falseEmbedding));
-		trueEmbedding.Dispose();
-		trueEmbedding = temp_true;
-		falseEmbedding.Dispose();
-		falseEmbedding = temp_false;
-	}
-
-	public readonly void CopyTo(StateDictionary dictionary)
-	{
-		dictionary.AddTensor(nameof(trueEmbedding), trueEmbedding);
-		dictionary.AddTensor(nameof(falseEmbedding), falseEmbedding);
+		trueEmbedding.CopyTo(dictionary);
+		falseEmbedding.CopyTo(dictionary);
 	}
 
 	public void Dispose()
 	{
-		trueEmbedding.Dispose();
-		trueEmbedding = default;
-		falseEmbedding.Dispose();
-		falseEmbedding = default;
+		trueEmbedding.DisposeAndSetDefault();
+		falseEmbedding.DisposeAndSetDefault();
 	}
 }

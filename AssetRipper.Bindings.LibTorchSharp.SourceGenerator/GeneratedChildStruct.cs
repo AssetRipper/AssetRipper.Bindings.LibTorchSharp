@@ -26,7 +26,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 
 			namespace {{Namespace}};
 
-			public readonly unsafe partial struct {{Name}} : System.IEquatable<{{Name}}>
+			public readonly unsafe partial struct {{Name}} : System.IEquatable<{{Name}}>, IDerived<{{Parent.Name}}>
 			{
 				private readonly {{Parent.Name}} handle;
 
@@ -71,6 +71,8 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				{
 					return handle.GetHashCode();
 				}
+
+				{{Parent.Name}} IDerived<{{Parent.Name}}>.AsBase() => handle;
 			}
 			""");
 	}

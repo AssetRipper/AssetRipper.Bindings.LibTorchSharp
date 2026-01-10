@@ -60,8 +60,12 @@ public class ModuleTests
 
 		using (Assert.EnterMultipleScope())
 		{
-			Assert.That(linear2.Weights.ToArray<float>(), Is.EquivalentTo(linear1.Weights.ToArray<float>()));
-			Assert.That(linear2.Bias.ToArray<float>(), Is.EquivalentTo(linear1.Bias.ToArray<float>()));
+			using Tensor weights1 = linear1.Weights;
+			using Tensor weights2 = linear2.Weights;
+			using Tensor bias1 = linear1.Bias;
+			using Tensor bias2 = linear2.Bias;
+			Assert.That(weights2.ToArray<float>(), Is.EquivalentTo(weights1.ToArray<float>()));
+			Assert.That(bias2.ToArray<float>(), Is.EquivalentTo(bias1.ToArray<float>()));
 		}
 	}
 
@@ -78,8 +82,11 @@ public class ModuleTests
 
 		using (Assert.EnterMultipleScope())
 		{
-			Assert.That(linear2.Weights.ToArray<float>(), Is.EquivalentTo(linear1.Weights.ToArray<float>()));
-			Assert.That(linear2.Bias.IsNull);
+			using Tensor weights1 = linear1.Weights;
+			using Tensor weights2 = linear2.Weights;
+			using Tensor bias2 = linear2.Bias;
+			Assert.That(weights2.ToArray<float>(), Is.EquivalentTo(weights1.ToArray<float>()));
+			Assert.That(bias2.IsNull);
 		}
 	}
 }

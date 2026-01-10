@@ -35,14 +35,30 @@ public readonly struct StateDictionary : IDisposable
 		AddTensorInternal(name, tensor.IsNull ? Tensor.Null : tensor.Alias());
 	}
 
+	public void AddTensor(int index, Tensor tensor)
+	{
+		AddTensorInternal(index, tensor.IsNull ? Tensor.Null : tensor.Alias());
+	}
+
 	private void AddTensorInternal(string name, Tensor tensor)
 	{
 		tensors.Add(GetFullName(name), tensor);
 	}
 
+	private void AddTensorInternal(int index, Tensor tensor)
+	{
+		tensors.Add(GetFullName(index), tensor);
+	}
+
 	public Tensor GetTensor(string name)
 	{
 		Tensor tensor = tensors[GetFullName(name)];
+		return tensor.IsNull ? Tensor.Null : tensor.Alias();
+	}
+
+	public Tensor GetTensor(int index)
+	{
+		Tensor tensor = tensors[GetFullName(index)];
 		return tensor.IsNull ? Tensor.Null : tensor.Alias();
 	}
 
@@ -187,6 +203,11 @@ public readonly struct StateDictionary : IDisposable
 	private string GetFullName(string name)
 	{
 		return string.Concat(prefix, name);
+	}
+
+	private string GetFullName(int index)
+	{
+		return $"{prefix}{index}";
 	}
 
 	public void Dispose()

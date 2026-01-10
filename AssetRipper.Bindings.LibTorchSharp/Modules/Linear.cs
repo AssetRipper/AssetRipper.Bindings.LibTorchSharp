@@ -4,9 +4,6 @@ public partial struct Linear
 {
 	private static readonly double _sqrt5 = double.Sqrt(5);
 
-	public readonly Tensor Weights => weights;
-	public readonly Tensor Bias => bias;
-
 	public Linear(long inFeatures, long outFeatures, bool hasBias = true, ScalarType? dtype = null, Device? device = null)
 	{
 		weights = Tensor.Empty([outFeatures, inFeatures], (dtype ?? ScalarType.Float32), true, device);

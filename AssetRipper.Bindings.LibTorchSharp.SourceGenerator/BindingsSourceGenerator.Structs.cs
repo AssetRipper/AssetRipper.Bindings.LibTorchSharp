@@ -184,8 +184,21 @@ public partial class BindingsSourceGenerator
 			foreach (int fieldParameter in fieldParameters)
 			{
 				ParameterData parameter = forwardMethod.Parameters[fieldParameter];
-				string setAccessor = parameter.Type.IsTensor ? "private set" : "set";
-				writer.WriteLine($"public {parameter.Type} {parameter.Name} {{ readonly get; {setAccessor}; }}");
+				string propertyName = $"{char.ToUpperInvariant(parameter.Name[0])}{parameter.Name[1..]}";
+				writer.WriteLine($"private {parameter.Type} {parameter.Name};");
+				if (parameter.Type.IsTensor)
+				{
+					writer.WriteLine($"public readonly {parameter.Type} {propertyName} => this.{parameter.Name}.IsNull ? Tensor.Null : this.{parameter.Name}.Alias();");
+				}
+				else
+				{
+					writer.WriteLine($"public {parameter.Type} {propertyName}");
+					using (new CurlyBrackets(writer))
+					{
+						writer.WriteLine($"readonly get => this.{parameter.Name};");
+						writer.WriteLine($"set => this.{parameter.Name} = value;");
+					}
+				}
 			}
 
 			// Constructor
@@ -247,31 +260,25 @@ public partial class BindingsSourceGenerator
 
 			int[] weightParameters = fieldParameters.Where(i => forwardMethod.Parameters[i].Type.IsTensor).ToArray();
 
-			// CopyFrom method
-			writer.WriteLine("public void CopyFrom(StateDictionary dictionary)");
+			// CopyFromRoot method
+			writer.WriteLine("void IModule.CopyFromRoot(StateDictionary dictionary)");
 			using (new CurlyBrackets(writer))
 			{
 				foreach (int weightParameter in weightParameters)
 				{
 					ParameterData parameter = forwardMethod.Parameters[weightParameter];
-					writer.WriteLine($"Tensor {parameter.Name} = dictionary.GetTensor(nameof({typeName}.{parameter.Name}));");
-				}
-				foreach (int weightParameter in weightParameters)
-				{
-					ParameterData parameter = forwardMethod.Parameters[weightParameter];
-					writer.WriteLine($"this.{parameter.Name}.Dispose();");
-					writer.WriteLine($"this.{parameter.Name} = {parameter.Name};");
+					writer.WriteLine($"this.{parameter.Name}.CopyFrom(dictionary, nameof({typeName}.{parameter.Name}));");
 				}
 			}
 
-			// CopyTo method
-			writer.WriteLine("public readonly void CopyTo(StateDictionary dictionary)");
+			// CopyToRoot method
+			writer.WriteLine("readonly void IModule.CopyToRoot(StateDictionary dictionary)");
 			using (new CurlyBrackets(writer))
 			{
 				foreach (int weightParameter in weightParameters)
 				{
 					ParameterData parameter = forwardMethod.Parameters[weightParameter];
-					writer.WriteLine($"dictionary.AddTensor(nameof({typeName}.{parameter.Name}), this.{parameter.Name});");
+					writer.WriteLine($"this.{parameter.Name}.CopyTo(dictionary, nameof({typeName}.{parameter.Name}));");
 				}
 			}
 
