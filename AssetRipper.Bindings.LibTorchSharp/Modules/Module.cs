@@ -4,15 +4,15 @@ namespace AssetRipper.Bindings.LibTorchSharp.Modules;
 
 public static class Module
 {
-	extension<T>(T) where T : struct, IModule
+	extension<T>(ref T module) where T : struct, IModule
 	{
-		public static void Load(ref T module, string path, Device? device = null)
+		public void Load(string path, Device? device = null)
 		{
 			using StateDictionary dictionary = StateDictionary.Load(path, device);
 			module.CopyFromRoot(dictionary);
 		}
 
-		public static void Load(ref T module, Stream stream, Device? device = null)
+		public void Load(Stream stream, Device? device = null)
 		{
 			using StateDictionary dictionary = StateDictionary.Load(stream, device);
 			module.CopyFromRoot(dictionary);
