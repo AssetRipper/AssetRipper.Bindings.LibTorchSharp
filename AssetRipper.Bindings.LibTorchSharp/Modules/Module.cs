@@ -21,16 +21,16 @@ public static class Module
 
 	extension<T>(T module) where T : struct, IModule
 	{
-		public void Save(string path, Device? device = null)
+		public void Save(string path)
 		{
-			using StateDictionary dictionary = new(device);
+			using StateDictionary dictionary = new();
 			module.CopyToRoot(dictionary);
 			dictionary.Save(path);
 		}
 
-		public void Save(Stream stream, Device? device = null)
+		public void Save(Stream stream)
 		{
-			using StateDictionary dictionary = new(device);
+			using StateDictionary dictionary = new();
 			module.CopyToRoot(dictionary);
 			dictionary.Save(stream);
 		}

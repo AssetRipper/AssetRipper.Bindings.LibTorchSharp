@@ -6,28 +6,21 @@ public readonly struct StateDictionary : IDisposable
 {
 	private readonly string? prefix;
 	private readonly Dictionary<string, Tensor> tensors;
-	private readonly Device device;
 	private const char Separator = '.';
 
 	// All tensors in this dictionary are considered to be owned by this dictionary,
 	// so they must be disposed when we're done with it.
 
-	private StateDictionary(string? prefix, Dictionary<string, Tensor> tensors, Device device)
+	private StateDictionary(string? prefix, Dictionary<string, Tensor> tensors)
 	{
 		this.prefix = prefix;
 		this.tensors = tensors;
-		this.device = device;
 	}
 
-	public StateDictionary() : this(null)
-	{
-	}
-
-	public StateDictionary(Device? device)
+	public StateDictionary()
 	{
 		prefix = null;
 		tensors = [];
-		this.device = device ?? Device.Default;
 	}
 
 	public void AddTensor(string name, Tensor tensor)
@@ -74,12 +67,12 @@ public readonly struct StateDictionary : IDisposable
 
 	public StateDictionary GetChild(string name)
 	{
-		return new StateDictionary($"{prefix}{name}{Separator}", tensors, device);
+		return new StateDictionary($"{prefix}{name}{Separator}", tensors);
 	}
 
 	public StateDictionary GetChild(int index)
 	{
-		return new StateDictionary($"{prefix}{index}{Separator}", tensors, device);
+		return new StateDictionary($"{prefix}{index}{Separator}", tensors);
 	}
 
 	public void CopyTo(NNModule module)
@@ -118,7 +111,7 @@ public readonly struct StateDictionary : IDisposable
 
 	public static StateDictionary Load(Stream stream, Device? device = null)
 	{
-		StateDictionary dictionary = new(device);
+		StateDictionary dictionary = new();
 		using BinaryReader reader = new(stream, System.Text.Encoding.UTF8, true);
 		reader.ReadInt64(); // Magic
 		for (int remainingTensors = reader.ReadInt32(); remainingTensors > 0; remainingTensors--)
