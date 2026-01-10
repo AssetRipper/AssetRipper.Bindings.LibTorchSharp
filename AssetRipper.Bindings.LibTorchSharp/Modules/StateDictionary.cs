@@ -51,9 +51,19 @@ public readonly struct StateDictionary : IDisposable
 		return GetChild(name);
 	}
 
+	public StateDictionary AddChild(int index)
+	{
+		return GetChild(index);
+	}
+
 	public StateDictionary GetChild(string name)
 	{
 		return new StateDictionary($"{prefix}{name}{Separator}", tensors, device);
+	}
+
+	public StateDictionary GetChild(int index)
+	{
+		return new StateDictionary($"{prefix}{index}{Separator}", tensors, device);
 	}
 
 	public void CopyTo(NNModule module)
