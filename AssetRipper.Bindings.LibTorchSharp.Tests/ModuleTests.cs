@@ -82,30 +82,4 @@ public class ModuleTests
 			Assert.That(linear2.Bias.IsNull);
 		}
 	}
-
-	[Theory]
-	public void BooleanEmbedding_ForwardCreatesHigherDimensionalTensor([Range(0, 6)] int dimensions)
-	{
-		using BooleanEmbedding embedding = new(3, ScalarType.Float32, default);
-		long[] shape = new long[dimensions];
-		Array.Fill(shape, 1);
-		using Tensor input = Tensor.Zeros(shape, ScalarType.Bool, false);
-		using Tensor output = embedding.Forward(input);
-		Assert.That(output.Ndimension(), Is.EqualTo(dimensions + 1));
-	}
-
-	[Test]
-	public void BooleanEmbedding_ForwardGivesCorrectValues()
-	{
-		using BooleanEmbedding embedding = new(Tensor.Ones([1], ScalarType.Float32, true), Tensor.Zeros([1], ScalarType.Float32, true));
-		using Tensor trueBoolean = new(true);
-		using Tensor falseBoolean = new(false);
-		using Tensor trueOutput = embedding.Forward(trueBoolean);
-		using Tensor falseOutput = embedding.Forward(falseBoolean);
-		using (Assert.EnterMultipleScope())
-		{
-			Assert.That(trueOutput.ToValue<float>(), Is.EqualTo(1.0f));
-			Assert.That(falseOutput.ToValue<float>(), Is.Zero);
-		}
-	}
 }

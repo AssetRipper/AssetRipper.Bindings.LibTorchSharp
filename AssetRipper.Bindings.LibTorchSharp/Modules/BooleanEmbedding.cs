@@ -40,8 +40,8 @@ public partial struct BooleanEmbedding : IModule
 		{
 		}
 	}
-	public readonly Tensor TrueEmbedding => trueEmbedding;
-	public readonly Tensor FalseEmbedding => falseEmbedding;
+	public readonly Tensor TrueEmbedding => trueEmbedding.Alias();
+	public readonly Tensor FalseEmbedding => falseEmbedding.Alias();
 
 	public BooleanEmbedding(Tensor trueEmbedding, Tensor falseEmbedding)
 	{
