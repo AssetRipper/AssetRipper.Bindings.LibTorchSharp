@@ -15,7 +15,7 @@ public static class StateExtensions
 		dictionary.AddTensor(index, tensor);
 	}
 
-	public static void CopyFrom(this ref Tensor tensor, StateDictionary dictionary, [CallerArgumentExpression(nameof(dictionary))] string tensorName = "")
+	public static void CopyFrom(this ref Tensor tensor, StateDictionary dictionary, [CallerArgumentExpression(nameof(tensor))] string tensorName = "")
 	{
 		ArgumentException.ThrowIfNullOrEmpty(tensorName);
 		tensor.CopyInline(dictionary.GetTensor(tensorName), false);
