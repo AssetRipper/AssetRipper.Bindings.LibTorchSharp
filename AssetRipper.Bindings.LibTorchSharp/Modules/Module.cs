@@ -8,14 +8,32 @@ public static class Module
 	{
 		public void Load(string path, Device? device = null)
 		{
-			using StateDictionary dictionary = StateDictionary.Load(path, device);
-			module.CopyFromRoot(dictionary);
+			bool previousAutograd = Autograd.IsGradEnabled;
+			Autograd.IsGradEnabled = false;
+			try
+			{
+				using StateDictionary dictionary = StateDictionary.Load(path, device);
+				module.CopyFromRoot(dictionary);
+			}
+			finally
+			{
+				Autograd.IsGradEnabled = previousAutograd;
+			}
 		}
 
 		public void Load(Stream stream, Device? device = null)
 		{
-			using StateDictionary dictionary = StateDictionary.Load(stream, device);
-			module.CopyFromRoot(dictionary);
+			bool previousAutograd = Autograd.IsGradEnabled;
+			Autograd.IsGradEnabled = false;
+			try
+			{
+				using StateDictionary dictionary = StateDictionary.Load(stream, device);
+				module.CopyFromRoot(dictionary);
+			}
+			finally
+			{
+				Autograd.IsGradEnabled = previousAutograd;
+			}
 		}
 	}
 
