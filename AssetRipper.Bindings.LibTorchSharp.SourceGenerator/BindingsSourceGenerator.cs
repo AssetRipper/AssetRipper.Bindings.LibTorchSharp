@@ -151,6 +151,9 @@ public partial class BindingsSourceGenerator() : IncrementalGenerator(nameof(Bin
 				""");
 		}
 
+		// TensorIndex overloads
+		GenerateTensorIndexOverloads(ref context, nativeMethods);
+
 		// Span overloads
 		GenerateSpanOverloads(ref context, nativeMethods);
 
