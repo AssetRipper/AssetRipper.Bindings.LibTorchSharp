@@ -18,12 +18,34 @@ public static class StateExtensions
 	public static void CopyFrom(this ref Tensor tensor, StateDictionary dictionary, [CallerArgumentExpression(nameof(tensor))] string tensorName = "")
 	{
 		ArgumentException.ThrowIfNullOrEmpty(tensorName);
-		tensor.CopyInline(dictionary.GetTensor(tensorName), false);
+		using Tensor temp = dictionary.GetTensor(tensorName);
+		if (tensor.IsNull)
+		{
+			if (!temp.IsNull)
+			{
+				throw new ArgumentNullException(nameof(tensor));
+			}
+		}
+		else
+		{
+			tensor.CopyInline(temp, false);
+		}
 	}
 
 	public static void CopyFrom(this ref Tensor tensor, StateDictionary dictionary, int index)
 	{
-		tensor.CopyInline(dictionary.GetTensor(index), false);
+		using Tensor temp = dictionary.GetTensor(index);
+		if (tensor.IsNull)
+		{
+			if (!temp.IsNull)
+			{
+				throw new ArgumentNullException(nameof(tensor));
+			}
+		}
+		else
+		{
+			tensor.CopyInline(temp, false);
+		}
 	}
 
 	public static void CopyTo<T>(this T module, StateDictionary dictionary, [CallerArgumentExpression(nameof(module))] string moduleName = "") where T : struct, IDerived<NNModule>

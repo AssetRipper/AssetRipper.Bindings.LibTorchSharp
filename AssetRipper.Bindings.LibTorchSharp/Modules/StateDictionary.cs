@@ -80,12 +80,14 @@ public readonly struct StateDictionary : IDisposable
 		// Note: these properties recursively enumerate all parameters/buffers in child modules.
 		foreach ((string name, Tensor p) in module.NamedParameters)
 		{
-			p.CopyInline(GetTensor(name), false);
+			using Tensor temp = GetTensor(name);
+			p.CopyInline(temp, false);
 			p.Dispose();
 		}
 		foreach ((string name, Tensor p) in module.NamedBuffers)
 		{
-			p.CopyInline(GetTensor(name), false);
+			using Tensor temp = GetTensor(name);
+			p.CopyInline(temp, false);
 			p.Dispose();
 		}
 	}
