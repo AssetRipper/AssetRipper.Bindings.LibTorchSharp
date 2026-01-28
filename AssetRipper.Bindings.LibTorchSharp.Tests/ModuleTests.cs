@@ -48,6 +48,21 @@ public class ModuleTests
 	}
 
 	[Test]
+	public void MultiheadAttentionHasParameters()
+	{
+		using MultiheadAttention attention = new(8, 2, default, false, false, false, 8, 8);
+		Tensor[] parameters = attention.GetParameters(true);
+		try
+		{
+			Assert.That(parameters, Is.Not.Empty);
+		}
+		finally
+		{
+			parameters.DisposeAllAndClear();
+		}
+	}
+
+	[Test]
 	public void Linear_SaveAndLoad()
 	{
 		using MemoryStream stream = new();
