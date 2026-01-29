@@ -109,12 +109,13 @@ public readonly struct TensorIndex
 		return Single(idx);
 	}
 
-	internal unsafe struct EncodedIndices : IDisposable
+	// Internal struct used in NativeMethods.TensorIndexOverloads.cs; don't use elsewhere.
+	internal unsafe readonly struct EncodedIndices : IDisposable
 	{
-		public long* ArrayKindAndStarts;
-		public long* ArrayStops;
-		public long* ArraySteps;
-		public Tensor* ArrayTensors;
+		public readonly long* ArrayKindAndStarts;
+		public readonly long* ArrayStops;
+		public readonly long* ArraySteps;
+		public readonly Tensor* ArrayTensors;
 
 		private EncodedIndices(long* arrayKindAndStarts, long* arrayStops, long* arraySteps, Tensor* arrayTensors)
 		{
@@ -196,13 +197,9 @@ public readonly struct TensorIndex
 		public void Dispose()
 		{
 			NativeMemory.Free(ArrayKindAndStarts);
-			ArrayKindAndStarts = null;
 			NativeMemory.Free(ArrayStops);
-			ArrayStops = null;
 			NativeMemory.Free(ArraySteps);
-			ArraySteps = null;
 			NativeMemory.Free(ArrayTensors);
-			ArrayTensors = null;
 		}
 	}
 }
