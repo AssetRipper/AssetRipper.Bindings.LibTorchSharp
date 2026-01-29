@@ -93,12 +93,17 @@ public partial class BindingsSourceGenerator() : IncrementalGenerator(nameof(Bin
 					if (parameterData is { Name: "scalar_type" or "dtype", Type.IsSByte: true })
 					{
 						modifiedParameters = true;
-						modifiedParameterDatas[i] = parameterData with { Type = new TypeData("ScalarType", 0) };
+						modifiedParameterDatas[i] = parameterData with { Type = new TypeData("ScalarType") };
 					}
 					else if (parameterData is { Name: "device_type", Type: { IsInt32: true } or { IsInt64: true } })
 					{
 						modifiedParameters = true;
-						modifiedParameterDatas[i] = parameterData with { Type = new TypeData("DeviceType", 0) };
+						modifiedParameterDatas[i] = parameterData with { Type = new TypeData("DeviceType") };
+					}
+					else if (parameterData is { Name: "reduction", Type.IsInt64: true })
+					{
+						modifiedParameters = true;
+						modifiedParameterDatas[i] = parameterData with { Type = new TypeData("Reduction") };
 					}
 					else
 					{
