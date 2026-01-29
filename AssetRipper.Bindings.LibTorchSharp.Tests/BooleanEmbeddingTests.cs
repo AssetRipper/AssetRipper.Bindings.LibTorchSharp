@@ -40,7 +40,7 @@ public class BooleanEmbeddingTests
 
 		// Target 0.5 for both true and false outputs
 		using Tensor target = new([0.5f, 0.5f]);
-		using Tensor loss = NN.MseLoss(output, target, 1);
+		using Tensor loss = NN.MseLoss(output, target, Reduction.Mean);
 
 		loss.Backward();
 
