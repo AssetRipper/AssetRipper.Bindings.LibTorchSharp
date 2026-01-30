@@ -5,9 +5,9 @@ public partial struct RootMeanSquareNorm
 	private Tensor weight;
 	private readonly double eps;
 
-	public RootMeanSquareNorm(long normalizedShape, double eps = 1e-8, ScalarType? dtype = null, Device? device = null)
+	public RootMeanSquareNorm(long normalizedShape, double eps = 1e-8, ScalarType dtype = ScalarType.Float32, Device? device = null)
 	{
-		weight = Tensor.Ones([normalizedShape], dtype ?? ScalarType.Float32, true, device: device);
+		weight = Tensor.Ones([normalizedShape], dtype, true, device: device);
 		this.eps = eps;
 	}
 

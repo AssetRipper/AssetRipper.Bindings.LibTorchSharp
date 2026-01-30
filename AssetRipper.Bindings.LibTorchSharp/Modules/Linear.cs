@@ -4,13 +4,13 @@ public partial struct Linear
 {
 	private static readonly double _sqrt5 = double.Sqrt(5);
 
-	public Linear(long inFeatures, long outFeatures, bool hasBias = true, ScalarType? dtype = null, Device? device = null)
+	public Linear(long inFeatures, long outFeatures, bool hasBias = true, ScalarType dtype = ScalarType.Float32, Device? device = null)
 	{
-		weights = Tensor.Empty([outFeatures, inFeatures], (dtype ?? ScalarType.Float32), true, device);
+		weights = Tensor.Empty([outFeatures, inFeatures], dtype, true, device);
 		Init.KaimingUniformInline(weights, _sqrt5, 0, 10); // tensor, sqrt(5), fan_in, leaky relu
 		if (hasBias)
 		{
-			bias = Tensor.Empty([outFeatures], (dtype ?? ScalarType.Float32), true, device);
+			bias = Tensor.Empty([outFeatures], dtype, true, device);
 			(long fanIn, long _) = Init.CalculateFanInAndFanOut(weights);
 			double bound = fanIn > 0 ? 1 / double.Sqrt(fanIn) : 0;
 			Init.UniformInline(bias, -bound, bound);

@@ -6,7 +6,7 @@ public partial struct GatedLinear
 	private Linear gateLayer;
 	private Linear valueLayer;
 
-	public GatedLinear(long inFeatures, long hiddenFeatures, long outFeatures, bool hasBias = true, ScalarType? dtype = null, Device? device = null)
+	public GatedLinear(long inFeatures, long hiddenFeatures, long outFeatures, bool hasBias = true, ScalarType dtype = ScalarType.Float32, Device? device = null)
 	{
 		outputLayer = new Linear(hiddenFeatures, outFeatures, hasBias, dtype, device);
 		gateLayer = new Linear(inFeatures, hiddenFeatures, hasBias, dtype, device);

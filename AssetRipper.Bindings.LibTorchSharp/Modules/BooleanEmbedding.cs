@@ -5,11 +5,11 @@ public partial struct BooleanEmbedding
 	private Tensor trueEmbedding;
 	private Tensor falseEmbedding;
 
-	public BooleanEmbedding(long embeddingDim, ScalarType? dtype = null, Device? device = null)
+	public BooleanEmbedding(long embeddingDim, ScalarType dtype = ScalarType.Float32, Device? device = null)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(embeddingDim);
-		trueEmbedding = Tensor.Empty([embeddingDim], dtype ?? ScalarType.Float32, true, device);
-		falseEmbedding = Tensor.Empty([embeddingDim], dtype ?? ScalarType.Float32, true, device);
+		trueEmbedding = Tensor.Empty([embeddingDim], dtype, true, device);
+		falseEmbedding = Tensor.Empty([embeddingDim], dtype, true, device);
 		double bound = 1.0 / double.Sqrt(embeddingDim);
 		Init.UniformInline(trueEmbedding, -bound, bound);
 		Init.UniformInline(falseEmbedding, -bound, bound);

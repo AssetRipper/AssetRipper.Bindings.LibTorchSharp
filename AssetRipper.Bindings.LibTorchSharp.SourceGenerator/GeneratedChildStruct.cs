@@ -96,7 +96,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 		{
 			if (staticMethod.Parameters.Length > 0 && staticMethod.Parameters[^1] is { IsOut: false, Type: { Name: "NNAnyModule", IsPointer: true }, Name: "outAsAnyModule" })
 			{
-				ParameterData dtypeParameter = new(new("ScalarType?"), "dtype", DefaultValue: "null");
+				ParameterData dtypeParameter = new(new("ScalarType"), "dtype", DefaultValue: "ScalarType.Float32");
 				ParameterData deviceParameter = new(new("Device?"), "device", DefaultValue: "null");
 				writer.WriteDebuggerIgnoreAttributes();
 				writer.Write("public ");
@@ -109,7 +109,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 					writer.Write("this.handle = Create(");
 					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("null")));
 					writer.WriteLine(");");
-					writer.WriteLine("this.handle.ToDeviceDtype(dtype ?? ScalarType.Float32, false, device);");
+					writer.WriteLine("this.handle.ToDeviceDtype(dtype, false, device);");
 				}
 
 				writer.WriteDebuggerIgnoreAttributes();
@@ -122,7 +122,7 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 					writer.Write("using NNModule handle = Create(");
 					writer.Write(string.Join(", ", staticMethod.Parameters.SkipLast(1).Select(p => p.NameWithOutPrefix).Append("&outAsAnyModule")));
 					writer.WriteLine(");");
-					writer.WriteLine("handle.ToDeviceDtype(dtype ?? ScalarType.Float32, false, device);");
+					writer.WriteLine("handle.ToDeviceDtype(dtype, false, device);");
 					writer.WriteLine("return outAsAnyModule;");
 				}
 			}
