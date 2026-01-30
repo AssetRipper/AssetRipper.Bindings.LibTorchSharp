@@ -7,6 +7,7 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="AssetRipper.Bindings.LibTorchSharp.Analyzers/AssetRipper.Bindings.LibTorchSharp.Analyzers.csproj" Id="16ce81f7-eb3a-42bf-8ad7-37f50743d913" />
   <Project Path="AssetRipper.Bindings.LibTorchSharp.SourceGenerator/AssetRipper.Bindings.LibTorchSharp.SourceGenerator.csproj" />
   <Project Path="AssetRipper.Bindings.LibTorchSharp.Tests/AssetRipper.Bindings.LibTorchSharp.Tests.csproj" Id="a3d19892-a9ae-41eb-8c79-b6fc9ed55b3a" />
   <Project Path="AssetRipper.Bindings.LibTorchSharp/AssetRipper.Bindings.LibTorchSharp.csproj" />

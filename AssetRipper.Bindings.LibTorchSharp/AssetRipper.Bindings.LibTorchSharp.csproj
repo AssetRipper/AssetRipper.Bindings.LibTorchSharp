@@ -18,7 +18,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\AssetRipper.Bindings.LibTorchSharp.Analyzers\AssetRipper.Bindings.LibTorchSharp.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\AssetRipper.Bindings.LibTorchSharp.SourceGenerator\AssetRipper.Bindings.LibTorchSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
+
+	<!-- Include the source generator in the NuGet package for consumers -->
+	<ItemGroup>
+		<None Include="..\AssetRipper.Bindings.LibTorchSharp.Analyzers\bin\$(Configuration)\netstandard2.0\AssetRipper.Bindings.LibTorchSharp.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<!-- Ensure source generator is built before packing -->
+	<Target Name="EnsureGeneratorBuilt" BeforeTargets="GenerateNuspec">
+		<MSBuild Projects="..\AssetRipper.Bindings.LibTorchSharp.Analyzers\AssetRipper.Bindings.LibTorchSharp.Analyzers.csproj" Targets="Build" Properties="Configuration=$(Configuration)" />
+	</Target>
 
 </Project>
