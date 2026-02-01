@@ -78,7 +78,6 @@ generate-callconv-member-function
 generate-disable-runtime-marshalling
 generate-file-scoped-namespaces
 generate-helper-types
-generate-setslastsystemerror-attribute
 strip-enum-member-type-name
 log-exclusions
 log-visited-files
