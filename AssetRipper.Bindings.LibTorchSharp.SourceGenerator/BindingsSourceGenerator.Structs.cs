@@ -61,6 +61,9 @@ public partial class BindingsSourceGenerator
 			childList.AddRange(@class.ExtractChildren(structList));
 		}
 
+		CSharpNodeType csharpNodeType = new();
+		csharpNodeType.TransferMethodsFrom(classDictionary["Autograd"]);
+
 		foreach (GeneratedStaticClass @class in classList)
 		{
 			for (int i = 0; i < @class.Methods.Count; i++)
@@ -75,7 +78,7 @@ public partial class BindingsSourceGenerator
 			child.Methods.AddRange(child.Parent.InstanceMethods);
 		}
 
-		foreach (GeneratedType type in structList.Concat<GeneratedType>(classList).Concat(childList))
+		foreach (GeneratedType type in structList.Concat<GeneratedType>(classList).Concat(childList).Concat([csharpNodeType]))
 		{
 			type.DetectProperties();
 			type.SortMethods();
