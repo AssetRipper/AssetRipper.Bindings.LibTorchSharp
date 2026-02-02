@@ -162,12 +162,12 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 
 				void IModule.CopyFromRoot(StateDictionary dictionary)
 				{
-					dictionary.CopyFrom(this.handle);
+					dictionary.CopyTo(this.handle);
 				}
 
 				void IModule.CopyToRoot(StateDictionary dictionary)
 				{
-					dictionary.CopyTo(this.handle);
+					dictionary.CopyFrom(this.handle);
 				}
 
 				IEnumerable<Tensor> IModule.GetParameters()
