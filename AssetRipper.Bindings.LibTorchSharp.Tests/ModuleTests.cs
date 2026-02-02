@@ -41,7 +41,7 @@ public class ModuleTests
 		using TransformerEncoderLayer layer = new(8, 2, 16, 0.1, 0);
 		{
 			using StateDictionary state1 = new();
-			state1.CopyFrom(layer);
+			layer.CopyFrom(state1);
 			state1.Save(stream);
 		}
 		Assert.That(stream.Length, Is.GreaterThan(0));

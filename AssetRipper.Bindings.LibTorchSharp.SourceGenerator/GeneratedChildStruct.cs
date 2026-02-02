@@ -75,6 +75,11 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 				{{Parent.Name}} IDerived<{{Parent.Name}}>.AsBase() => handle;
 			}
 			""");
+
+		if (Parent.Name is "NNModule")
+		{
+			GenerateIModuleFile(context);
+		}
 	}
 
 	public override void GenerateConstructorFile(SgfSourceProductionContext context)
@@ -144,5 +149,40 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 		}
 
 		context.AddSource($"{Name}.Constructor.cs", stringWriter.ToString());
+	}
+
+	private void GenerateIModuleFile(SgfSourceProductionContext context)
+	{
+		context.AddSource($"{Name}.IModule.cs", $$"""
+			using AssetRipper.Bindings.LibTorchSharp.LowLevel;
+
+			namespace {{Namespace}};
+
+			public readonly unsafe partial struct {{Name}} : IModule
+			{
+				// IsTraining property is inherited from NNModule
+
+				void IModule.CopyFromRoot(StateDictionary dictionary)
+				{
+					dictionary.CopyFrom(this.handle);
+				}
+
+				void IModule.CopyToRoot(StateDictionary dictionary)
+				{
+					dictionary.CopyTo(this.handle);
+				}
+
+				IEnumerable<Tensor> IModule.GetParameters()
+				{
+					return this.handle.GetParameters(true);
+				}
+
+				// Normal implementation for other structs to call
+				public Tensor[] GetParameters()
+				{
+					return this.handle.GetParameters(true);
+				}
+			}
+			""");
 	}
 }

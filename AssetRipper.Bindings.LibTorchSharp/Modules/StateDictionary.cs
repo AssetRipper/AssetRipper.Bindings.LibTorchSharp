@@ -75,7 +75,7 @@ public readonly struct StateDictionary : IDisposable
 		return new StateDictionary($"{prefix}{index}{Separator}", tensors);
 	}
 
-	public void CopyTo(NNModule module)
+	internal void CopyTo(NNModule module)
 	{
 		// Note: these properties recursively enumerate all parameters/buffers in child modules.
 		foreach ((string name, Tensor p) in module.NamedParameters)
@@ -92,7 +92,7 @@ public readonly struct StateDictionary : IDisposable
 		}
 	}
 
-	public void CopyFrom(NNModule module)
+	internal void CopyFrom(NNModule module)
 	{
 		// Note: these properties recursively enumerate all parameters/buffers in child modules.
 		foreach ((string name, Tensor p) in module.NamedParameters)

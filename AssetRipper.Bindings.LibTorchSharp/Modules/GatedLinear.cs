@@ -1,16 +1,28 @@
-﻿namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+﻿using AssetRipper.Bindings.LibTorchSharp.Attributes;
 
-public partial struct GatedLinear
+namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+
+[GeneratedModule]
+public readonly partial struct GatedLinear
 {
-	private Linear outputLayer;
-	private Linear gateLayer;
-	private Linear valueLayer;
+	private partial Linear outputLayer { get; }
+	private partial Linear gateLayer { get; }
+	private partial Linear valueLayer { get; }
 
 	public GatedLinear(long inFeatures, long hiddenFeatures, long outFeatures, bool hasBias = true, ScalarType dtype = ScalarType.Float32, Device? device = null)
 	{
-		outputLayer = new Linear(hiddenFeatures, outFeatures, hasBias, dtype, device);
-		gateLayer = new Linear(inFeatures, hiddenFeatures, hasBias, dtype, device);
-		valueLayer = new Linear(inFeatures, hiddenFeatures, hasBias, dtype, device);
+		Linear outputLayer = new Linear(hiddenFeatures, outFeatures, hasBias, dtype, device);
+		Linear gateLayer = new Linear(inFeatures, hiddenFeatures, hasBias, dtype, device);
+		Linear valueLayer = new Linear(inFeatures, hiddenFeatures, hasBias, dtype, device);
+		Initialize(outputLayer, gateLayer, valueLayer);
+	}
+
+	public GatedLinear(StateDictionary dictionary)
+	{
+		Linear outputLayer = new Linear(dictionary.GetChild(nameof(outputLayer)));
+		Linear gateLayer = new Linear(dictionary.GetChild(nameof(gateLayer)));
+		Linear valueLayer = new Linear(dictionary.GetChild(nameof(valueLayer)));
+		Initialize(outputLayer, gateLayer, valueLayer);
 	}
 
 	public Tensor Forward(Tensor input)
@@ -20,56 +32,5 @@ public partial struct GatedLinear
 		using Tensor value = valueLayer.Forward(input);
 		using Tensor gatedValue = gate * value;
 		return outputLayer.Forward(gatedValue);
-	}
-}
-public partial struct GatedLinear : IModule
-{
-	// Source generated
-	public readonly bool IsTraining
-	{
-		set
-		{
-			outputLayer.IsTraining = value;
-			gateLayer.IsTraining = value;
-			valueLayer.IsTraining = value;
-		}
-	}
-
-	void IModule.CopyFromRoot(StateDictionary dictionary)
-	{
-		outputLayer.CopyFrom(dictionary);
-		gateLayer.CopyFrom(dictionary);
-		valueLayer.CopyFrom(dictionary);
-	}
-
-	readonly void IModule.CopyToRoot(StateDictionary dictionary)
-	{
-		outputLayer.CopyTo(dictionary);
-		gateLayer.CopyTo(dictionary);
-		valueLayer.CopyTo(dictionary);
-	}
-
-	public readonly IEnumerable<Tensor> GetParameters() =>
-	[
-		..outputLayer.GetParameters(),
-		..gateLayer.GetParameters(),
-		..valueLayer.GetParameters(),
-	];
-
-	public void Dispose()
-	{
-		outputLayer.Dispose();
-		outputLayer = default;
-		gateLayer.Dispose();
-		gateLayer = default;
-		valueLayer.Dispose();
-		valueLayer = default;
-	}
-
-	public GatedLinear(StateDictionary dictionary)
-	{
-		outputLayer = new Linear(dictionary.GetChild(nameof(outputLayer)));
-		gateLayer = new Linear(dictionary.GetChild(nameof(gateLayer)));
-		valueLayer = new Linear(dictionary.GetChild(nameof(valueLayer)));
 	}
 }

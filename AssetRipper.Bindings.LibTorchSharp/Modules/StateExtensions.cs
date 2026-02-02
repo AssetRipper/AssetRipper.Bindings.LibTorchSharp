@@ -4,69 +4,105 @@ namespace AssetRipper.Bindings.LibTorchSharp.Modules;
 
 public static class StateExtensions
 {
-	public static void CopyTo(this Tensor tensor, StateDictionary dictionary, [CallerArgumentExpression(nameof(tensor))] string tensorName = "")
+	extension(Tensor tensor)
 	{
-		ArgumentException.ThrowIfNullOrEmpty(tensorName);
-		dictionary.AddTensor(tensorName, tensor);
-	}
-
-	public static void CopyTo(this Tensor tensor, StateDictionary dictionary, int index)
-	{
-		dictionary.AddTensor(index, tensor);
-	}
-
-	public static void CopyFrom(this ref Tensor tensor, StateDictionary dictionary, [CallerArgumentExpression(nameof(tensor))] string tensorName = "")
-	{
-		ArgumentException.ThrowIfNullOrEmpty(tensorName);
-		using Tensor temp = dictionary.GetTensor(tensorName);
-		if (tensor.IsNull)
+		public void CopyTo(StateDictionary dictionary, [CallerArgumentExpression(nameof(tensor))] string tensorName = "")
 		{
-			if (!temp.IsNull)
+			ArgumentException.ThrowIfNullOrEmpty(tensorName);
+			dictionary.AddTensor(tensorName, tensor);
+		}
+
+		public void CopyTo(StateDictionary dictionary, int index)
+		{
+			dictionary.AddTensor(index, tensor);
+		}
+
+		public void CopyFrom(StateDictionary dictionary, [CallerArgumentExpression(nameof(tensor))] string tensorName = "")
+		{
+			ArgumentException.ThrowIfNullOrEmpty(tensorName);
+			using Tensor temp = dictionary.GetTensor(tensorName);
+			if (tensor.IsNull)
 			{
-				throw new ArgumentNullException(nameof(tensor));
+				if (!temp.IsNull)
+				{
+					throw new ArgumentNullException(nameof(tensor));
+				}
+			}
+			else
+			{
+				tensor.CopyInline(temp, false);
 			}
 		}
-		else
-		{
-			tensor.CopyInline(temp, false);
-		}
-	}
 
-	public static void CopyFrom(this ref Tensor tensor, StateDictionary dictionary, int index)
-	{
-		using Tensor temp = dictionary.GetTensor(index);
-		if (tensor.IsNull)
+		public void CopyFrom(StateDictionary dictionary, int index)
 		{
-			if (!temp.IsNull)
+			using Tensor temp = dictionary.GetTensor(index);
+			if (tensor.IsNull)
 			{
-				throw new ArgumentNullException(nameof(tensor));
+				if (!temp.IsNull)
+				{
+					throw new ArgumentNullException(nameof(tensor));
+				}
+			}
+			else
+			{
+				tensor.CopyInline(temp, false);
 			}
 		}
-		else
+	}
+
+	extension<T>(T module) where T : unmanaged, IModule
+	{
+		public void CopyTo(StateDictionary dictionary, [CallerArgumentExpression(nameof(module))] string moduleName = "")
 		{
-			tensor.CopyInline(temp, false);
+			ArgumentException.ThrowIfNullOrEmpty(moduleName);
+			module.CopyToRoot(dictionary.AddChild(moduleName));
+		}
+
+		public void CopyTo(StateDictionary dictionary, int index)
+		{
+			module.CopyToRoot(dictionary.AddChild(index));
+		}
+
+		public void CopyFrom(StateDictionary dictionary, [CallerArgumentExpression(nameof(module))] string moduleName = "")
+		{
+			ArgumentException.ThrowIfNullOrEmpty(moduleName);
+			module.CopyFromRoot(dictionary.GetChild(moduleName));
+		}
+
+		public void CopyFrom(StateDictionary dictionary, int index)
+		{
+			module.CopyFromRoot(dictionary.GetChild(index));
 		}
 	}
 
-	public static void CopyTo<T>(this T module, StateDictionary dictionary, [CallerArgumentExpression(nameof(module))] string moduleName = "") where T : struct, IDerived<NNModule>
+	extension(TensorArray array)
 	{
-		ArgumentException.ThrowIfNullOrEmpty(moduleName);
-		dictionary.AddChild(moduleName).CopyFrom(module.AsBase());
+		public void CopyTo(StateDictionary dictionary, [CallerArgumentExpression(nameof(array))] string name = "")
+		{
+			ArgumentException.ThrowIfNullOrEmpty(name);
+			array.CopyToRoot(dictionary.GetChild(name));
+		}
+
+		public void CopyFrom(StateDictionary dictionary, [CallerArgumentExpression(nameof(array))] string name = "")
+		{
+			ArgumentException.ThrowIfNullOrEmpty(name);
+			array.CopyFromRoot(dictionary.GetChild(name));
+		}
 	}
 
-	public static void CopyTo<T>(this T module, StateDictionary dictionary, int index) where T : struct, IDerived<NNModule>
+	extension<T>(ModuleArray<T> array) where T : unmanaged, IModule
 	{
-		dictionary.AddChild(index).CopyFrom(module.AsBase());
-	}
+		public void CopyTo(StateDictionary dictionary, [CallerArgumentExpression(nameof(array))] string name = "")
+		{
+			ArgumentException.ThrowIfNullOrEmpty(name);
+			array.CopyToRoot(dictionary.GetChild(name));
+		}
 
-	public static void CopyFrom<T>(this T module, StateDictionary dictionary, [CallerArgumentExpression(nameof(module))] string moduleName = "") where T : struct, IDerived<NNModule>
-	{
-		ArgumentException.ThrowIfNullOrEmpty(moduleName);
-		dictionary.GetChild(moduleName).CopyTo(module.AsBase());
-	}
-
-	public static void CopyFrom<T>(this T module, StateDictionary dictionary, int index) where T : struct, IDerived<NNModule>
-	{
-		dictionary.GetChild(index).CopyTo(module.AsBase());
+		public void CopyFrom(StateDictionary dictionary, [CallerArgumentExpression(nameof(array))] string name = "")
+		{
+			ArgumentException.ThrowIfNullOrEmpty(name);
+			array.CopyFromRoot(dictionary.GetChild(name));
+		}
 	}
 }

@@ -1,13 +1,25 @@
-﻿namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+﻿using AssetRipper.Bindings.LibTorchSharp.Attributes;
+using System.Diagnostics;
 
-public partial struct Linear
+namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+
+[GeneratedModule]
+public readonly partial struct Linear
 {
-	private static readonly double _sqrt5 = double.Sqrt(5);
+	private partial Tensor weights { get; }
+	private partial Tensor bias { get; }
+
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	public readonly Tensor Weights => weights.AliasOrNull();
+
+	[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+	public readonly Tensor Bias => bias.AliasOrNull();
 
 	public Linear(long inFeatures, long outFeatures, bool hasBias = true, ScalarType dtype = ScalarType.Float32, Device? device = null)
 	{
-		weights = Tensor.Empty([outFeatures, inFeatures], dtype, true, device);
-		Init.KaimingUniformInline(weights, _sqrt5, 0, 10); // tensor, sqrt(5), fan_in, leaky relu
+		Tensor weights = Tensor.Empty([outFeatures, inFeatures], dtype, true, device);
+		Init.KaimingUniformInline(weights, double.Sqrt(5), 0, 10); // tensor, sqrt(5), fan_in, leaky relu
+		Tensor bias;
 		if (hasBias)
 		{
 			bias = Tensor.Empty([outFeatures], dtype, true, device);
@@ -19,13 +31,23 @@ public partial struct Linear
 		{
 			bias = null;
 		}
+		Initialize(weights, bias);
 	}
 
 	// Because this module doesn't have any native sub-modules,
 	// it can be constructed directly from a state dictionary.
 	public Linear(StateDictionary dictionary)
 	{
-		weights = dictionary.GetTensor(nameof(weights));
-		bias = dictionary.GetTensor(nameof(bias));
+		Tensor weights = dictionary.GetTensor(nameof(weights));
+		Tensor bias = dictionary.GetTensor(nameof(bias));
+		Initialize(weights, bias);
+	}
+
+	[DebuggerHidden]
+	[DebuggerStepThrough]
+	[StackTraceHidden]
+	public Tensor Forward(Tensor input)
+	{
+		return NN.Linear(input, weights, bias);
 	}
 }
