@@ -191,7 +191,7 @@ public partial class BindingsSourceGenerator
 				writer.WriteLine($"private {parameter.Type} {parameter.Name};");
 				if (parameter.Type.IsTensor)
 				{
-					writer.WriteLine($"public readonly {parameter.Type} {propertyName} => this.{parameter.Name}.IsNull ? Tensor.Null : this.{parameter.Name}.Alias();");
+					writer.WriteLine($"public readonly {parameter.Type} {propertyName} => this.{parameter.Name}.AliasOrNull();");
 				}
 				else
 				{

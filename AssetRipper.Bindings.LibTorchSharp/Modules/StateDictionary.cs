@@ -25,12 +25,12 @@ public readonly struct StateDictionary : IDisposable
 
 	public void AddTensor(string name, Tensor tensor)
 	{
-		AddTensorInternal(name, tensor.IsNull ? Tensor.Null : tensor.Alias());
+		AddTensorInternal(name, tensor.AliasOrNull());
 	}
 
 	public void AddTensor(int index, Tensor tensor)
 	{
-		AddTensorInternal(index, tensor.IsNull ? Tensor.Null : tensor.Alias());
+		AddTensorInternal(index, tensor.AliasOrNull());
 	}
 
 	private void AddTensorInternal(string name, Tensor tensor)

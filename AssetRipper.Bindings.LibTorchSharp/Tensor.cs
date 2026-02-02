@@ -10,4 +10,9 @@ public readonly partial struct Tensor
 	{
 		return new Device(DeviceType(), DeviceIndex());
 	}
+
+	public Tensor AliasOrNull()
+	{
+		return IsNull ? null : Alias();
+	}
 }
