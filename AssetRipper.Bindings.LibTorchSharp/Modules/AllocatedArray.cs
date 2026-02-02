@@ -1,8 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections;
+using System.Runtime.InteropServices;
 
 namespace AssetRipper.Bindings.LibTorchSharp.Modules;
 
-internal unsafe readonly struct AllocatedArray<T> : IDisposable where T : unmanaged, IDisposable
+internal unsafe readonly struct AllocatedArray<T> : IDisposable, IReadOnlyList<T> where T : unmanaged, IDisposable
 {
 	private readonly T* pointer;
 	private readonly int length;
@@ -22,6 +23,7 @@ internal unsafe readonly struct AllocatedArray<T> : IDisposable where T : unmana
 		}
 	}
 	public int Length => length;
+
 	public Span<T> AsSpan()
 	{
 		return new Span<T>(pointer, length);
@@ -47,5 +49,20 @@ internal unsafe readonly struct AllocatedArray<T> : IDisposable where T : unmana
 		{
 			NativeMemory.Free(pointer);
 		}
+	}
+
+	// IReadOnlyList<T> implementation
+	int IReadOnlyCollection<T>.Count => Length;
+	T IReadOnlyList<T>.this[int index] => this[index];
+	public IEnumerator<T> GetEnumerator()
+	{
+		for (int i = 0; i < length; i++)
+		{
+			yield return this[i];
+		}
+	}
+	IEnumerator IEnumerable.GetEnumerator()
+	{
+		return GetEnumerator();
 	}
 }

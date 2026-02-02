@@ -1,6 +1,8 @@
-﻿namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+﻿using System.Collections;
 
-public readonly struct ModuleArray<T> : IDisposable where T : unmanaged, IModule
+namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+
+public readonly struct ModuleArray<T> : IDisposable, IReadOnlyList<T> where T : unmanaged, IModule
 {
 	private readonly AllocatedArray<T> array;
 
@@ -11,6 +13,8 @@ public readonly struct ModuleArray<T> : IDisposable where T : unmanaged, IModule
 	}
 
 	public T this[int index] => array[index];
+
+	public int Length => array.Length;
 
 	public bool IsTraining
 	{
@@ -52,4 +56,9 @@ public readonly struct ModuleArray<T> : IDisposable where T : unmanaged, IModule
 	}
 
 	public ReadOnlySpan<T> AsSpan() => array.AsReadOnlySpan();
+
+	// IReadOnlyList<T> implementation
+	int IReadOnlyCollection<T>.Count => Length;
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() => array.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => array.GetEnumerator();
 }

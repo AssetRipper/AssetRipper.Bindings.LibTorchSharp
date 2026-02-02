@@ -1,6 +1,8 @@
-﻿namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+﻿using System.Collections;
 
-public readonly struct TensorArray : IDisposable
+namespace AssetRipper.Bindings.LibTorchSharp.Modules;
+
+public readonly struct TensorArray : IDisposable, IReadOnlyList<Tensor>
 {
 	private readonly AllocatedArray<Tensor> array;
 
@@ -11,6 +13,8 @@ public readonly struct TensorArray : IDisposable
 	}
 
 	public Tensor this[int index] => array[index];
+
+	public int Length => array.Length;
 
 	internal void CopyFromRoot(StateDictionary dictionary)
 	{
@@ -36,4 +40,9 @@ public readonly struct TensorArray : IDisposable
 	}
 
 	public ReadOnlySpan<Tensor> AsSpan() => array.AsReadOnlySpan();
+
+	// IReadOnlyList<T> implementation
+	int IReadOnlyCollection<Tensor>.Count => Length;
+	IEnumerator<Tensor> IEnumerable<Tensor>.GetEnumerator() => array.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => array.GetEnumerator();
 }
