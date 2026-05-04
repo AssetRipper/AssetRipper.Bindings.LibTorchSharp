@@ -25,64 +25,7 @@ public partial class BindingsSourceGenerator
 			for (int j = 0; j < nativeMethods.Length; j++)
 			{
 				MethodData nativeMethod = nativeMethods[j];
-				if (TryGetAllocatorParameter(nativeMethod, out int parameterIndex, out string? allocatedType))
-				{
-					List<ParameterData> modifiedParameters = nativeMethod.Parameters.ToList();
-					modifiedParameters.RemoveAt(parameterIndex);
-					MethodData modifiedMethod = nativeMethod with
-					{
-						ReturnType = new TypeData($"{allocatedType}[]", 0),
-						Parameters = new(modifiedParameters)
-					};
-
-					nativeMethods[j] = modifiedMethod;
-
-					writer.WriteDebuggerIgnoreAttributes();
-					writer.WriteGeneratedCodeAttribute("Allocator Overloads");
-					writer.Write("public static ");
-					writer.WriteLine(modifiedMethod.ToString());
-					using (new CurlyBrackets(writer))
-					{
-						using (new Try(writer))
-						{
-							string allocateMethod = allocatedType switch
-							{
-								"long" => "AllocateInt64",
-								"string" => "AllocateString",
-								_ => $"Allocate{allocatedType}",
-							};
-							string resultMethod = allocatedType switch
-							{
-								"string" => "GetAllocatedStrings",
-								_ => $"GetAllocatedArray<{allocatedType}>",
-							};
-							writer.Write(nativeMethod.Name);
-							writer.Write('(');
-							for (int i = 0; i < nativeMethod.Parameters.Length; i++)
-							{
-								if (i > 0)
-								{
-									writer.Write(", ");
-								}
-								if (i == parameterIndex)
-								{
-									writer.Write($"&ScratchAllocator.{allocateMethod}");
-								}
-								else
-								{
-									writer.Write(nativeMethod.Parameters[i].NameWithOutPrefix);
-								}
-							}
-							writer.WriteLine(");");
-							writer.WriteLine($"return ScratchAllocator.{resultMethod}();");
-						}
-						using (new Finally(writer))
-						{
-							writer.WriteLine("ScratchAllocator.Free();");
-						}
-					}
-				}
-				else if (TryGetAllocatorParameters(nativeMethod, out int parameter1Index, out string? allocatedType1, out int parameter2Index))
+				if (TryGetAllocatorParameters(nativeMethod, out int parameter1Index, out string? allocatedType1, out int parameter2Index))
 				{
 					List<ParameterData> modifiedParameters = nativeMethod.Parameters.ToList();
 					modifiedParameters.RemoveAt(Math.Max(parameter1Index, parameter2Index));
@@ -149,6 +92,63 @@ public partial class BindingsSourceGenerator
 						}
 					}
 				}
+				else if (TryGetAllocatorParameter(nativeMethod, out int parameterIndex, out string? allocatedType))
+				{
+					List<ParameterData> modifiedParameters = nativeMethod.Parameters.ToList();
+					modifiedParameters.RemoveAt(parameterIndex);
+					MethodData modifiedMethod = nativeMethod with
+					{
+						ReturnType = new TypeData($"{allocatedType}[]", 0),
+						Parameters = new(modifiedParameters)
+					};
+
+					nativeMethods[j] = modifiedMethod;
+
+					writer.WriteDebuggerIgnoreAttributes();
+					writer.WriteGeneratedCodeAttribute("Allocator Overloads");
+					writer.Write("public static ");
+					writer.WriteLine(modifiedMethod.ToString());
+					using (new CurlyBrackets(writer))
+					{
+						using (new Try(writer))
+						{
+							string allocateMethod = allocatedType switch
+							{
+								"long" => "AllocateInt64",
+								"string" => "AllocateString",
+								_ => $"Allocate{allocatedType}",
+							};
+							string resultMethod = allocatedType switch
+							{
+								"string" => "GetAllocatedStrings",
+								_ => $"GetAllocatedArray<{allocatedType}>",
+							};
+							writer.Write(nativeMethod.Name);
+							writer.Write('(');
+							for (int i = 0; i < nativeMethod.Parameters.Length; i++)
+							{
+								if (i > 0)
+								{
+									writer.Write(", ");
+								}
+								if (i == parameterIndex)
+								{
+									writer.Write($"&ScratchAllocator.{allocateMethod}");
+								}
+								else
+								{
+									writer.Write(nativeMethod.Parameters[i].NameWithOutPrefix);
+								}
+							}
+							writer.WriteLine(");");
+							writer.WriteLine($"return ScratchAllocator.{resultMethod}();");
+						}
+						using (new Finally(writer))
+						{
+							writer.WriteLine("ScratchAllocator.Free();");
+						}
+					}
+				}
 			}
 		}
 
@@ -167,7 +167,7 @@ public partial class BindingsSourceGenerator
 		for (int i = 0; i < method.Parameters.Length; i++)
 		{
 			ParameterData parameter = method.Parameters[i];
-			if (parameter.Name is not "allocator")
+			if (parameter.Name is not "allocator" and not "allocator1")
 			{
 				continue;
 			}
@@ -204,7 +204,7 @@ public partial class BindingsSourceGenerator
 		for (int i = 0; i < method.Parameters.Length; i++)
 		{
 			ParameterData parameter = method.Parameters[i];
-			if (parameter.Name is "allocator1")
+			if (parameter.Name is "allocator" or "allocator1")
 			{
 				parameter1Index = i;
 				allocatedType1 = parameter.Type.Name switch
