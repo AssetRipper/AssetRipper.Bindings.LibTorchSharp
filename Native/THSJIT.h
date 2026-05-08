@@ -26,15 +26,16 @@ EXPORT_API(JITCompilationUnit) THSJIT_compile(const char* script);
 EXPORT_API(void) THSJIT_Module_dispose(const JITModule module);
 EXPORT_API(void) THSJIT_CompilationUnit_dispose(const JITCompilationUnit module);
 
-EXPORT_API(int) THSJIT_Module_num_inputs(const JITModule method);
-EXPORT_API(int) THSJIT_Module_num_outputs(const JITModule method);
+EXPORT_API(int32_t) THSJIT_Module_num_inputs(const JITModule method);
+EXPORT_API(int32_t) THSJIT_Module_num_outputs(const JITModule method);
 
-EXPORT_API(void) THSJIT_Module_forward(const JITModule module, const TensorOrScalar* tensorPtrs, const int length, TensorOrScalar* (*allocator)(int32_t idx, size_t length), int8_t* typeCode, int32_t idx);
-EXPORT_API(void) THSJIT_Module_invoke(const JITModule module, const char* name, const TensorOrScalar* tensorPtrs, const int length, TensorOrScalar* (*allocator)(int32_t idx, size_t length), int8_t* typeCode, int32_t idx);
+EXPORT_API(void) THSJIT_Module_forward(const JITModule module, const TensorOrScalar* tensorPtrs, const int32_t length, TensorOrScalar* (*allocator)(int32_t idx, size_t length), int8_t* typeCode, int32_t idx);
+EXPORT_API(void) THSJIT_Module_invoke(const JITModule module, const char* name, const TensorOrScalar* tensorPtrs, const int32_t length, TensorOrScalar* (*allocator)(int32_t idx, size_t length), int8_t* typeCode, int32_t idx);
 
-EXPORT_API(void) THSJIT_CompilationUnit_Invoke(const JITCompilationUnit module, const char* method, const TensorOrScalar* tensorPtrs, const int length, TensorOrScalar* (*allocator)(int32_t idx, size_t length), int8_t* typeCode, int32_t idx);
+EXPORT_API(void) THSJIT_CompilationUnit_Invoke(const JITCompilationUnit module, const char* method, const TensorOrScalar* tensorPtrs, const int32_t length, TensorOrScalar* (*allocator)(int32_t idx, size_t length), int8_t* typeCode, int32_t idx);
 
-EXPORT_API(int) THSJIT_Module_is_training(JITModule module);
+EXPORT_API(bool) THSJIT_Module_is_training(JITModule module);
+EXPORT_API(void) THSJIT_Module_zero_grad(const JITModule module, bool set_to_none);
 EXPORT_API(void) THSJIT_Module_train(JITModule module, bool on);
 EXPORT_API(void) THSJIT_Module_eval(JITModule module);
 
@@ -48,7 +49,7 @@ EXPORT_API(int8_t) THSJIT_Type_kind(JITType handle);
 EXPORT_API(void*) THSJIT_Type_cast(const JITType type);
 
 EXPORT_API(int8_t) THSJIT_TensorType_dtype(const JITTensorType type);
-EXPORT_API(void) THSJIT_TensorType_sizes(const JITTensorType type, int64_t* (*allocator)(int64_t length));
+EXPORT_API(void) THSJIT_TensorType_sizes(const JITTensorType type, int64_t* (*allocator)(size_t length));
 
 EXPORT_API(void) THSJIT_Type_dispose(const JITType type);
 EXPORT_API(void) THSJIT_TensorType_dispose(const JITTensorType type);
@@ -79,7 +80,7 @@ EXPORT_API(void) THSJIT_Module_named_attributes(const JITModule module, bool rec
 
 EXPORT_API(void) THSJIT_Module_set_attribute(const JITModule module, const char* name, Tensor tensor);
 
-EXPORT_API(int) THSJIT_Method_num_inputs(const JITMethod method);
+EXPORT_API(int32_t) THSJIT_Method_num_inputs(const JITMethod method);
 
 EXPORT_API(void) THSJIT_Method_dispose(const JITMethod method);
 

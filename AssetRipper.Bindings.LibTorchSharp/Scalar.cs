@@ -1,6 +1,7 @@
 ﻿using AssetRipper.Bindings.LibTorchSharp.Attributes;
 using AssetRipper.Bindings.LibTorchSharp.LowLevel;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace AssetRipper.Bindings.LibTorchSharp;
 
@@ -16,36 +17,24 @@ public readonly partial struct Scalar
 	}
 
 	public static Scalar FromBFloat16(BFloat16 value) => FromBFloat16((float)value);
-	public BFloat16 ToBFloat16() => (BFloat16)ToSingle(); // https://github.com/dotnet/TorchSharp/pull/1505
+	public unsafe BFloat16 ToBFloat16()
+	{
+		ToBFloat16(out ushort result);
+		return Unsafe.BitCast<ushort, BFloat16>(result);
+	}
 
 	public static Scalar FromComplex32(Complex32 value) => FromComplex32(value.Real, value.Imaginary);
-	public unsafe Complex32 ToComplex32()
+	public Complex32 ToComplex32()
 	{
-		try
-		{
-			ToComplex32(&ScratchAllocator.AllocateSingle);
-			Span<float> span = ScratchAllocator.GetAllocatedSpan<float>();
-			return new(span[0], span[1]);
-		}
-		finally
-		{
-			ScratchAllocator.Free();
-		}
+		ToComplex32(out float real, out float imaginary);
+		return new Complex32(real, imaginary);
 	}
 
 	public static Scalar FromComplex64(Complex value) => FromComplex64(value.Real, value.Imaginary);
-	public unsafe Complex ToComplex64()
+	public Complex ToComplex64()
 	{
-		try
-		{
-			ToComplex64(&ScratchAllocator.AllocateDouble);
-			Span<double> span = ScratchAllocator.GetAllocatedSpan<double>();
-			return new Complex(span[0], span[1]);
-		}
-		finally
-		{
-			ScratchAllocator.Free();
-		}
+		ToComplex64(out double real, out double imaginary);
+		return new Complex(real, imaginary);
 	}
 
 	public static explicit operator Scalar(byte value) => FromUInt8(value);

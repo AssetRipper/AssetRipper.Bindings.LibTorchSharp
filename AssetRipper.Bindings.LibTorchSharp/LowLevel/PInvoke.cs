@@ -92,22 +92,27 @@ public static unsafe partial class PInvoke
 	public static extern void JIT_CompilationUnit_dispose([NativeTypeName("const JITCompilationUnit")] OpaqueJITCompilationUnit* module);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Module_num_inputs", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int JIT_Module_num_inputs([NativeTypeName("const JITModule")] OpaqueJITModule* method);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Module_num_outputs", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int JIT_Module_num_outputs([NativeTypeName("const JITModule")] OpaqueJITModule* method);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Module_forward", ExactSpelling = true)]
-	public static extern void JIT_Module_forward([NativeTypeName("const JITModule")] OpaqueJITModule* module, [NativeTypeName("const TensorOrScalar *")] TensorOrScalar* tensorPtrs, [NativeTypeName("const int")] int length, [NativeTypeName("TensorOrScalar *(*)(int32_t, size_t)")] delegate* unmanaged[Cdecl]<int, nuint, TensorOrScalar*> allocator, [NativeTypeName("int8_t *")] sbyte* typeCode, [NativeTypeName("int32_t")] int idx);
+	public static extern void JIT_Module_forward([NativeTypeName("const JITModule")] OpaqueJITModule* module, [NativeTypeName("const TensorOrScalar *")] TensorOrScalar* tensorPtrs, [NativeTypeName("const int32_t")] int length, [NativeTypeName("TensorOrScalar *(*)(int32_t, size_t)")] delegate* unmanaged[Cdecl]<int, nuint, TensorOrScalar*> allocator, [NativeTypeName("int8_t *")] sbyte* typeCode, [NativeTypeName("int32_t")] int idx);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Module_invoke", ExactSpelling = true)]
-	public static extern void JIT_Module_invoke([NativeTypeName("const JITModule")] OpaqueJITModule* module, [NativeTypeName("const char *")] sbyte* name, [NativeTypeName("const TensorOrScalar *")] TensorOrScalar* tensorPtrs, [NativeTypeName("const int")] int length, [NativeTypeName("TensorOrScalar *(*)(int32_t, size_t)")] delegate* unmanaged[Cdecl]<int, nuint, TensorOrScalar*> allocator, [NativeTypeName("int8_t *")] sbyte* typeCode, [NativeTypeName("int32_t")] int idx);
+	public static extern void JIT_Module_invoke([NativeTypeName("const JITModule")] OpaqueJITModule* module, [NativeTypeName("const char *")] sbyte* name, [NativeTypeName("const TensorOrScalar *")] TensorOrScalar* tensorPtrs, [NativeTypeName("const int32_t")] int length, [NativeTypeName("TensorOrScalar *(*)(int32_t, size_t)")] delegate* unmanaged[Cdecl]<int, nuint, TensorOrScalar*> allocator, [NativeTypeName("int8_t *")] sbyte* typeCode, [NativeTypeName("int32_t")] int idx);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_CompilationUnit_Invoke", ExactSpelling = true)]
-	public static extern void JIT_CompilationUnit_Invoke([NativeTypeName("const JITCompilationUnit")] OpaqueJITCompilationUnit* module, [NativeTypeName("const char *")] sbyte* method, [NativeTypeName("const TensorOrScalar *")] TensorOrScalar* tensorPtrs, [NativeTypeName("const int")] int length, [NativeTypeName("TensorOrScalar *(*)(int32_t, size_t)")] delegate* unmanaged[Cdecl]<int, nuint, TensorOrScalar*> allocator, [NativeTypeName("int8_t *")] sbyte* typeCode, [NativeTypeName("int32_t")] int idx);
+	public static extern void JIT_CompilationUnit_Invoke([NativeTypeName("const JITCompilationUnit")] OpaqueJITCompilationUnit* module, [NativeTypeName("const char *")] sbyte* method, [NativeTypeName("const TensorOrScalar *")] TensorOrScalar* tensorPtrs, [NativeTypeName("const int32_t")] int length, [NativeTypeName("TensorOrScalar *(*)(int32_t, size_t)")] delegate* unmanaged[Cdecl]<int, nuint, TensorOrScalar*> allocator, [NativeTypeName("int8_t *")] sbyte* typeCode, [NativeTypeName("int32_t")] int idx);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Module_is_training", ExactSpelling = true)]
-	public static extern int JIT_Module_is_training([NativeTypeName("JITModule")] OpaqueJITModule* module);
+	public static extern bool JIT_Module_is_training([NativeTypeName("JITModule")] OpaqueJITModule* module);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Module_zero_grad", ExactSpelling = true)]
+	public static extern void JIT_Module_zero_grad([NativeTypeName("const JITModule")] OpaqueJITModule* module, bool set_to_none);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Module_train", ExactSpelling = true)]
 	public static extern void JIT_Module_train([NativeTypeName("JITModule")] OpaqueJITModule* module, bool on);
@@ -140,7 +145,7 @@ public static unsafe partial class PInvoke
 	public static extern sbyte JIT_TensorType_dtype([NativeTypeName("const JITTensorType")] OpaqueJITTensorType* type);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_TensorType_sizes", ExactSpelling = true)]
-	public static extern void JIT_TensorType_sizes([NativeTypeName("const JITTensorType")] OpaqueJITTensorType* type, [NativeTypeName("int64_t *(*)(int64_t)")] delegate* unmanaged[Cdecl]<long, long*> allocator);
+	public static extern void JIT_TensorType_sizes([NativeTypeName("const JITTensorType")] OpaqueJITTensorType* type, [NativeTypeName("int64_t *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, long*> allocator);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Type_dispose", ExactSpelling = true)]
 	public static extern void JIT_Type_dispose([NativeTypeName("const JITType")] OpaqueJITType* type);
@@ -177,6 +182,7 @@ public static unsafe partial class PInvoke
 	public static extern void JIT_Module_set_attribute([NativeTypeName("const JITModule")] OpaqueJITModule* module, [NativeTypeName("const char *")] sbyte* name, [NativeTypeName("Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Method_num_inputs", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int JIT_Method_num_inputs([NativeTypeName("const JITMethod")] OpaqueJITMethod* method);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSJIT_Method_dispose", ExactSpelling = true)]
@@ -199,7 +205,7 @@ public static unsafe partial class PInvoke
 	public static extern TensorOrScalar* JIT_GetTensorOrScalar(TensorOrScalar* array, [NativeTypeName("int32_t")] int index);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_has_parameter", ExactSpelling = true)]
-	public static extern int NN_Module_has_parameter([NativeTypeName("const NNModule")] OpaqueNNModule* module, [NativeTypeName("const char *")] sbyte* name);
+	public static extern bool NN_Module_has_parameter([NativeTypeName("const NNModule")] OpaqueNNModule* module, [NativeTypeName("const char *")] sbyte* name);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_get_parameter", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -221,18 +227,18 @@ public static unsafe partial class PInvoke
 	public static extern void NN_Module_get_parameters([NativeTypeName("const NNModule")] OpaqueNNModule* module, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator1, bool recurse);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_is_training", ExactSpelling = true)]
-	public static extern int NN_Module_get_IsTraining([NativeTypeName("NNModule")] OpaqueNNModule* module);
+	public static extern bool NN_Module_get_IsTraining([NativeTypeName("NNModule")] OpaqueNNModule* module);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_train", ExactSpelling = true)]
 	public static extern void NN_Module_set_IsTraining([NativeTypeName("NNModule")] OpaqueNNModule* module, bool on);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_children_size", ExactSpelling = true)]
-	[return: NativeTypeName("long")]
-	public static extern int NN_Module_children_size([NativeTypeName("const NNModule")] OpaqueNNModule* module);
+	[return: NativeTypeName("size_t")]
+	public static extern nuint NN_Module_children_size([NativeTypeName("const NNModule")] OpaqueNNModule* module);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_child", ExactSpelling = true)]
 	[return: NativeTypeName("NNModule")]
-	public static extern OpaqueNNModule* NN_Module_child([NativeTypeName("const NNModule")] OpaqueNNModule* module, [NativeTypeName("const int")] int index);
+	public static extern OpaqueNNModule* NN_Module_child([NativeTypeName("const NNModule")] OpaqueNNModule* module, [NativeTypeName("const int32_t")] int index);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Module_name", ExactSpelling = true)]
 	[return: NativeTypeName("const char *")]
@@ -346,11 +352,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_pad", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* NN_pad([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* pad, [NativeTypeName("const int")] int pad_length, [NativeTypeName("const int8_t")] sbyte mode, [NativeTypeName("const double")] double value);
+	public static extern OpaqueTensor* NN_pad([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* pad, [NativeTypeName("const int32_t")] int pad_length, [NativeTypeName("const int8_t")] sbyte mode, [NativeTypeName("const double")] double value);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_interpolate", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* NN_interpolate([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* size, [NativeTypeName("const int")] int size_len, [NativeTypeName("const double *")] double* scale_factor, [NativeTypeName("const int")] int scale_factor_len, [NativeTypeName("const int8_t")] sbyte mode, [NativeTypeName("const int8_t")] sbyte align_corners, [NativeTypeName("const bool")] bool recompute_scale_factor, [NativeTypeName("const bool")] bool antialias, [NativeTypeName("NNAnyModule *")] OpaqueNNAnyModule** outAsAnyModule);
+	public static extern OpaqueTensor* NN_interpolate([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* size, [NativeTypeName("const int32_t")] int size_len, [NativeTypeName("const double *")] double* scale_factor, [NativeTypeName("const int32_t")] int scale_factor_len, [NativeTypeName("const int8_t")] sbyte mode, [NativeTypeName("const int8_t")] sbyte align_corners, [NativeTypeName("const bool")] bool recompute_scale_factor, [NativeTypeName("const bool")] bool antialias);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_grid_sample", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -358,7 +364,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_affine_grid", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* NN_affine_grid([NativeTypeName("const Tensor")] OpaqueTensor* theta, [NativeTypeName("const int64_t *")] long* size, [NativeTypeName("const int")] int size_len, [NativeTypeName("const bool")] bool align_corners);
+	public static extern OpaqueTensor* NN_affine_grid([NativeTypeName("const Tensor")] OpaqueTensor* theta, [NativeTypeName("const int64_t *")] long* size, [NativeTypeName("const int32_t")] int size_len, [NativeTypeName("const bool")] bool align_corners);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Embedding_ctor", ExactSpelling = true)]
 	[return: NativeTypeName("NNModule")]
@@ -719,27 +725,27 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Adagrad_ctor", ExactSpelling = true)]
 	[return: NativeTypeName("Optimizer")]
-	public static extern OpaqueOptimizer* NN_Adagrad_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int")] int len, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double lr_decay, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const double")] double initial_accumulator_value, [NativeTypeName("const double")] double eps);
+	public static extern OpaqueOptimizer* NN_Adagrad_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int32_t")] int len, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double lr_decay, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const double")] double initial_accumulator_value, [NativeTypeName("const double")] double eps);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Adam_ctor", ExactSpelling = true)]
 	[return: NativeTypeName("Optimizer")]
-	public static extern OpaqueOptimizer* NN_Adam_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int")] int len, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double beta1, [NativeTypeName("const double")] double beta2, [NativeTypeName("const double")] double eps, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const bool")] bool amsgrad);
+	public static extern OpaqueOptimizer* NN_Adam_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int32_t")] int len, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double beta1, [NativeTypeName("const double")] double beta2, [NativeTypeName("const double")] double eps, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const bool")] bool amsgrad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_AdamW_ctor", ExactSpelling = true)]
 	[return: NativeTypeName("Optimizer")]
-	public static extern OpaqueOptimizer* NN_AdamW_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int")] int len, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double beta1, [NativeTypeName("const double")] double beta2, [NativeTypeName("const double")] double eps, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const bool")] bool amsgrad);
+	public static extern OpaqueOptimizer* NN_AdamW_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int32_t")] int len, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double beta1, [NativeTypeName("const double")] double beta2, [NativeTypeName("const double")] double eps, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const bool")] bool amsgrad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_LBFGS_ctor", ExactSpelling = true)]
 	[return: NativeTypeName("Optimizer")]
-	public static extern OpaqueOptimizer* NN_LBFGS_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int")] int len, [NativeTypeName("const double")] double lr, [NativeTypeName("const int64_t")] long max_iter, [NativeTypeName("const int64_t")] long max_eval, [NativeTypeName("const double")] double tolerange_grad, [NativeTypeName("const double")] double tolerance_change, [NativeTypeName("const int64_t")] long history_size);
+	public static extern OpaqueOptimizer* NN_LBFGS_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int32_t")] int len, [NativeTypeName("const double")] double lr, [NativeTypeName("const int64_t")] long max_iter, [NativeTypeName("const int64_t")] long max_eval, [NativeTypeName("const double")] double tolerange_grad, [NativeTypeName("const double")] double tolerance_change, [NativeTypeName("const int64_t")] long history_size);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_RMSprop_ctor", ExactSpelling = true)]
 	[return: NativeTypeName("Optimizer")]
-	public static extern OpaqueOptimizer* NN_RMSprop_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int")] int length, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double alpha, [NativeTypeName("const double")] double eps, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const double")] double momentum, [NativeTypeName("const bool")] bool centered);
+	public static extern OpaqueOptimizer* NN_RMSprop_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double alpha, [NativeTypeName("const double")] double eps, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const double")] double momentum, [NativeTypeName("const bool")] bool centered);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_SGD_ctor", ExactSpelling = true)]
 	[return: NativeTypeName("Optimizer")]
-	public static extern OpaqueOptimizer* NN_SGD_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int")] int length, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double momentum, [NativeTypeName("const double")] double dampening, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const bool")] bool nesterov);
+	public static extern OpaqueOptimizer* NN_SGD_ctor([NativeTypeName("const Tensor *")] OpaqueTensor** parameters, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const double")] double learning_rate, [NativeTypeName("const double")] double momentum, [NativeTypeName("const double")] double dampening, [NativeTypeName("const double")] double weight_decay, [NativeTypeName("const bool")] bool nesterov);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_Adam_set_betas", ExactSpelling = true)]
 	public static extern void NN_Adam_set_betas([NativeTypeName("const Optimizer")] OpaqueOptimizer* optimizer, double beta1, double beta2);
@@ -834,11 +840,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_pad_sequence", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* NN_pad_sequence([NativeTypeName("const Tensor *")] OpaqueTensor** sequences, [NativeTypeName("const int")] int sequences_len, bool batch_first, double padding_value);
+	public static extern OpaqueTensor* NN_pad_sequence([NativeTypeName("const Tensor *")] OpaqueTensor** sequences, [NativeTypeName("const int32_t")] int sequences_len, bool batch_first, double padding_value);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSNN_pack_sequence", ExactSpelling = true)]
 	[return: NativeTypeName("PackedSequence")]
-	public static extern OpaquePackedSequence* NN_pack_sequence([NativeTypeName("const Tensor *")] OpaqueTensor** sequences, int sequences_len, bool enforce_sorted);
+	public static extern OpaquePackedSequence* NN_pack_sequence([NativeTypeName("const Tensor *")] OpaqueTensor** sequences, [NativeTypeName("int32_t")] int sequences_len, bool enforce_sorted);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_storage_offset", ExactSpelling = true)]
 	[return: NativeTypeName("int64_t")]
@@ -870,15 +876,15 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_adaptive_avg_pool1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_adaptive_avg_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength);
+	public static extern OpaqueTensor* Tensor_adaptive_avg_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_adaptive_avg_pool2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_adaptive_avg_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength);
+	public static extern OpaqueTensor* Tensor_adaptive_avg_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_adaptive_avg_pool3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_adaptive_avg_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength);
+	public static extern OpaqueTensor* Tensor_adaptive_avg_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_adaptive_avg_pool3d_backward_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -886,31 +892,31 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_adaptive_max_pool1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_adaptive_max_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
+	public static extern OpaqueTensor* Tensor_adaptive_max_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_adaptive_max_pool2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_adaptive_max_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
+	public static extern OpaqueTensor* Tensor_adaptive_max_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_adaptive_max_pool3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_adaptive_max_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
+	public static extern OpaqueTensor* Tensor_adaptive_max_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_fractional_max_pool2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_fractional_max_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const double *")] double* outputRatio, [NativeTypeName("const int")] int outputRatioLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
+	public static extern OpaqueTensor* Tensor_fractional_max_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const double *")] double* outputRatio, [NativeTypeName("const int32_t")] int outputRatioLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_fractional_max_pool3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_fractional_max_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const double *")] double* outputRatio, [NativeTypeName("const int")] int outputRatioLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
+	public static extern OpaqueTensor* Tensor_fractional_max_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const double *")] double* outputRatio, [NativeTypeName("const int32_t")] int outputRatioLength, [NativeTypeName("Tensor *")] OpaqueTensor** indices);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_lp_pool1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_lp_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double")] double norm_type, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const bool")] bool ceil_mode);
+	public static extern OpaqueTensor* Tensor_lp_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double")] double norm_type, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const bool")] bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_lp_pool2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_lp_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double")] double norm_type, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const bool")] bool ceil_mode);
+	public static extern OpaqueTensor* Tensor_lp_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double")] double norm_type, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const bool")] bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_add", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -977,7 +983,7 @@ public static unsafe partial class PInvoke
 	public static extern OpaqueTensor* Tensor_alias([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_allclose", ExactSpelling = true)]
-	public static extern int Tensor_allclose([NativeTypeName("const Tensor")] OpaqueTensor* left, [NativeTypeName("const Tensor")] OpaqueTensor* right, double rtol, double atol, bool equal_nan);
+	public static extern bool Tensor_allclose([NativeTypeName("const Tensor")] OpaqueTensor* left, [NativeTypeName("const Tensor")] OpaqueTensor* right, double rtol, double atol, bool equal_nan);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_all", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -989,19 +995,19 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_amax", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_amax([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool keepdim);
+	public static extern OpaqueTensor* Tensor_amax([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_amax_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_amax_out([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool keepdim, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_amax_out([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool keepdim, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_amin", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_amin([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool keepdim);
+	public static extern OpaqueTensor* Tensor_amin([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_amin_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_amin_out([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool keepdim, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_amin_out([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool keepdim, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_aminmax", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1021,7 +1027,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_arange", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_arange([NativeTypeName("const Scalar")] OpaqueScalar* start, [NativeTypeName("const Scalar")] OpaqueScalar* end, [NativeTypeName("const Scalar")] OpaqueScalar* step, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_arange([NativeTypeName("const Scalar")] OpaqueScalar* start, [NativeTypeName("const Scalar")] OpaqueScalar* end, [NativeTypeName("const Scalar")] OpaqueScalar* step, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_arange_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1107,23 +1113,23 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_avg_pool1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_avg_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, bool ceil_mode, bool count_include_pad);
+	public static extern OpaqueTensor* Tensor_avg_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, bool ceil_mode, bool count_include_pad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_avg_pool2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_avg_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
+	public static extern OpaqueTensor* Tensor_avg_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_avg_pool2d_backward", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_avg_pool2d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
+	public static extern OpaqueTensor* Tensor_avg_pool2d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_avg_pool3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_avg_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
+	public static extern OpaqueTensor* Tensor_avg_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_avg_pool3d_backward", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_avg_pool3d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
+	public static extern OpaqueTensor* Tensor_avg_pool3d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, bool ceil_mode, bool count_include_pad, [NativeTypeName("const int64_t")] long divisor_override);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_baddbmm", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1180,7 +1186,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_block_diag", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_block_diag([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_block_diag([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_bmm", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1188,10 +1194,10 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_broadcast_to", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_broadcast_to([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int")] int shape_len);
+	public static extern OpaqueTensor* Tensor_broadcast_to([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int32_t")] int shape_len);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_broadcast_tensors", ExactSpelling = true)]
-	public static extern void Tensor_broadcast_tensors([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator);
+	public static extern void Tensor_broadcast_tensors([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_bucketize", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1199,11 +1205,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_cartesian_prod", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_cartesian_prod([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_cartesian_prod([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_cat", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_cat([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length, [NativeTypeName("const int64_t")] long dim);
+	public static extern OpaqueTensor* Tensor_cat([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int64_t")] long dim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_channel_shuffle", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1214,17 +1220,17 @@ public static unsafe partial class PInvoke
 	public static extern OpaqueTensor* Tensor_cdist([NativeTypeName("const Tensor")] OpaqueTensor* x1, [NativeTypeName("const Tensor")] OpaqueTensor* x2, [NativeTypeName("const double")] double p, [NativeTypeName("const int64_t")] long compute_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_clip_grad_norm_", ExactSpelling = true)]
-	public static extern double Tensor_clip_grad_norm_([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length, [NativeTypeName("const double")] double max_norm, [NativeTypeName("const double")] double norm_type);
+	public static extern double Tensor_clip_grad_norm_([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const double")] double max_norm, [NativeTypeName("const double")] double norm_type);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_clip_grad_value_", ExactSpelling = true)]
-	public static extern void Tensor_clip_grad_value_([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int")] int length, [NativeTypeName("const double")] double value);
+	public static extern void Tensor_clip_grad_value_([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const double")] double value);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_parameters_to_vector", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_parameters_to_vector([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_parameters_to_vector([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_vector_to_parameters", ExactSpelling = true)]
-	public static extern void Tensor_vector_to_parameters([NativeTypeName("const Tensor")] OpaqueTensor* vec, [NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int")] int length);
+	public static extern void Tensor_vector_to_parameters([NativeTypeName("const Tensor")] OpaqueTensor* vec, [NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_clone", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1232,7 +1238,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_combinations", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_combinations([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int")] int r, [NativeTypeName("const bool")] bool with_replacement);
+	public static extern OpaqueTensor* Tensor_combinations([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int32_t")] int r, [NativeTypeName("const bool")] bool with_replacement);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_contiguous", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1312,8 +1318,7 @@ public static unsafe partial class PInvoke
 	public static extern OpaqueTensor* Tensor_conj([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_is_nonzero", ExactSpelling = true)]
-	[return: NativeTypeName("int64_t")]
-	public static extern long Tensor_is_nonzero([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+	public static extern bool Tensor_is_nonzero([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conj_physical", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1332,43 +1337,46 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv1d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int")] int paddings_length, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv1d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int32_t")] int paddings_length, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv2d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int")] int paddings_length, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv2d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int32_t")] int paddings_length, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv3d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int")] int paddings_length, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv3d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int32_t")] int paddings_length, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv1d_padding", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv1d_padding([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int")] int padding, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv1d_padding([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int32_t")] int padding, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv2d_padding", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv2d_padding([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int")] int padding, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv2d_padding([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int32_t")] int padding, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv3d_padding", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv3d_padding([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int")] int padding, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv3d_padding([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int32_t")] int padding, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv_transpose1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv_transpose1d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int")] int paddings_length, [NativeTypeName("const int64_t *")] long* output_padding, [NativeTypeName("const int")] int output_paddingLength, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv_transpose1d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int32_t")] int paddings_length, [NativeTypeName("const int64_t *")] long* output_padding, [NativeTypeName("const int32_t")] int output_paddingLength, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv_transpose2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv_transpose2d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int")] int paddings_length, [NativeTypeName("const int64_t *")] long* output_padding, [NativeTypeName("const int")] int output_paddingLength, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv_transpose2d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int32_t")] int paddings_length, [NativeTypeName("const int64_t *")] long* output_padding, [NativeTypeName("const int32_t")] int output_paddingLength, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_conv_transpose3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_conv_transpose3d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int")] int paddings_length, [NativeTypeName("const int64_t *")] long* output_padding, [NativeTypeName("const int")] int output_paddingLength, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int")] int dilations_length, [NativeTypeName("int64_t")] long groups);
+	public static extern OpaqueTensor* Tensor_conv_transpose3d([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const Tensor")] OpaqueTensor* bias, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int strides_length, [NativeTypeName("const int64_t *")] long* paddings, [NativeTypeName("const int32_t")] int paddings_length, [NativeTypeName("const int64_t *")] long* output_padding, [NativeTypeName("const int32_t")] int output_paddingLength, [NativeTypeName("const int64_t *")] long* dilations, [NativeTypeName("const int32_t")] int dilations_length, [NativeTypeName("int64_t")] long groups);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_copysign", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_copysign([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* other);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_copysign_", ExactSpelling = true)]
+	public static extern void Tensor_copysign_([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* other);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_copy_", ExactSpelling = true)]
 	public static extern void Tensor_copy_([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* other, [NativeTypeName("const bool")] bool non_blocking);
@@ -1393,7 +1401,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_count_nonzero", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_count_nonzero([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_len);
+	public static extern OpaqueTensor* Tensor_count_nonzero([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_len);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_cov", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1419,8 +1427,7 @@ public static unsafe partial class PInvoke
 	public static extern OpaqueTensor* Tensor_pin_memory([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_is_pinned", ExactSpelling = true)]
-	[return: NativeTypeName("int64_t")]
-	public static extern long Tensor_is_pinned([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+	public static extern bool Tensor_is_pinned([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_cummax", ExactSpelling = true)]
 	public static extern void Tensor_cummax([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t")] long dim);
@@ -1449,6 +1456,9 @@ public static unsafe partial class PInvoke
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_deg2rad([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_deg2rad_", ExactSpelling = true)]
+	public static extern void Tensor_deg2rad_([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_detach", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_detach([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
@@ -1461,9 +1471,11 @@ public static unsafe partial class PInvoke
 	public static extern sbyte* Tensor_device_str([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_device_type", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int Tensor_device_type([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_device_index", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int Tensor_device_index([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_diag", ExactSpelling = true)]
@@ -1520,7 +1532,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_einsum", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_einsum([NativeTypeName("const char *")] sbyte* equation, [NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_einsum([NativeTypeName("const char *")] sbyte* equation, [NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_element_size", ExactSpelling = true)]
 	[return: NativeTypeName("int64_t")]
@@ -1535,23 +1547,23 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_empty", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_empty([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_empty([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_empty_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_empty_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_empty_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_empty_like", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_empty_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_empty_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_empty_strided", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_empty_strided([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int sz_length, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int str_length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_empty_strided([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int sz_length, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int str_length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_as_strided", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_as_strided([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int sz_length, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int")] int str_length, [NativeTypeName("const int64_t")] long storage_offset);
+	public static extern OpaqueTensor* Tensor_as_strided([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int sz_length, [NativeTypeName("const int64_t *")] long* strides, [NativeTypeName("const int32_t")] int str_length, [NativeTypeName("const int64_t")] long storage_offset);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_eq", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1568,7 +1580,7 @@ public static unsafe partial class PInvoke
 	public static extern void Tensor_eq_scalar_([NativeTypeName("const Tensor")] OpaqueTensor* left, [NativeTypeName("const Scalar")] OpaqueScalar* right);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_equal", ExactSpelling = true)]
-	public static extern int Tensor_equal([NativeTypeName("const Tensor")] OpaqueTensor* left, [NativeTypeName("const Tensor")] OpaqueTensor* right);
+	public static extern bool Tensor_equal([NativeTypeName("const Tensor")] OpaqueTensor* left, [NativeTypeName("const Tensor")] OpaqueTensor* right);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_exp", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1581,6 +1593,9 @@ public static unsafe partial class PInvoke
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_exp2([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_exp2_", ExactSpelling = true)]
+	public static extern void Tensor_exp2_([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_expm1", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_expm1([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
@@ -1590,7 +1605,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_expand", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_expand([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, bool @implicit);
+	public static extern OpaqueTensor* Tensor_expand([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, bool @implicit);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_erf", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1615,7 +1630,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_eye", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_eye([NativeTypeName("const int64_t")] long n, [NativeTypeName("const int64_t")] long m, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_eye([NativeTypeName("const int64_t")] long n, [NativeTypeName("const int64_t")] long m, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_eye_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1630,7 +1645,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_flip", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_flip([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_flip([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_fliplr", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1643,6 +1658,9 @@ public static unsafe partial class PInvoke
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_float_power", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_float_power([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* exponent);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_float_power_", ExactSpelling = true)]
+	public static extern void Tensor_float_power_([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* exponent);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_floor", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1714,15 +1732,15 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_full", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_full([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_full([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_full_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_full_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_full_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_full_like", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_full_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_full_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_digamma", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1770,6 +1788,14 @@ public static unsafe partial class PInvoke
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_gelu_", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_gelu_([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_gelu_with_approximate", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_gelu_with_approximate([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const char *")] sbyte* approximate);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_gelu_with_approximate_", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_gelu_with_approximate_([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const char *")] sbyte* approximate);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_glu", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1838,6 +1864,9 @@ public static unsafe partial class PInvoke
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_heaviside([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* values);
 
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_heaviside_", ExactSpelling = true)]
+	public static extern void Tensor_heaviside_([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* values);
+
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_hypot", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_hypot([NativeTypeName("const Tensor")] OpaqueTensor* left, [NativeTypeName("const Tensor")] OpaqueTensor* right);
@@ -1845,6 +1874,9 @@ public static unsafe partial class PInvoke
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_i0", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_i0([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_i0_", ExactSpelling = true)]
+	public static extern void Tensor_i0_([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_igamma", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1903,13 +1935,13 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_index", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_index([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* indexStarts, [NativeTypeName("const int64_t *")] long* indexEnds, [NativeTypeName("const int64_t *")] long* indexSteps, [NativeTypeName("const Tensor *")] OpaqueTensor** indexTensors, [NativeTypeName("const int")] int indicesLength);
+	public static extern OpaqueTensor* Tensor_index([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* indexStarts, [NativeTypeName("const int64_t *")] long* indexEnds, [NativeTypeName("const int64_t *")] long* indexSteps, [NativeTypeName("const Tensor *")] OpaqueTensor** indexTensors, [NativeTypeName("const int32_t")] int indicesLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_index_put_scalar_", ExactSpelling = true)]
-	public static extern void Tensor_index_put_scalar_([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* indexStarts, [NativeTypeName("const int64_t *")] long* indexEnds, [NativeTypeName("const int64_t *")] long* indexSteps, [NativeTypeName("const Tensor *")] OpaqueTensor** indexTensors, [NativeTypeName("const int")] int indicesLength, [NativeTypeName("const Scalar")] OpaqueScalar* value);
+	public static extern void Tensor_index_put_scalar_([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* indexStarts, [NativeTypeName("const int64_t *")] long* indexEnds, [NativeTypeName("const int64_t *")] long* indexSteps, [NativeTypeName("const Tensor *")] OpaqueTensor** indexTensors, [NativeTypeName("const int32_t")] int indicesLength, [NativeTypeName("const Scalar")] OpaqueScalar* value);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_index_put_", ExactSpelling = true)]
-	public static extern void Tensor_index_put_([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* indexStarts, [NativeTypeName("const int64_t *")] long* indexEnds, [NativeTypeName("const int64_t *")] long* indexSteps, [NativeTypeName("const Tensor *")] OpaqueTensor** indexTensors, [NativeTypeName("const int")] int indicesLength, [NativeTypeName("const Tensor")] OpaqueTensor* value, [NativeTypeName("const bool")] bool accumulate = false);
+	public static extern void Tensor_index_put_([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* indexStarts, [NativeTypeName("const int64_t *")] long* indexEnds, [NativeTypeName("const int64_t *")] long* indexSteps, [NativeTypeName("const Tensor *")] OpaqueTensor** indexTensors, [NativeTypeName("const int32_t")] int indicesLength, [NativeTypeName("const Tensor")] OpaqueTensor* value, [NativeTypeName("const bool")] bool accumulate = false);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_index_select", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -1924,14 +1956,13 @@ public static unsafe partial class PInvoke
 	public static extern OpaqueTensor* Tensor_inverse([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_is_contiguous", ExactSpelling = true)]
-	public static extern int Tensor_is_contiguous([NativeTypeName("const Tensor")] OpaqueTensor* input);
+	public static extern bool Tensor_is_contiguous([NativeTypeName("const Tensor")] OpaqueTensor* input);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_is_leaf", ExactSpelling = true)]
-	[return: NativeTypeName("int64_t")]
-	public static extern long Tensor_is_leaf([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+	public static extern bool Tensor_is_leaf([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_is_sparse", ExactSpelling = true)]
-	public static extern int Tensor_is_sparse([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+	public static extern bool Tensor_is_sparse([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_isclose", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2021,11 +2052,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_linspace", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_linspace([NativeTypeName("const double")] double start, [NativeTypeName("const double")] double end, [NativeTypeName("const int64_t")] long steps, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_linspace([NativeTypeName("const double")] double start, [NativeTypeName("const double")] double end, [NativeTypeName("const int64_t")] long steps, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_logspace", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_logspace([NativeTypeName("const double")] double start, [NativeTypeName("const double")] double end, [NativeTypeName("const int64_t")] long steps, double @base, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_logspace([NativeTypeName("const double")] double start, [NativeTypeName("const double")] double end, [NativeTypeName("const int64_t")] long steps, double @base, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_load", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2073,11 +2104,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_logcumsumexp", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_logcumsumexp([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const long")] int dimension);
+	public static extern OpaqueTensor* Tensor_logcumsumexp([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t")] long dimension);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_logsumexp", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_logsumexp([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const long")] int dimension, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Tensor_logsumexp([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t")] long dimension, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_logical_and", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2112,8 +2143,7 @@ public static unsafe partial class PInvoke
 	public static extern OpaqueTensor* Tensor_logit([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double *")] double* eps);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_logit_", ExactSpelling = true)]
-	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_logit_([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double *")] double* eps);
+	public static extern void Tensor_logit_([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double *")] double* eps);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_lt", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2180,36 +2210,36 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_pool1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_max_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int")] int dilationLength, bool ceil_mode);
+	public static extern OpaqueTensor* Tensor_max_pool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int32_t")] int dilationLength, bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_pool2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_max_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int")] int dilationLength, bool ceil_mode);
+	public static extern OpaqueTensor* Tensor_max_pool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int32_t")] int dilationLength, bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_pool3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_max_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int")] int dilationLength, bool ceil_mode);
+	public static extern OpaqueTensor* Tensor_max_pool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int32_t")] int dilationLength, bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_pool1d_with_indices", ExactSpelling = true)]
-	public static extern void Tensor_max_pool1d_with_indices([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int")] int dilationLength, bool ceil_mode);
+	public static extern void Tensor_max_pool1d_with_indices([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int32_t")] int dilationLength, bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_pool2d_with_indices", ExactSpelling = true)]
-	public static extern void Tensor_max_pool2d_with_indices([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int")] int dilationLength, bool ceil_mode);
+	public static extern void Tensor_max_pool2d_with_indices([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int32_t")] int dilationLength, bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_pool3d_with_indices", ExactSpelling = true)]
-	public static extern void Tensor_max_pool3d_with_indices([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int")] int dilationLength, bool ceil_mode);
+	public static extern void Tensor_max_pool3d_with_indices([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* dilation, [NativeTypeName("const int32_t")] int dilationLength, bool ceil_mode);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_unpool1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_max_unpool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* indices, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength);
+	public static extern OpaqueTensor* Tensor_max_unpool1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* indices, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_unpool2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_max_unpool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* indices, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength);
+	public static extern OpaqueTensor* Tensor_max_unpool2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* indices, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_max_unpool3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_max_unpool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* indices, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int")] int paddingLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int")] int strideLength);
+	public static extern OpaqueTensor* Tensor_max_unpool3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* indices, [NativeTypeName("const int64_t *")] long* kernelSize, [NativeTypeName("const int32_t")] int kernelSizeLength, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* padding, [NativeTypeName("const int32_t")] int paddingLength, [NativeTypeName("const int64_t *")] long* stride, [NativeTypeName("const int32_t")] int strideLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_mean", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2217,7 +2247,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_mean_along_dimensions", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_mean_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool keepdim, bool has_type, [NativeTypeName("const int8_t")] sbyte dtype);
+	public static extern OpaqueTensor* Tensor_mean_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool keepdim, bool has_type, [NativeTypeName("const int8_t")] sbyte dtype);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_median", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2247,7 +2277,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_movedim", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_movedim([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* src, [NativeTypeName("const int")] int src_len, [NativeTypeName("const int64_t *")] long* dst, [NativeTypeName("const int")] int dst_len);
+	public static extern OpaqueTensor* Tensor_movedim([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* src, [NativeTypeName("const int32_t")] int src_len, [NativeTypeName("const int64_t *")] long* dst, [NativeTypeName("const int32_t")] int dst_len);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_msort", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2269,7 +2299,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_nanmean", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_nanmean([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* dims, [NativeTypeName("const int")] int dims_len, bool keepdim, [NativeTypeName("int8_t")] sbyte scalar_type);
+	public static extern OpaqueTensor* Tensor_nanmean([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t *")] long* dims, [NativeTypeName("const int32_t")] int dims_len, bool keepdim, [NativeTypeName("int8_t")] sbyte scalar_type);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_nanmedian", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2286,6 +2316,9 @@ public static unsafe partial class PInvoke
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_nan_to_num", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_nan_to_num([NativeTypeName("const Tensor")] OpaqueTensor* input, double* nan, double* posinf, double* neginf);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_nan_to_num_", ExactSpelling = true)]
+	public static extern void Tensor_nan_to_num_([NativeTypeName("const Tensor")] OpaqueTensor* input, double* nan, double* posinf, double* neginf);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_narrow", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2326,75 +2359,78 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_new", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_new(void* data, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int szlength, [NativeTypeName("int8_t")] sbyte scalar_type, [NativeTypeName("int8_t")] sbyte dtype, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_new(void* data, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int szlength, [NativeTypeName("int8_t")] sbyte scalar_type, [NativeTypeName("int8_t")] sbyte dtype, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_frombuffer", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_frombuffer(void* data, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t")] long count, [NativeTypeName("const ptrdiff_t")] nint offset, [NativeTypeName("int8_t")] sbyte scalar_type, [NativeTypeName("int8_t")] sbyte dtype, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_frombuffer(void* data, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t")] long count, [NativeTypeName("const ptrdiff_t")] nint offset, [NativeTypeName("int8_t")] sbyte scalar_type, [NativeTypeName("int8_t")] sbyte dtype, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newInt64", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newInt64([NativeTypeName("int64_t *")] long* data, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int szlength, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newInt64([NativeTypeName("int64_t *")] long* data, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int szlength, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newFloat16", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newFloat16(float* rawArray, [NativeTypeName("uint16_t *")] ushort* dataArray, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int szlength, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newFloat16(float* rawArray, [NativeTypeName("uint16_t *")] ushort* dataArray, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int szlength, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newBFloat16", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newBFloat16(float* rawArray, [NativeTypeName("uint16_t *")] ushort* dataArray, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int szlength, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newBFloat16(float* rawArray, [NativeTypeName("uint16_t *")] ushort* dataArray, [NativeTypeName("void (*)(void *)")] delegate* unmanaged[Cdecl]<void*, void> deleter, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int szlength, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newInt8Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newInt8Scalar([NativeTypeName("int8_t")] sbyte data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newInt8Scalar([NativeTypeName("int8_t")] sbyte data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newByteScalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newByteScalar([NativeTypeName("char")] sbyte data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newByteScalar([NativeTypeName("uint8_t")] byte data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newBoolScalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newBoolScalar(bool data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newBoolScalar(bool data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newFloat16Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newFloat16Scalar(float data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newFloat16Scalar(float data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newBFloat16Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newBFloat16Scalar(float data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newBFloat16Scalar(float data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newInt16Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newInt16Scalar(short data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newInt16Scalar([NativeTypeName("int16_t")] short data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newInt32Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newInt32Scalar(int data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newInt32Scalar([NativeTypeName("int32_t")] int data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newInt64Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newInt64Scalar([NativeTypeName("int64_t")] long data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newInt64Scalar([NativeTypeName("int64_t")] long data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newFloat32Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newFloat32Scalar(float data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newFloat32Scalar(float data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newFloat64Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newFloat64Scalar(double data, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newFloat64Scalar(double data, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newComplexFloat32Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newComplexFloat32Scalar(float real, float imaginary, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newComplexFloat32Scalar(float real, float imaginary, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_newComplexFloat64Scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_newComplexFloat64Scalar(double real, double imaginary, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, bool requires_grad);
+	public static extern OpaqueTensor* Tensor_newComplexFloat64Scalar(double real, double imaginary, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_nextafter", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_nextafter([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* other);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_nextafter_", ExactSpelling = true)]
+	public static extern void Tensor_nextafter_([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const Tensor")] OpaqueTensor* other);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_nonzero", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2410,7 +2446,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_tensordot", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_tensordot([NativeTypeName("const Tensor")] OpaqueTensor* input1, [NativeTypeName("const Tensor")] OpaqueTensor* input2, [NativeTypeName("const int64_t *")] long* dims1, [NativeTypeName("const int")] int dims1_length, [NativeTypeName("const int64_t *")] long* dims2, [NativeTypeName("const int")] int dims2_length);
+	public static extern OpaqueTensor* Linalg_tensordot([NativeTypeName("const Tensor")] OpaqueTensor* input1, [NativeTypeName("const Tensor")] OpaqueTensor* input2, [NativeTypeName("const int64_t *")] long* dims1, [NativeTypeName("const int32_t")] int dims1_length, [NativeTypeName("const int64_t *")] long* dims2, [NativeTypeName("const int32_t")] int dims2_length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_numel", ExactSpelling = true)]
 	[return: NativeTypeName("int64_t")]
@@ -2418,15 +2454,15 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ones", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_ones([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_ones([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ones_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_ones_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_ones_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ones_like", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_ones_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_ones_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ormqr", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2446,7 +2482,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_permute", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_permute([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_permute([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_polar", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2489,29 +2525,32 @@ public static unsafe partial class PInvoke
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_rad2deg([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rad2deg_", ExactSpelling = true)]
+	public static extern void Tensor_rad2deg_([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rand", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_rand([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_rand([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rand_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_rand_out([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_rand_out([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rand_like", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_rand_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_rand_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randint", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_randint([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t")] long low, [NativeTypeName("const int64_t")] long high, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_randint([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t")] long low, [NativeTypeName("const int64_t")] long high, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randint_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_randint_out([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t")] long low, [NativeTypeName("const int64_t")] long high, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_randint_out([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t")] long low, [NativeTypeName("const int64_t")] long high, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randint_like", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_randint_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t")] long low, [NativeTypeName("const int64_t")] long high, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_randint_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t")] long low, [NativeTypeName("const int64_t")] long high, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randint_bool", ExactSpelling = true)]
 	[return: NativeTypeName("int32_t")]
@@ -2533,19 +2572,19 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randn", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_randn([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_randn([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randn_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_randn_out([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_randn_out([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randn_like", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_randn_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_randn_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randperm", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_randperm([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t")] long n, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_randperm([NativeTypeName("const Generator")] OpaqueGenerator* gen, [NativeTypeName("const int64_t")] long n, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_randperm_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2553,7 +2592,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_from_file", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_from_file([NativeTypeName("const char *")] sbyte* filename, [NativeTypeName("const int8_t")] sbyte shared, [NativeTypeName("const int64_t")] long size, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_from_file([NativeTypeName("const char *")] sbyte* filename, [NativeTypeName("const int8_t")] sbyte shared, [NativeTypeName("const int64_t")] long size, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ravel", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2593,7 +2632,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_repeat", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_repeat([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_repeat([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_repeat_interleave", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2604,15 +2643,15 @@ public static unsafe partial class PInvoke
 	public static extern OpaqueTensor* Tensor_repeat_interleave_int64([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t")] long repeats, [NativeTypeName("const int64_t")] long dim, [NativeTypeName("const int64_t")] long output_size);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_requires_grad", ExactSpelling = true)]
-	public static extern int Tensor_requires_grad([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+	public static extern bool Tensor_requires_grad([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_reshape", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_reshape([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_reshape([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_roll", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_roll([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shifts, [NativeTypeName("const int")] int shLength, [NativeTypeName("const int64_t *")] long* dims, [NativeTypeName("const int")] int dimLength);
+	public static extern OpaqueTensor* Tensor_roll([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shifts, [NativeTypeName("const int32_t")] int shLength, [NativeTypeName("const int64_t *")] long* dims, [NativeTypeName("const int32_t")] int dimLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rot90", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2643,6 +2682,7 @@ public static unsafe partial class PInvoke
 	public static extern void Tensor_retain_grad([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_result_type", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int Tensor_result_type([NativeTypeName("const Tensor")] OpaqueTensor* left, [NativeTypeName("const Tensor")] OpaqueTensor* right);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rsqrt", ExactSpelling = true)]
@@ -2741,7 +2781,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_std_along_dimensions", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_std_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool unbiased, bool keepdim);
+	public static extern OpaqueTensor* Tensor_std_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool unbiased, bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_std_mean", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2749,7 +2789,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_std_mean_along_dimensions", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_std_mean_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool unbiased, bool keepdim, [NativeTypeName("Tensor *")] OpaqueTensor** mean);
+	public static extern OpaqueTensor* Tensor_std_mean_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool unbiased, bool keepdim, [NativeTypeName("Tensor *")] OpaqueTensor** mean);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_var", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2757,7 +2797,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_var_along_dimensions", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_var_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool unbiased, bool keepdim);
+	public static extern OpaqueTensor* Tensor_var_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool unbiased, bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_var_mean", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2765,7 +2805,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_var_mean_along_dimensions", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_var_mean_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool unbiased, bool keepdim, [NativeTypeName("Tensor *")] OpaqueTensor** mean);
+	public static extern OpaqueTensor* Tensor_var_mean_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool unbiased, bool keepdim, [NativeTypeName("Tensor *")] OpaqueTensor** mean);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_sub", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2787,7 +2827,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_sum_along_dimensions", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_sum_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, int length, bool keepdim, bool has_type, [NativeTypeName("const int8_t")] sbyte dtype);
+	public static extern OpaqueTensor* Tensor_sum_along_dimensions([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dimensions, [NativeTypeName("int32_t")] int length, bool keepdim, bool has_type, [NativeTypeName("const int8_t")] sbyte dtype);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_prod", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2840,7 +2880,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_histogram_i", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_histogram_i([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t")] long bins, [NativeTypeName("const double *")] double* range, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const bool")] bool density, [NativeTypeName("Tensor *")] OpaqueTensor** r_bin_edges);
+	public static extern OpaqueTensor* Tensor_histogram_i([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t")] long bins, [NativeTypeName("const double *")] double* range, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const bool")] bool density, [NativeTypeName("Tensor *")] OpaqueTensor** r_bin_edges);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_histogram_out_t", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2848,7 +2888,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_histogram_out_i", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_histogram_out_i([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t")] long bins, [NativeTypeName("const double *")] double* range, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const bool")] bool density, [NativeTypeName("Tensor *")] OpaqueTensor** hist, [NativeTypeName("Tensor *")] OpaqueTensor** bin_edges, [NativeTypeName("Tensor *")] OpaqueTensor** r_bin_edges);
+	public static extern OpaqueTensor* Tensor_histogram_out_i([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int64_t")] long bins, [NativeTypeName("const double *")] double* range, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* weight, [NativeTypeName("const bool")] bool density, [NativeTypeName("Tensor *")] OpaqueTensor** hist, [NativeTypeName("Tensor *")] OpaqueTensor** bin_edges, [NativeTypeName("Tensor *")] OpaqueTensor** r_bin_edges);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_set_", ExactSpelling = true)]
 	public static extern void Tensor_set_([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* source);
@@ -2887,13 +2927,13 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_sparse", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_sparse([NativeTypeName("Tensor")] OpaqueTensor* indices, [NativeTypeName("Tensor")] OpaqueTensor* values, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_sparse([NativeTypeName("Tensor")] OpaqueTensor* indices, [NativeTypeName("Tensor")] OpaqueTensor* values, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_split_with_size", ExactSpelling = true)]
 	public static extern void Tensor_split_with_size([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t")] long split_size, [NativeTypeName("const int64_t")] long dim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_split_with_sizes", ExactSpelling = true)]
-	public static extern void Tensor_split_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int64_t")] long dim);
+	public static extern void Tensor_split_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int64_t")] long dim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_squeeze", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -2911,30 +2951,30 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_stack", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_stack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length, [NativeTypeName("const int64_t")] long dim);
+	public static extern OpaqueTensor* Tensor_stack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int64_t")] long dim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_hstack", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_hstack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_hstack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_vstack", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_vstack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_vstack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_dstack", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_dstack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_dstack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_column_stack", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_column_stack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_column_stack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_row_stack", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_row_stack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_row_stack([NativeTypeName("const Tensor *")] OpaqueTensor** tensor, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_meshgrid", ExactSpelling = true)]
-	public static extern void Tensor_meshgrid([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int")] int length, [NativeTypeName("const char *")] sbyte* indexing, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator);
+	public static extern void Tensor_meshgrid([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const char *")] sbyte* indexing, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_stride", ExactSpelling = true)]
 	[return: NativeTypeName("int64_t")]
@@ -2977,7 +3017,7 @@ public static unsafe partial class PInvoke
 	public static extern void Tensor_tensor_split_with_size([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t")] long split_size, [NativeTypeName("const int64_t")] long dim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_tensor_split_with_sizes", ExactSpelling = true)]
-	public static extern void Tensor_tensor_split_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int64_t")] long dim);
+	public static extern void Tensor_tensor_split_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int64_t")] long dim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_tensor_split_with_tensor_sizes", ExactSpelling = true)]
 	public static extern void Tensor_tensor_split_with_tensor_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const Tensor")] OpaqueTensor* sizes, [NativeTypeName("const int64_t")] long dim);
@@ -2986,23 +3026,23 @@ public static unsafe partial class PInvoke
 	public static extern void Tensor_vsplit_with_size([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t")] long split_size);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_vsplit_with_sizes", ExactSpelling = true)]
-	public static extern void Tensor_vsplit_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length);
+	public static extern void Tensor_vsplit_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_hsplit_with_size", ExactSpelling = true)]
 	public static extern void Tensor_hsplit_with_size([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t")] long split_size);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_hsplit_with_sizes", ExactSpelling = true)]
-	public static extern void Tensor_hsplit_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length);
+	public static extern void Tensor_hsplit_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_dsplit_with_size", ExactSpelling = true)]
 	public static extern void Tensor_dsplit_with_size([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t")] long split_size);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_dsplit_with_sizes", ExactSpelling = true)]
-	public static extern void Tensor_dsplit_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length);
+	public static extern void Tensor_dsplit_with_sizes([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_tile", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_tile([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* rep, [NativeTypeName("const int")] int rep_length);
+	public static extern OpaqueTensor* Tensor_tile([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* rep, [NativeTypeName("const int32_t")] int rep_length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_tril", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3014,11 +3054,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_tril_indices", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_tril_indices([NativeTypeName("const int64_t")] long row, [NativeTypeName("const int64_t")] long col, [NativeTypeName("const int64_t")] long offset, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index);
+	public static extern OpaqueTensor* Tensor_tril_indices([NativeTypeName("const int64_t")] long row, [NativeTypeName("const int64_t")] long col, [NativeTypeName("const int64_t")] long offset, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_triu_indices", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_triu_indices([NativeTypeName("const int64_t")] long row, [NativeTypeName("const int64_t")] long col, [NativeTypeName("const int64_t")] long offset, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index);
+	public static extern OpaqueTensor* Tensor_triu_indices([NativeTypeName("const int64_t")] long row, [NativeTypeName("const int64_t")] long col, [NativeTypeName("const int64_t")] long offset, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_transpose", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3054,9 +3094,17 @@ public static unsafe partial class PInvoke
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_to_dense([NativeTypeName("Tensor")] OpaqueTensor* tensor);
 
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_to_sparse", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_to_sparse([NativeTypeName("Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_to_sparse_with_dims", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_to_sparse_with_dims([NativeTypeName("Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t")] long sparse_dim);
+
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_to_device", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_to_device([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool copy, [NativeTypeName("const bool")] bool non_blocking);
+	public static extern OpaqueTensor* Tensor_to_device([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool copy, [NativeTypeName("const bool")] bool non_blocking);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_to_type", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3064,10 +3112,10 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_to_type_and_device", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_to_type_and_device([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool copy, [NativeTypeName("const bool")] bool non_blocking);
+	public static extern OpaqueTensor* Tensor_to_type_and_device([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool copy, [NativeTypeName("const bool")] bool non_blocking);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_topk", ExactSpelling = true)]
-	public static extern void Tensor_topk([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int")] int k, [NativeTypeName("const int64_t")] long dim, [NativeTypeName("const bool")] bool largest, [NativeTypeName("const bool")] bool sorted);
+	public static extern void Tensor_topk([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, OpaqueTensor**> allocator, [NativeTypeName("const int32_t")] int k, [NativeTypeName("const int64_t")] long dim, [NativeTypeName("const bool")] bool largest, [NativeTypeName("const bool")] bool sorted);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_trunc", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3101,7 +3149,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_unflatten", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_unflatten([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t")] long dimension, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_unflatten([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t")] long dimension, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_unfold", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3116,27 +3164,27 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_upsample_nearest1d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_upsample_nearest1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int")] int scaleFactorsLength);
+	public static extern OpaqueTensor* Tensor_upsample_nearest1d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int32_t")] int scaleFactorsLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_upsample_nearest1d_backward", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_upsample_nearest1d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* inputSize, [NativeTypeName("const int")] int inputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int")] int scaleFactorsLength);
+	public static extern OpaqueTensor* Tensor_upsample_nearest1d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* inputSize, [NativeTypeName("const int32_t")] int inputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int32_t")] int scaleFactorsLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_upsample_nearest2d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_upsample_nearest2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int")] int scaleFactorsLength);
+	public static extern OpaqueTensor* Tensor_upsample_nearest2d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int32_t")] int scaleFactorsLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_upsample_nearest2d_backward", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_upsample_nearest2d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* inputSize, [NativeTypeName("const int")] int inputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int")] int scaleFactorsLength);
+	public static extern OpaqueTensor* Tensor_upsample_nearest2d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* inputSize, [NativeTypeName("const int32_t")] int inputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int32_t")] int scaleFactorsLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_upsample_nearest3d", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_upsample_nearest3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int")] int scaleFactorsLength);
+	public static extern OpaqueTensor* Tensor_upsample_nearest3d([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int32_t")] int scaleFactorsLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_upsample_nearest3d_backward", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_upsample_nearest3d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* inputSize, [NativeTypeName("const int")] int inputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int")] int scaleFactorsLength);
+	public static extern OpaqueTensor* Tensor_upsample_nearest3d_backward([NativeTypeName("const Tensor")] OpaqueTensor* grad_output, [NativeTypeName("const int64_t *")] long* outputSize, [NativeTypeName("const int32_t")] int outputSizeLength, [NativeTypeName("const int64_t *")] long* inputSize, [NativeTypeName("const int32_t")] int inputSizeLength, [NativeTypeName("const double *")] double* scaleFactors, [NativeTypeName("const int32_t")] int scaleFactorsLength);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_values", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3181,7 +3229,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_view", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_view([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Tensor_view([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* shape, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_view_as_complex", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3214,15 +3262,15 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_zeros", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_zeros([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_zeros([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_zeros_out", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_zeros_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
+	public static extern OpaqueTensor* Tensor_zeros_out([NativeTypeName("const int64_t *")] long* sizes, [NativeTypeName("const int32_t")] int length, [NativeTypeName("const Tensor")] OpaqueTensor* @out);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_zeros_like", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_zeros_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_zeros_like([NativeTypeName("const Tensor")] OpaqueTensor* input, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_bernoulli", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3277,7 +3325,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_cond_int", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_cond_int([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int")] int p);
+	public static extern OpaqueTensor* Linalg_cond_int([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int32_t")] int p);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_cond_float", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3385,11 +3433,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_matrix_norm", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_matrix_norm([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Scalar")] OpaqueScalar* ord, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Linalg_matrix_norm([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Scalar")] OpaqueScalar* ord, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_matrix_norm_fronuc", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_matrix_norm_fronuc([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int8_t")] sbyte fronuc, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Linalg_matrix_norm_fronuc([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int8_t")] sbyte fronuc, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_matrix_rank", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3401,23 +3449,23 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_multi_dot", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_multi_dot([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int")] int length);
+	public static extern OpaqueTensor* Linalg_multi_dot([NativeTypeName("const Tensor *")] OpaqueTensor** tensors, [NativeTypeName("const int32_t")] int length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_norm_str", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_norm_str([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const char *")] sbyte* p, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Linalg_norm_str([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const char *")] sbyte* p, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_norm_float", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_norm_float([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double")] double p, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Linalg_norm_float([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const double")] double p, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_norm_int", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_norm_int([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int")] int p, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Linalg_norm_int([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int32_t")] int p, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_norm_opt", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_norm_opt([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Linalg_norm_opt([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_pinverse", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3433,7 +3481,7 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_qr", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_qr([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const char")] sbyte mode, [NativeTypeName("Tensor *")] OpaqueTensor** R);
+	public static extern OpaqueTensor* Linalg_qr([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const uint8_t")] byte mode, [NativeTypeName("Tensor *")] OpaqueTensor** R);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_solve", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3465,11 +3513,11 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_tensorsolve", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_tensorsolve([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor")] OpaqueTensor* other, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length);
+	public static extern OpaqueTensor* Linalg_tensorsolve([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("Tensor")] OpaqueTensor* other, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_vector_norm", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Linalg_vector_norm([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Scalar")] OpaqueScalar* ord, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
+	public static extern OpaqueTensor* Linalg_vector_norm([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Scalar")] OpaqueScalar* ord, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("const bool")] bool keepdim);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSLinalg_vander", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3858,19 +3906,19 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_hfftn", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_hfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
+	public static extern OpaqueTensor* Tensor_hfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int32_t")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ihfftn", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_ihfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
+	public static extern OpaqueTensor* Tensor_ihfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int32_t")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_fftn", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_fftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
+	public static extern OpaqueTensor* Tensor_fftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int32_t")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ifftn", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_ifftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
+	public static extern OpaqueTensor* Tensor_ifftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int32_t")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rfft", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3890,47 +3938,47 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rfftn", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_rfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
+	public static extern OpaqueTensor* Tensor_rfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int32_t")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_irfftn", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_irfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
+	public static extern OpaqueTensor* Tensor_irfftn([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* s, [NativeTypeName("const int32_t")] int s_length, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length, [NativeTypeName("int8_t")] sbyte norm);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_fftfreq", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_fftfreq([NativeTypeName("const int64_t")] long n, [NativeTypeName("const double")] double d, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_fftfreq([NativeTypeName("const int64_t")] long n, [NativeTypeName("const double")] double d, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_rfftfreq", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_rfftfreq([NativeTypeName("const int64_t")] long n, [NativeTypeName("const double")] double d, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_rfftfreq([NativeTypeName("const int64_t")] long n, [NativeTypeName("const double")] double d, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_fftshift", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_fftshift([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length);
+	public static extern OpaqueTensor* Tensor_fftshift([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_ifftshift", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_ifftshift([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int")] int dim_length);
+	public static extern OpaqueTensor* Tensor_ifftshift([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const int64_t *")] long* dim, [NativeTypeName("const int32_t")] int dim_length);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_bartlett_window", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_bartlett_window([NativeTypeName("const int64_t")] long len, bool periodic, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_bartlett_window([NativeTypeName("const int64_t")] long len, bool periodic, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_blackman_window", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_blackman_window([NativeTypeName("const int64_t")] long len, bool periodic, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_blackman_window([NativeTypeName("const int64_t")] long len, bool periodic, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_hamming_window", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_hamming_window([NativeTypeName("const int64_t")] long len, bool periodic, double alpha, double beta, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_hamming_window([NativeTypeName("const int64_t")] long len, bool periodic, double alpha, double beta, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_hann_window", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_hann_window([NativeTypeName("const int64_t")] long len, bool periodic, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_hann_window([NativeTypeName("const int64_t")] long len, bool periodic, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_kaiser_window", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
-	public static extern OpaqueTensor* Tensor_kaiser_window([NativeTypeName("const int64_t")] long len, bool periodic, double beta, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int")] int device_type, [NativeTypeName("const int")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
+	public static extern OpaqueTensor* Tensor_kaiser_window([NativeTypeName("const int64_t")] long len, bool periodic, double beta, [NativeTypeName("const int8_t")] sbyte scalar_type, [NativeTypeName("const int32_t")] int device_type, [NativeTypeName("const int32_t")] int device_index, [NativeTypeName("const bool")] bool requires_grad);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_stft", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
@@ -3939,6 +3987,41 @@ public static unsafe partial class PInvoke
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_istft", ExactSpelling = true)]
 	[return: NativeTypeName("Tensor")]
 	public static extern OpaqueTensor* Tensor_istft([NativeTypeName("const Tensor")] OpaqueTensor* x, [NativeTypeName("int64_t")] long n_fft, [NativeTypeName("int64_t")] long hop_length, [NativeTypeName("int64_t")] long win_length, [NativeTypeName("const Tensor")] OpaqueTensor* window, bool center, bool normalized, [NativeTypeName("int64_t")] long onesided, [NativeTypeName("int64_t")] long length, bool return_complex);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_quantize_per_tensor", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_quantize_per_tensor([NativeTypeName("const Tensor")] OpaqueTensor* tensor, double scale, [NativeTypeName("int64_t")] long zero_point, [NativeTypeName("int8_t")] sbyte scalar_type);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_quantize_per_channel", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_quantize_per_channel([NativeTypeName("const Tensor")] OpaqueTensor* tensor, [NativeTypeName("const Tensor")] OpaqueTensor* scales, [NativeTypeName("const Tensor")] OpaqueTensor* zero_points, [NativeTypeName("int64_t")] long axis, [NativeTypeName("int8_t")] sbyte scalar_type);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_dequantize", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_dequantize([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_q_scale", ExactSpelling = true)]
+	public static extern double Tensor_q_scale([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_q_zero_point", ExactSpelling = true)]
+	[return: NativeTypeName("int64_t")]
+	public static extern long Tensor_q_zero_point([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_int_repr", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_int_repr([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_q_per_channel_scales", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_q_per_channel_scales([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_q_per_channel_zero_points", ExactSpelling = true)]
+	[return: NativeTypeName("Tensor")]
+	public static extern OpaqueTensor* Tensor_q_per_channel_zero_points([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
+
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTensor_q_per_channel_axis", ExactSpelling = true)]
+	[return: NativeTypeName("int64_t")]
+	public static extern long Tensor_q_per_channel_axis([NativeTypeName("const Tensor")] OpaqueTensor* tensor);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_manual_seed", ExactSpelling = true)]
 	public static extern void Torch_manual_seed([NativeTypeName("const int64_t")] long seed);
@@ -3979,10 +4062,10 @@ public static unsafe partial class PInvoke
 	public static extern void Generator_dispose([NativeTypeName("const Generator")] OpaqueGenerator* generator);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorchCuda_is_available", ExactSpelling = true)]
-	public static extern int Cuda_get_IsAvailable();
+	public static extern bool Cuda_get_IsAvailable();
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorchCuda_cudnn_is_available", ExactSpelling = true)]
-	public static extern int cuDNN_get_IsAvailable();
+	public static extern bool cuDNN_get_IsAvailable();
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorchCuda_device_count", ExactSpelling = true)]
 	public static extern int Cuda_get_DeviceCount();
@@ -4021,26 +4104,30 @@ public static unsafe partial class PInvoke
 	public static extern void Cuda_set_enable_math_sdp([NativeTypeName("const bool")] bool flag);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_get_num_threads", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int Torch_get_num_threads();
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_set_num_threads", ExactSpelling = true)]
-	public static extern void Torch_set_num_threads([NativeTypeName("const int")] int threads);
+	public static extern void Torch_set_num_threads([NativeTypeName("const int32_t")] int threads);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_get_num_interop_threads", ExactSpelling = true)]
+	[return: NativeTypeName("int32_t")]
 	public static extern int Torch_get_num_interop_threads();
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_set_num_interop_threads", ExactSpelling = true)]
-	public static extern void Torch_set_num_interop_threads([NativeTypeName("const int")] int threads);
+	public static extern void Torch_set_num_interop_threads([NativeTypeName("const int32_t")] int threads);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_get_and_reset_last_err", ExactSpelling = true)]
 	[return: NativeTypeName("const char *")]
 	public static extern sbyte* Torch_get_and_reset_last_err();
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_can_cast", ExactSpelling = true)]
-	public static extern int Torch_can_cast([NativeTypeName("const int")] int type1, [NativeTypeName("const int")] int type2);
+	[return: NativeTypeName("int32_t")]
+	public static extern int Torch_can_cast([NativeTypeName("const int32_t")] int type1, [NativeTypeName("const int32_t")] int type2);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_promote_types", ExactSpelling = true)]
-	public static extern int Torch_promote_types([NativeTypeName("const int")] int type1, [NativeTypeName("const int")] int type2);
+	[return: NativeTypeName("int32_t")]
+	public static extern int Torch_promote_types([NativeTypeName("const int32_t")] int type1, [NativeTypeName("const int32_t")] int type2);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_int8_to_scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Scalar")]
@@ -4052,15 +4139,15 @@ public static unsafe partial class PInvoke
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_int16_to_scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Scalar")]
-	public static extern OpaqueScalar* Scalar_FromInt16(short value);
+	public static extern OpaqueScalar* Scalar_FromInt16([NativeTypeName("int16_t")] short value);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_int32_to_scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Scalar")]
-	public static extern OpaqueScalar* Scalar_FromInt32(int value);
+	public static extern OpaqueScalar* Scalar_FromInt32([NativeTypeName("int32_t")] int value);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_int64_to_scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Scalar")]
-	public static extern OpaqueScalar* Scalar_FromInt64([NativeTypeName("long")] int value);
+	public static extern OpaqueScalar* Scalar_FromInt64([NativeTypeName("int64_t")] long value);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_float32_to_scalar", ExactSpelling = true)]
 	[return: NativeTypeName("Scalar")]
@@ -4119,14 +4206,17 @@ public static unsafe partial class PInvoke
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_scalar_to_bool", ExactSpelling = true)]
 	public static extern bool Scalar_ToBoolean([NativeTypeName("Scalar")] OpaqueScalar* value);
 
+	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_scalar_to_bfloat16", ExactSpelling = true)]
+	public static extern void Scalar_ToBFloat16([NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("uint16_t *")] ushort* res);
+
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_scalar_to_float16", ExactSpelling = true)]
-	public static extern void Scalar_ToHalf([NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("unsigned short *")] ushort* res);
+	public static extern void Scalar_ToHalf([NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("uint16_t *")] ushort* res);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_scalar_to_complex32", ExactSpelling = true)]
-	public static extern void Scalar_ToComplex32([NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("float *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, float*> allocator);
+	public static extern void Scalar_ToComplex32([NativeTypeName("Scalar")] OpaqueScalar* value, float* real, float* imaginary);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_scalar_to_complex64", ExactSpelling = true)]
-	public static extern void Scalar_ToComplex64([NativeTypeName("Scalar")] OpaqueScalar* value, [NativeTypeName("double *(*)(size_t)")] delegate* unmanaged[Cdecl]<nuint, double*> allocator);
+	public static extern void Scalar_ToComplex64([NativeTypeName("Scalar")] OpaqueScalar* value, double* real, double* imaginary);
 
 	[DllImport("LibTorchSharp", CallingConvention = CallingConvention.Cdecl, EntryPoint = "THSTorch_scalar_type", ExactSpelling = true)]
 	[return: NativeTypeName("int8_t")]

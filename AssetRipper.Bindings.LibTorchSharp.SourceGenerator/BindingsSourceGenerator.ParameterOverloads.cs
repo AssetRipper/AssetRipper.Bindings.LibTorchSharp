@@ -51,6 +51,7 @@ public partial class BindingsSourceGenerator
 					}
 					else if (!parameterData.Type.IsBoolean && reflectionContext.IsBooleanParameter(nativeMethod.Name, i, parameterData.Name))
 					{
+						// This is not currently used for any parameters
 						anyBooleanConversions = true;
 						modifiedParameterDatas[i] = parameterData with { Type = new("bool", 0) };
 						parameterNames.Add($"{parameterData.Name} ? 1 : 0");

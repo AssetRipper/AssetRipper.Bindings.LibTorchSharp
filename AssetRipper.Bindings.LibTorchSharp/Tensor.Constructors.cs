@@ -24,11 +24,6 @@ public readonly partial struct Tensor
 		return Create(MemoryMarshal.AsBytes(data), sizes.Length == 0 ? [data.Length] : sizes, scalarType, dtype ?? scalarType, requires_grad, device);
 	}
 
-	public static Tensor CreateByteScalar(byte value, bool requires_grad, Device? device = null)
-	{
-		return CreateByteScalar(unchecked((sbyte)value), requires_grad, device);
-	}
-
 	public static Tensor CreateBFloat16Scalar(BFloat16 value, bool requires_grad, Device? device = null)
 	{
 		return CreateBFloat16Scalar((float)value, requires_grad, device);
