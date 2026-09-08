@@ -10,6 +10,8 @@
 		<PackageTags>C# Torch</PackageTags>
 		<Description>High performance bindings for LibTorchSharp.</Description>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
