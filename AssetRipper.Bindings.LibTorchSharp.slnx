@@ -5,6 +5,7 @@
     <File Path="Directory.Build.props" />
     <File Path="generate.bat" />
     <File Path="generate.rsp" />
+    <File Path="header.txt" />
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>

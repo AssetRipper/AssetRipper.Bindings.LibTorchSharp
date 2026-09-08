@@ -5,7 +5,6 @@
 		<IsAotCompatible>true</IsAotCompatible>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<NoWarn>SYSLIB1054;1591</NoWarn>
 
 		<PackageId>AssetRipper.Bindings.LibTorchSharp</PackageId>
 		<PackageTags>C# Torch</PackageTags>
