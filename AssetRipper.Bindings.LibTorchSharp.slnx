@@ -3,6 +3,7 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
+    <File Path="generate.bat" />
     <File Path="generate.rsp" />
     <File Path="LICENSE" />
     <File Path="README.md" />
