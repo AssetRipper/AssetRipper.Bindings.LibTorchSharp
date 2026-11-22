@@ -18,6 +18,7 @@ public partial class ModuleGenerator() : IncrementalGenerator(nameof(ModuleGener
 	private const string ModulesNamespace = "AssetRipper.Bindings.LibTorchSharp.Modules";
 	private const string StateDictionaryTypeFullName = "global::AssetRipper.Bindings.LibTorchSharp.Modules.StateDictionary";
 	private const string IModuleTypeFullName = "global::AssetRipper.Bindings.LibTorchSharp.Modules.IModule";
+	private const string IUnaryModuleTypeFullName = "global::AssetRipper.Bindings.LibTorchSharp.Modules.IUnaryModule";
 
 	public override void OnInitialize(SgfInitializationContext context)
 	{
@@ -41,6 +42,13 @@ public partial class ModuleGenerator() : IncrementalGenerator(nameof(ModuleGener
 
 			// Attribute has a property called "IsTrainingField" that indicates whether the struct has an IsTraining field
 			bool isTrainingField = context.Attributes.Single().NamedArguments.Any(kv => kv.Key == "IsTrainingField" && kv.Value.Value is bool b && b);
+			INamedTypeSymbol? tensorType = context.SemanticModel.Compilation.GetTypeByMetadataName("AssetRipper.Bindings.LibTorchSharp.Tensor");
+			bool isUnaryModule = tensorType is not null && structSymbol.GetMembers("Forward").OfType<IMethodSymbol>().Any(method =>
+				method is { MethodKind: MethodKind.Ordinary, IsStatic: false, DeclaredAccessibility: Accessibility.Public, Arity: 0, RefKind: RefKind.None }
+				&& method.Parameters.Length == 1
+				&& method.Parameters[0].RefKind == RefKind.None
+				&& SymbolEqualityComparer.Default.Equals(method.ReturnType, tensorType)
+				&& SymbolEqualityComparer.Default.Equals(method.Parameters[0].Type, tensorType));
 
 			List<PropertyData> properties = [];
 			foreach (ISymbol member in structSymbol.GetMembers())
@@ -53,7 +61,7 @@ public partial class ModuleGenerator() : IncrementalGenerator(nameof(ModuleGener
 				properties.Add(new PropertyData(property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), property.Name));
 			}
 
-			return new StructData(structNamespace, structName, isTrainingField, new EquatableArray<PropertyData>(properties));
+			return new StructData(structNamespace, structName, isTrainingField, isUnaryModule, new EquatableArray<PropertyData>(properties));
 		});
 
 		context.RegisterSourceOutput(structs, Generate);
@@ -74,7 +82,8 @@ public partial class ModuleGenerator() : IncrementalGenerator(nameof(ModuleGener
 		writer.WriteFileScopedNamespace(structData.Namespace);
 		writer.WriteLineNoTabs();
 		writer.WriteStructLayoutAttribute(LayoutKind.Auto);
-		writer.WriteLine($"public readonly partial struct {structData.Name} : {IModuleTypeFullName}");
+		string moduleInterface = structData.IsUnaryModule ? IUnaryModuleTypeFullName : IModuleTypeFullName;
+		writer.WriteLine($"public readonly partial struct {structData.Name} : {moduleInterface}");
 		using (new CurlyBrackets(writer))
 		{
 			writer.WriteStructLayoutAttribute(LayoutKind.Auto);

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace AssetRipper.Bindings.LibTorchSharp.Analyzers;
 
 [StructLayout(LayoutKind.Auto)]
-internal readonly record struct StructData(string Namespace, string Name, bool IsTrainingField, EquatableArray<PropertyData> Properties)
+internal readonly record struct StructData(string Namespace, string Name, bool IsTrainingField, bool IsUnaryModule, EquatableArray<PropertyData> Properties)
 {
 	public string GetNameForModuleData()
 	{

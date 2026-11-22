@@ -151,12 +151,19 @@ internal sealed class GeneratedChildStruct(GeneratedOpaqueStruct parent, string 
 
 	private void GenerateIModuleFile(SgfSourceProductionContext context)
 	{
+		bool isUnaryModule = Methods.Select(pair => pair.MidLevel).Any(method =>
+			IsInstance(method)
+			&& method.Name is "Forward"
+			&& method.ReturnType.IsTensor
+			&& method.Parameters.Length == 2
+			&& method.Parameters[1] is { Type.IsTensor: true, IsOut: false });
+		string moduleInterface = isUnaryModule ? "IUnaryModule" : "IModule";
 		context.AddSource($"{Name}.IModule.cs", $$"""
 			using AssetRipper.Bindings.LibTorchSharp.LowLevel;
 
 			namespace {{Namespace}};
 
-			public readonly unsafe partial struct {{Name}} : IModule
+			public readonly unsafe partial struct {{Name}} : {{moduleInterface}}
 			{
 				// IsTraining property is inherited from NNModule
 
