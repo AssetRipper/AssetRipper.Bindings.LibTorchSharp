@@ -104,4 +104,24 @@ public class ModuleTests
 			Assert.That(bias2.IsNull);
 		}
 	}
+
+	[Test]
+	public void SwishGatedLinear_Forward()
+	{
+		using SwishGatedLinear module = new(2, 3, 4);
+		using Tensor input = new([1.0f, 2.0f]);
+		using Tensor output = module.Forward(input);
+
+		Assert.That(output.IsNull, Is.False);
+	}
+
+	[Test]
+	public void SigmoidGatedLinear_Forward()
+	{
+		using SigmoidGatedLinear module = new(2, 3, 4);
+		using Tensor input = new([1.0f, 2.0f]);
+		using Tensor output = module.Forward(input);
+
+		Assert.That(output.IsNull, Is.False);
+	}
 }
